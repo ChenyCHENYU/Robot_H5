@@ -18,7 +18,7 @@ export function postcssPxToViewProtConfig(): Plugin {
         unitPrecision: 5, // 转换后的精度，即小数点位数
         propList: ['*'], // 指定转换的css属性的单位，*代表全部css属性的单位都进行转换
         mobileUnit: 'vw', // 指定需要转换成的视口单位，建议使用 vw
-        selectorBlackList: ['keep-px'], // 指定不转换为视窗单位的类名 配置表示类名中含有'keep-px'都不会被转换，
+        selectorBlackList: ['keep-px', 'virtual-status-bar'], // 指定不转换为视窗单位的类名
         valueBlackList: ['1px solid'], // 表示属性值包含 '1px solid' 的内容不会转换
         exclude: [/node_modules/], // 忽略某些文件夹下的文件或特定文件，例如 'node_modules' 下的文件
         // include: [/src/], // 如果设置了include，那将只有匹配到的文件才会被转换

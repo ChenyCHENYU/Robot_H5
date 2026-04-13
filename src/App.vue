@@ -1,9 +1,11 @@
 <template>
     <van-config-provider :theme="getThemeMode" :theme-vars="themeVarsCache">
-        <CVirtualStatusBar />
-        <routerView v-slot="{ Component }">
-            <component :is="Component" />
-        </routerView>
+        <div class="h-screen w-full flex flex-col overflow-hidden">
+            <CVirtualStatusBar />
+            <routerView v-slot="{ Component }" class="w-full flex-1 overflow-hidden">
+                <component :is="Component" />
+            </routerView>
+        </div>
     </van-config-provider>
 </template>
 
