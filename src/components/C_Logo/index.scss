@@ -1,7 +1,9 @@
 /**
- * C_Logo — 圆形徽标
- * 替换为图片时: .logo__inner 换成 <img class="logo__img" src="...">
- * .logo__img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
+ * C_Logo — iOS App 图标风格圆角方块徽标
+ *
+ * 替换为图片时只需改 HTML:
+ *   <img class="logo__img" src="your-logo.png" />
+ *   （同时可保留 logo__glow 保持光晕动画）
  */
 .logo {
     display: inline-flex;
@@ -10,123 +12,153 @@
     position: relative;
     flex-shrink: 0;
 
-    // 环境光晕（替换为图片后可直接删除）
+    // ── 环境光晕 ──────────────────────────────────────────────
     &__glow {
         position: absolute;
-        inset: -28%;
+        inset: -30%;
         border-radius: 50%;
         background: radial-gradient(
-            circle,
-            rgba(0, 102, 204, 0.22) 0%,
-            rgba(88, 86, 214, 0.10) 50%,
+            ellipse at 50% 60%,
+            rgba(30, 100, 240, 0.26) 0%,
+            rgba(88, 86, 214, 0.12) 45%,
             transparent 70%
         );
         pointer-events: none;
-        animation: logoGlowPulse 6s ease-in-out infinite;
+        animation: logoGlowPulse 5s ease-in-out infinite;
     }
 
-    // 圆形主体
+    // ── 圆角方块主体 ──────────────────────────────────────────
     &__inner {
         position: relative;
         width: 100%;
         height: 100%;
-        border-radius: 50%;
+        // iOS App 图标标准圆角率 ≈ 22.37%
+        border-radius: 22.5%;
+        overflow: hidden;
 
-        // 主渐变：深蓝 → 靛紫，模拟高端 App 图标
-        background: linear-gradient(
-            145deg,
-            #1a72e8 0%,
-            #0a52c8 40%,
-            #3730a3 80%,
-            #4c1d95 100%
-        );
+        // 三段立体渐变：
+        //   左上角亮蓝（光源） → 中段深蓝 → 右下角靛紫（阴影面）
+        background:
+            linear-gradient(
+                148deg,
+                #5badff 0%,
+                #1a74f0 28%,
+                #0a4fd6 58%,
+                #3b2fc9 80%,
+                #5040d8 100%
+            );
 
-        // 多层投影：轮廓描边 + 彩色扩散 + 近景阴影
+        // 四层阴影构建真实立体感
         box-shadow:
-            0 0 0 1px rgba(255, 255, 255, 0.12) inset,
-            0 0 0 0.5px rgba(0, 0, 0, 0.14),
-            0 6px 24px rgba(10, 82, 200, 0.40),
-            0 2px 6px rgba(0, 0, 0, 0.16);
+            // ① 内描边白边（光源面高光）
+            inset 0 0 0 0.5px rgba(255, 255, 255, 0.18),
+            // ② 轮廓压暗（图标底部边缘）
+            0 0 0 0.5px rgba(0, 0, 0, 0.10),
+            // ③ 彩色漫反射（蓝紫光晕）
+            0 8px 32px rgba(20, 80, 220, 0.45),
+            // ④ 近景投影（贴近背景的短阴影）
+            0 2px 8px rgba(0, 0, 0, 0.18);
 
         display: flex;
         align-items: center;
         justify-content: center;
-        overflow: hidden;
-        animation: logoFloat 8s ease-in-out infinite;
+        animation: logoFloat 7s ease-in-out infinite;
     }
 
-    // 顶部玻璃高光弧（iOS 液态玻璃标志性光泽）
+    // ── 顶部半椭圆玻璃高光 ───────────────────────────────────
+    //    模拟光线从左上方 45° 照射，在表面形成的镜面反射
     &__shine {
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 50%;
-        background: linear-gradient(
-            180deg,
-            rgba(255, 255, 255, 0.32) 0%,
-            rgba(255, 255, 255, 0.10) 50%,
-            transparent 100%
+        // 覆盖上半部分
+        top: -2%;
+        left: -5%;
+        right: -5%;
+        height: 58%;
+        // 椭圆渐变：中心最亮，向边缘和底部衰减
+        background: radial-gradient(
+            ellipse at 40% 0%,
+            rgba(255, 255, 255, 0.38) 0%,
+            rgba(255, 255, 255, 0.16) 40%,
+            transparent 75%
         );
-        border-radius: 50% 50% 30% 30% / 50% 50% 20% 20%;
+        border-radius: 50% 50% 40% 40% / 55% 55% 30% 30%;
         pointer-events: none;
     }
 
-    // 品牌大字母 R
+    // ── 左上角镜面光斑 ────────────────────────────────────────
+    //    真实 App 图标在强光下的椭圆高光点
+    &__gloss {
+        position: absolute;
+        top: 5%;
+        left: 6%;
+        width: 42%;
+        height: 32%;
+        background: radial-gradient(
+            ellipse at 30% 30%,
+            rgba(255, 255, 255, 0.30) 0%,
+            rgba(255, 255, 255, 0.08) 55%,
+            transparent 80%
+        );
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    // ── 品牌字母 R ───────────────────────────────────────────
     &__letter {
         position: relative;
-        z-index: 1;
-        font-family: 'SF Pro Display', -apple-system, 'Helvetica Neue', sans-serif;
-        font-size: calc(var(--logo-size, 68px) * 0.48);
+        z-index: 2;
+        // SF Pro Display 是 iOS 系统字体，回退到系统 sans-serif
+        font-family: 'SF Pro Display', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+        font-size: calc(var(--logo-size, 72px) * 0.46);
         font-weight: 800;
         line-height: 1;
-        color: rgba(255, 255, 255, 0.96);
-        letter-spacing: -0.02em;
-        // 文字内高光（精致感来源）
+        letter-spacing: -0.03em;
+        color: rgba(255, 255, 255, 0.97);
+        // 文字立体感：顶部微亮高光 + 底部微压暗
         text-shadow:
-            0 1px 0 rgba(255, 255, 255, 0.30),
-            0 -1px 2px rgba(0, 0, 0, 0.20);
-        // 向上微移，为 H5 角标留空间
-        transform: translateY(-6%);
+            0 1px 0 rgba(255, 255, 255, 0.35),
+            0 -1px 2px rgba(0, 0, 0, 0.22),
+            0 2px 8px rgba(0, 0, 0, 0.20);
+        // 轻微上移，视觉居中（字体底部留白补偿）
+        transform: translateY(-2%);
+        user-select: none;
     }
 
-    // H5 角标（右下角）
-    &__badge {
-        position: absolute;
-        right: 13%;
-        bottom: 12%;
-        z-index: 2;
-        font-family: 'SF Pro Display', -apple-system, 'Helvetica Neue', sans-serif;
-        font-size: calc(var(--logo-size, 68px) * 0.18);
-        font-weight: 700;
-        line-height: 1;
-        color: rgba(255, 255, 255, 0.75);
-        letter-spacing: 0.02em;
-    }
-
-    // ---- 图片替换模式 ----
-    // 替换为 <img> 后添加此类
+    // ── 图片替换占位 ─────────────────────────────────────────
     &__img {
         width: 100%;
         height: 100%;
-        border-radius: 50%;
+        border-radius: 22.5%;
         object-fit: cover;
         display: block;
     }
 }
 
-// 暗色模式加深渐变
+// ── 暗色模式：加深基色，保持对比 ─────────────────────────────
 html.dark .logo__inner {
-    background: linear-gradient(145deg, #2a82f8 0%, #1262e0 40%, #4340b8 80%, #5b21b6 100%);
+    background: linear-gradient(
+        148deg,
+        #6ab8ff 0%,
+        #2080ff 28%,
+        #1260e8 58%,
+        #4540dd 80%,
+        #6055e8 100%
+    );
+    box-shadow:
+        inset 0 0 0 0.5px rgba(255, 255, 255, 0.22),
+        0 0 0 0.5px rgba(0, 0, 0, 0.20),
+        0 8px 32px rgba(30, 100, 240, 0.50),
+        0 2px 8px rgba(0, 0, 0, 0.28);
 }
 
+// ── 动画 ──────────────────────────────────────────────────────
 @keyframes logoFloat {
-    0%, 100% { transform: translateY(0); }
-    45% { transform: translateY(-5px); }
-    75% { transform: translateY(-2px); }
+    0%, 100% { transform: translateY(0px);   }
+    35%       { transform: translateY(-5px);  }
+    70%       { transform: translateY(-2px);  }
 }
 
 @keyframes logoGlowPulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.55; transform: scale(1.12); }
+    0%, 100% { opacity: 1;    transform: scale(1);    }
+    50%       { opacity: 0.5; transform: scale(1.10); }
 }
