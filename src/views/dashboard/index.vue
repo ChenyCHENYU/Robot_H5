@@ -35,7 +35,7 @@
                 <h1 class="dashboard__name">{{ userStore.getUserInfo.nickname || '用户' }}</h1>
                 <div class="dashboard__brand">
                     <i class="i-ph:sparkle-bold dashboard__brand-icon" />
-                    <span>CHENY</span>
+                    <span>金恒 | AGILE TEAM</span>
                 </div>
             </div>
 

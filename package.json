@@ -97,6 +97,7 @@
         "vite-plugin-html": "^3.2.2",
         "vite-plugin-mock": "^2.9.8",
         "vite-plugin-progress": "^0.0.7",
+        "vite-plugin-pwa": "1.2.0",
         "vite-plugin-style-import": "^2.0.0",
         "vite-plugin-svg-icons": "^2.0.1",
         "vue-eslint-parser": "^10.2.0",

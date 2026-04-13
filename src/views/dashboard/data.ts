@@ -18,18 +18,18 @@ export interface Feature {
 }
 
 export const quotes: Quote[] = [
-    { text: '构建有温度的产品，让每一行代码都有意义。', author: 'CHENY' },
-    { text: 'Stay curious. Stay humble. Keep shipping.', author: 'CHENY' },
-    { text: '好的设计是看不见的，好的代码也是。', author: 'CHENY' },
-    { text: '把复杂的事做简单，把简单的事做极致。', author: 'CHENY' },
-    { text: '每一个像素，都应该值得被认真对待。', author: 'CHENY' },
+    { text: '构建有温度的产品，让每一行代码都有意义。', author: '金恒' },
+    { text: 'Stay curious. Stay humble. Keep shipping.', author: 'AGILE TEAM' },
+    { text: '好的设计是看不见的，好的代码也是。', author: '金恒' },
+    { text: '把复杂的事做简单，把简单的事做极致。', author: 'AGILE TEAM' },
+    { text: '每一个像素，都应该值得被认真对待。', author: '金恒' },
 ];
 
 export const quickActions: QuickAction[] = [
     { icon: 'ph:chart-line-bold', label: '图表', route: '/chart', color: '#5856D6' },
     { icon: 'ph:squares-four-bold', label: '示例', route: '/demo', color: '#FF9500' },
     { icon: 'ph:palette-bold', label: '主题', route: '/themeSetting', color: '#34C759' },
-    { icon: 'ph:user-bold', label: '我的', route: '/mine', color: '#0071E3' },
+    { icon: 'ph:gear-bold', label: '设置', route: '/accountSetting', color: '#8E8E93' },
 ];
 
 export interface StatItem {
@@ -39,9 +39,9 @@ export interface StatItem {
 }
 
 export const statsItems: StatItem[] = [
-    { label: '今日活跃', value: '1,280' },
-    { label: '转化率', value: '23.6%' },
-    { label: '增长', value: '+12%', up: true },
+    { label: '组件', value: '20+' },
+    { label: '页面', value: '15' },
+    { label: 'TypeScript', value: '100%', up: true },
 ];
 
 export const heroOrbCount = 4;

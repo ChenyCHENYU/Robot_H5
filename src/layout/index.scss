@@ -6,6 +6,7 @@
 
     &__content {
         flex: 1;
+        min-height: 0; // 允许 flex 子项压缩，否则 overflow-y: auto 不生效
         overflow-x: hidden;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;

@@ -7,11 +7,15 @@ import { PageEnum } from '@/enums/pageEnum';
 
 NProgress.configure({ parent: '#app', showSpinner: false, minimum: 0.3, speed: 300 });
 
+let npTimer: ReturnType<typeof setTimeout>;
+
 // 路由白名单
 const whitePathList = [PageEnum.BASE_LOGIN];
 export function createRouterGuards(router: Router) {
     router.beforeEach(async (to, _from, next) => {
-        NProgress.start();
+        // 延迟显示 NProgress，快速导航（tab切换）不会出现进度条闪烁
+        clearTimeout(npTimer);
+        npTimer = setTimeout(() => NProgress.start(), 200);
 
         if (whitePathList.includes(to.path as PageEnum)) {
             next();
@@ -60,6 +64,7 @@ export function createRouterGuards(router: Router) {
             }
         }
         routeStore.setKeepAliveComponents(keepAliveComponents);
+        clearTimeout(npTimer);
         NProgress.done();
     });
 

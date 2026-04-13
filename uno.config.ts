@@ -123,5 +123,7 @@ export default defineConfig({
         'i-ic:sharp-arrow-back-ios',
         // Logo
         'i-ph:rocket-launch-bold',
+        // Dashboard 设置快捷入口
+        'i-ph:gear-bold',
     ],
 });

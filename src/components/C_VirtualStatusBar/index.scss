@@ -10,7 +10,7 @@
   background-color: var(--ds-surface);
 
   // 仅桌面端预览时显示虚拟状态栏
-  @media screen and (width >=576px) {
+  @media screen and (min-width: 576px) {
     display: block;
   }
 
