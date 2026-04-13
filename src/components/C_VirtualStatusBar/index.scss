@@ -1,0 +1,125 @@
+.virtual-status-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: none;
+  height: 30px;
+  color: var(--ds-text-primary);
+  background-color: var(--ds-surface);
+
+  // 仅桌面端预览时显示虚拟状态栏
+  @media screen and (width >=576px) {
+    display: block;
+  }
+
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 600;
+
+    .left {
+      display: flex;
+      align-items: center;
+
+      .time {
+        font-size: 14px;
+        font-weight: 600;
+      }
+    }
+
+    .right {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+
+      .signal {
+        display: flex;
+        align-items: center;
+
+        .signal-bars {
+          display: flex;
+          gap: 2px;
+          align-items: flex-end;
+          height: 12px;
+
+          .signal-bar {
+            width: 3px;
+            background-color: #ccc;
+            border-radius: 1px;
+            transition: all 0.2s ease;
+
+            &:nth-child(1) {
+              height: 4px;
+            }
+
+            &:nth-child(2) {
+              height: 6px;
+            }
+
+            &:nth-child(3) {
+              height: 8px;
+            }
+
+            &:nth-child(4) {
+              height: 10px;
+            }
+
+            &.active {
+              background-color: var(--ds-text-primary);
+            }
+          }
+        }
+      }
+
+      .battery {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+
+        .battery-container {
+          position: relative;
+          width: 24px;
+          height: 12px;
+          border: 1px solid var(--ds-text-primary);
+          border-radius: 2px;
+
+          .battery-level {
+            position: relative;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 1px;
+
+            .battery-fill {
+              height: 100%;
+              background-color: #4cd964;
+              border-radius: 1px;
+              transition: width 0.3s ease;
+            }
+          }
+
+          .battery-tip {
+            position: absolute;
+            top: 50%;
+            right: -3px;
+            width: 2px;
+            height: 6px;
+            border-radius: 0 1px 1px 0;
+            transform: translateY(-50%);
+            background-color: var(--ds-text-primary);
+          }
+        }
+
+        .battery-percentage {
+          font-size: 12px;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}

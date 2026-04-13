@@ -1,5 +1,5 @@
 <template>
-    <mi-uploader
+    <van-uploader
         :max-size="700 * 1024"
         :max-count="1"
         :before-read="beforeRead"
@@ -9,11 +9,11 @@
         <template #default>
             <slot name="default" />
         </template>
-    </mi-uploader>
+    </van-uploader>
 </template>
 
 <script setup lang="ts">
-    import { showFailToast } from '@miracle-web/ui';
+    import { showFailToast } from 'vant';
 
     function beforeRead(file) {
         if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg') {
@@ -28,5 +28,3 @@
         // 这里写上传逻辑
     }
 </script>
-
-<style scoped lang="scss"></style>

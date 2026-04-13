@@ -1,0 +1,147 @@
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ds-bg);
+    padding: 32px 24px;
+    position: relative;
+    overflow: hidden;
+
+    &__orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(60px);
+        pointer-events: none;
+        animation: loginOrb 10s ease-in-out infinite;
+
+        &--1 {
+            width: 260px;
+            height: 260px;
+            top: -10%;
+            right: -15%;
+            background: #0071e3;
+            opacity: 0.25;
+        }
+
+        &--2 {
+            width: 200px;
+            height: 200px;
+            bottom: 10%;
+            left: -15%;
+            background: #5856d6;
+            opacity: 0.2;
+            animation-delay: -4s;
+        }
+
+        &--3 {
+            width: 140px;
+            height: 140px;
+            top: 40%;
+            right: 20%;
+            background: #ff2d55;
+            opacity: 0.12;
+            animation-delay: -7s;
+        }
+    }
+
+    &__inner {
+        width: 100%;
+        max-width: 380px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        z-index: 1;
+    }
+}
+
+@keyframes loginOrb {
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+    33% {
+        transform: translate(10px, -20px) scale(1.06);
+    }
+    66% {
+        transform: translate(-8px, 12px) scale(0.96);
+    }
+}
+
+// ---- Shared form styles (used by LoginForm, RegisterForm, ForgetPasswordForm) ----
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    &__field {
+        transition: box-shadow 0.2s;
+
+        &:focus-within {
+            box-shadow: 0 0 0 2px var(--ds-accent);
+        }
+    }
+
+    &__icon {
+        margin-right: 8px;
+        font-size: 18px;
+        color: var(--ds-text-tertiary);
+    }
+
+    &__options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 0 12px;
+    }
+
+    &__link {
+        font-size: 14px;
+        color: var(--ds-accent);
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    &__btn {
+        letter-spacing: 0.5px;
+        transition:
+            opacity 0.2s,
+            transform 0.1s;
+
+        &:active {
+            transform: scale(0.98);
+        }
+
+        &--primary {
+        }
+
+        &--secondary {
+        }
+    }
+}
+
+// ---- Login title ----
+.login-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+
+    &__logo {
+        margin-bottom: 20px;
+    }
+
+    &__heading {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--ds-text-primary);
+        margin: 0 0 8px;
+        letter-spacing: -0.5px;
+    }
+
+    &__sub {
+        font-size: 15px;
+        color: var(--ds-text-secondary);
+        margin: 0;
+    }
+}

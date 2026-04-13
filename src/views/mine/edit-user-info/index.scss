@@ -1,0 +1,79 @@
+.edit-info-page {
+    min-height: 100%;
+    background: var(--ds-bg);
+    padding-bottom: 40px;
+
+    &__heading {
+        padding: 20px 20px 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ds-text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+
+    &__group {
+        position: relative;
+        overflow: hidden;
+        margin: 0 20px 20px;
+        background: var(--ds-glass-bg);
+        backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        border: 1px solid var(--ds-glass-border);
+        border-radius: var(--ds-radius-lg);
+        box-shadow: var(--ds-glass-shine), var(--ds-glass-shadow);
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            background: var(--ds-glass-gradient);
+            pointer-events: none;
+        }
+    }
+
+    &__cell {
+        position: relative;
+        z-index: 1;
+
+        :deep(.van-field__label), :deep(.van-cell__title) {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--ds-text-primary);
+        }
+
+        :deep(.van-cell__value), :deep(.van-field__control) {
+            font-size: 14px;
+        }
+
+        &:not(:last-child) {
+            :deep(.van-cell__wrapper) {
+                border-bottom: 0.5px solid var(--ds-divider);
+            }
+        }
+    }
+
+    &__avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        display: block;
+    }
+
+    &__cover {
+        width: 80px;
+        height: 48px;
+        border-radius: var(--ds-radius-sm);
+        display: block;
+        object-fit: cover;
+    }
+
+    :deep(.van-image__img) {
+        border-radius: 10px !important;
+    }
+
+    :deep(.van-field__control) {
+        color: var(--van-text-color-2);
+    }
+}

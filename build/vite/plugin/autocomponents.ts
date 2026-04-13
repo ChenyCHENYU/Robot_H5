@@ -4,14 +4,14 @@
  */
 import Components from 'unplugin-vue-components/vite';
 import { VueUseComponentsResolver } from 'unplugin-vue-components/resolvers';
-import { MiracleResolver } from '@miracle-web/auto-import-resolver';
+import { VantResolver } from '@vant/auto-import-resolver';
 
 export function configAutoComponentsPlugin() {
     return Components({
         // 指定组件位置，默认是src/components
         dirs: ['src/components'],
         // ui库解析器
-        resolvers: [VueUseComponentsResolver(), MiracleResolver()],
+        resolvers: [VueUseComponentsResolver(), VantResolver()],
         extensions: ['vue', 'tsx'],
         // 配置文件生成位置
         dts: 'types/components.d.ts',

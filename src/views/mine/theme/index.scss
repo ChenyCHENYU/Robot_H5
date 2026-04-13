@@ -1,0 +1,86 @@
+.theme-page {
+    min-height: 100%;
+    background: var(--ds-bg);
+
+    &__body {
+        padding: 16px 20px;
+    }
+
+    &__section {
+        margin-bottom: 24px;
+    }
+
+    &__section-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ds-text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 0 0 8px 4px;
+    }
+
+    &__group {
+        position: relative;
+        overflow: hidden;
+        background: var(--ds-glass-bg);
+        backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        border: 1px solid var(--ds-glass-border);
+        border-radius: var(--ds-radius-lg);
+        box-shadow: var(--ds-glass-shine), var(--ds-glass-shadow);
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: var(--ds-glass-gradient);
+            pointer-events: none;
+        }
+    }
+
+    &__cell {
+        background: transparent !important;
+        position: relative;
+        z-index: 1;
+
+        :deep(.van-cell__title) {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--ds-text-primary);
+        }
+    }
+
+    &__colors {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 10px;
+        position: relative;
+        overflow: hidden;
+        background: var(--ds-glass-bg);
+        backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        border: 1px solid var(--ds-glass-border);
+        border-radius: var(--ds-radius-lg);
+        box-shadow: var(--ds-glass-shine), var(--ds-glass-shadow);
+        padding: 20px;
+    }
+
+    &__color-dot {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.15s;
+        box-shadow: var(--ds-shadow-1);
+
+        &:active {
+            transform: scale(0.9);
+        }
+    }
+}

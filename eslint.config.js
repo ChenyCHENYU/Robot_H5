@@ -47,7 +47,7 @@ export default [
             'no-multiple-empty-lines': ['warn', { max: 1 }],
             'no-unexpected-multiline': 'error',
             'no-useless-escape': 'off',
-            '@typescript-eslint/no-unused-vars': 'warn',
+            '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
             '@typescript-eslint/prefer-ts-expect-error': 'error',
             '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/no-non-null-assertion': 'off',

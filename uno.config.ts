@@ -1,4 +1,4 @@
-import { defineConfig, presetAttributify, presetTypography, presetWind3, presetWebFonts } from 'unocss';
+import { defineConfig, presetAttributify, presetTypography, presetWind3 } from 'unocss';
 import presetIcons from '@unocss/preset-icons';
 import presetRemToPx from '@unocss/preset-rem-to-px';
 import transformerVariantGroup from '@unocss/transformer-variant-group';
@@ -50,20 +50,6 @@ export default defineConfig({
          * @see https://unocss-cn.pages.dev/presets/typography
          */
         presetTypography(),
-
-        /**
-         * 网络字体预设
-         * @see https://unocss-cn.pages.dev/presets/web-fonts
-         * 可使用字体
-         * @see https://fonts.google.com/
-         * @see https://www.fontshare.com/
-         */
-        presetWebFonts({
-            provider: 'google',
-            fonts: {
-                msz: ['Ma Shan Zheng'],
-            },
-        }),
     ],
     transformers: [
         /**
@@ -96,6 +82,46 @@ export default defineConfig({
         'text-break': 'whitespace-normal break-all break-words',
     },
 
-    // 指定始终要生成的css类
-    safelist: ['i-mage:dashboard-2-fill', 'i-bxs:chart', 'i-mingcute:list-expansion-fill', 'i-tabler:brand-minecraft'],
+    // 确保 .ts 数据文件中的动态类名也能被扫描提取
+    content: {
+        pipeline: {
+            include: [/\.(vue|ts|tsx|jsx|html)($|\?)/],
+        },
+    },
+
+    // 指定始终要生成的 css 类（动态拼接 / 数据文件中使用的图标）
+    safelist: [
+        // Tabbar 图标
+        'i-ph:house-bold',
+        'i-ph:squares-four-bold',
+        'i-ph:chart-bar-bold',
+        'i-ph:user-bold',
+        // Mine 页面图标
+        'i-ph:shield-check-bold',
+        'i-ph:palette-bold',
+        'i-ph:info-bold',
+        'i-ph:sign-out-bold',
+        'i-ph:caret-right-bold',
+        // Dashboard 图标
+        'i-ph:sparkle-bold',
+        'i-ph:quotes-bold',
+        'i-ph:lightning-bold',
+        'i-ph:paint-brush-bold',
+        'i-ph:database-bold',
+        'i-ph:chart-line-bold',
+        'i-ph:image-bold',
+        // Demo 页面图标
+        'i-ph:moon-bold',
+        'i-ph:bug-bold',
+        'i-ph:arrows-counter-clockwise-bold',
+        'i-ph:warning-bold',
+        'i-ph:terminal-bold',
+        'i-ph:package-bold',
+        'i-ph:scroll-bold',
+        'i-ph:list-bold',
+        // NavBar
+        'i-ic:sharp-arrow-back-ios',
+        // Logo
+        'i-ph:rocket-launch-bold',
+    ],
 });

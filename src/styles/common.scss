@@ -1,35 +1,40 @@
+// 全局隐藏滚动条（保留触摸/鼠标滚动）
+::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
 body,
 html {
     height: 100%;
     width: 100%;
-
-    // 禁止选择文字
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    box-sizing: content-box;
+    box-sizing: border-box;
 }
 
 body {
     line-height: 1.5;
-    font-size: 14px;
+    font-size: 16px;
     margin: 0;
     padding: 0;
+    font-family: var(--ds-font);
+        background-color: var(--ds-bg);
+        color: var(--ds-text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition:
+            background-color 0.3s,
+            color 0.3s;
 
     @include scrollbar;
-
-    @include useTheme() {
-        background-color: getVar('main-bg-color');
-        color: getVar('main-text-color');
-
-        .my-card {
-            backdrop-filter: blur(10px);
-            background-color: getVar('main-card-color');
-        }
-    }
 }
 
 #app {
@@ -37,19 +42,39 @@ body {
     width: 100%;
 }
 
+// Design system utility classes
+.ds-card {
+    background: var(--ds-surface);
+    border-radius: var(--ds-radius-lg);
+    box-shadow: var(--ds-shadow-2);
+    padding: 20px;
+}
+.ds-text-secondary {
+    color: var(--ds-text-secondary);
+}
+.ds-text-tertiary {
+    color: var(--ds-text-tertiary);
+}
+
+.ds-divider {
+    border-color: var(--ds-divider);
+}
+
+// Desktop preview frame
 @media screen and (min-width: 576px) {
     body {
+        max-width: 500px;
+        margin: 0 auto;
         box-sizing: content-box;
         padding-top: 30px;
         overflow: hidden !important;
         border: 5px solid #000;
         border-radius: 30px;
-        transform: scale(0.8) !important;
 
         @include scrollbar;
     }
 
-    :deep(.mi-nav-bar--fixed) {
+    .van-nav-bar--fixed {
         top: 30px !important;
     }
 }

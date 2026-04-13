@@ -1,0 +1,32 @@
+.chart-page {
+    min-height: 100%;
+    padding: 16px 20px;
+    padding-bottom: 80px;
+    background: var(--ds-bg);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.chart-card {
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+    background: var(--ds-glass-bg);
+    backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+    -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+    border: 1px solid var(--ds-glass-border);
+    border-radius: var(--ds-radius-lg);
+    box-shadow: var(--ds-glass-shine), var(--ds-glass-shadow);
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 50%;
+        background: var(--ds-glass-gradient);
+        pointer-events: none;
+    }
+}

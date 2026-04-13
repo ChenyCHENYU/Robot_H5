@@ -39,3 +39,9 @@ Thumbs.db
 # Generated types
 types/components.d.ts
 types/.eslintrc-auto-import.json
+
+# IDE-specific AI rules (use AGENT.md instead)
+.cursor/
+
+# Design references (local only)
+design-md/

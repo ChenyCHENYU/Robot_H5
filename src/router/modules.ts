@@ -8,7 +8,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
             title: '渲染性能优化',
             keepAlive: false,
         },
-        component: () => import('@/views/example/requestAnimationFrame/index.vue'),
+        component: () => import('@/views/demo/raf/index.vue'),
     },
     {
         path: '/pullRefreshList',
@@ -17,7 +17,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
             title: '列表刷新加载',
             keepAlive: false,
         },
-        component: () => import('@/views/example/pullRefreshList/index.vue'),
+        component: () => import('@/views/demo/pull-refresh/index.vue'),
     },
     {
         path: '/scrollCache',
@@ -26,7 +26,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
             title: '滚动缓存',
             keepAlive: true,
         },
-        component: () => import('@/views/example/scrollCache/index.vue'),
+        component: () => import('@/views/demo/scroll-cache/index.vue'),
     },
     {
         path: '/unoCss',
@@ -34,7 +34,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
         meta: {
             title: 'unoCss',
         },
-        component: () => import('@/views/example/unocss/index.vue'),
+        component: () => import('@/views/demo/unocss/index.vue'),
     },
     {
         path: '/svgIcon',
@@ -42,7 +42,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
         meta: {
             title: 'svg图标',
         },
-        component: () => import('@/views/example/svgIcon/index.vue'),
+        component: () => import('@/views/demo/svg-icon/index.vue'),
     },
     {
         path: '/webview',
@@ -50,7 +50,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
         meta: {
             title: 'miracle-webview',
         },
-        component: () => import('@/components/WebSite/index.vue'),
+        component: () => import('@/components/C_WebSite/index.vue'),
     },
     {
         path: '/dependence',
@@ -58,7 +58,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
         meta: {
             title: '项目依赖',
         },
-        component: () => import('@/views/example/dependence/index.vue'),
+        component: () => import('@/views/demo/dependence/index.vue'),
     },
     {
         path: '/openInstall',
@@ -66,7 +66,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
         meta: {
             title: 'openInstall',
         },
-        component: () => import('@/views/example/openinstall/index.vue'),
+        component: () => import('@/views/demo/openinstall/index.vue'),
     },
     {
         path: '/directives',
@@ -74,7 +74,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
         meta: {
             title: '指令合集',
         },
-        component: () => import('@/views/example/directives/index.vue'),
+        component: () => import('@/views/demo/directives/index.vue'),
     },
     {
         path: '/editUserInfo',
@@ -82,7 +82,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
         meta: {
             title: '编辑个人信息',
         },
-        component: () => import('@/views/mine/EditUserInfo.vue'),
+        component: () => import('@/views/mine/edit-user-info/index.vue'),
     },
     {
         path: '/editNickname',
@@ -91,7 +91,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
             title: '修改昵称(该页面已缓存)',
             keepAlive: true,
         },
-        component: () => import('@/views/mine/EditNickname.vue'),
+        component: () => import('@/views/mine/edit-nickname/index.vue'),
     },
     {
         path: '/editSign',
@@ -99,7 +99,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
         meta: {
             title: '修改签名',
         },
-        component: () => import('@/views/mine/EditSign.vue'),
+        component: () => import('@/views/mine/edit-sign/index.vue'),
     },
     {
         path: '/accountSetting',
@@ -107,7 +107,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
         meta: {
             title: '账号与安全',
         },
-        component: () => import('@/views/mine/AccountSetting.vue'),
+        component: () => import('@/views/mine/account/index.vue'),
     },
     {
         path: '/changePassword',
@@ -115,7 +115,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
         meta: {
             title: '修改登录密码',
         },
-        component: () => import('@/views/mine/ChangePassword.vue'),
+        component: () => import('@/views/mine/change-password/index.vue'),
     },
     {
         path: '/themeSetting',
@@ -123,7 +123,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
         meta: {
             title: '主题设置',
         },
-        component: () => import('@/views/mine/ThemeSetting.vue'),
+        component: () => import('@/views/mine/theme/index.vue'),
     },
 ];
 

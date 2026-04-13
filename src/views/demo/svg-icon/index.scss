@@ -1,0 +1,81 @@
+.svg-page {
+    min-height: 100%;
+    background: var(--ds-bg);
+    padding-bottom: 40px;
+
+    &__body { padding: 20px; }
+
+    &__tip {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: var(--ds-text-secondary);
+        margin: 0 0 20px;
+        padding: 10px 14px;
+        background: var(--ds-accent-light);
+        border-radius: var(--ds-radius-md);
+        border: 1px solid rgba(0,113,227,0.12);
+
+        i { font-size: 16px; color: var(--ds-accent); }
+        code {
+            font-family: 'SF Mono', monospace;
+            font-size: 12px;
+            color: var(--ds-accent);
+            background: rgba(0,113,227,0.08);
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+    }
+
+    &__item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    &__card {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        aspect-ratio: 1;
+        max-width: 100px;
+        background: var(--ds-glass-bg);
+        backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        border: 1px solid var(--ds-glass-border);
+        border-radius: var(--ds-radius-lg);
+        box-shadow: var(--ds-glass-shine), var(--ds-glass-shadow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__card-shine {
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 50%;
+        background: var(--ds-glass-gradient);
+        pointer-events: none;
+    }
+
+    &__icon {
+        width: 36px;
+        height: 36px;
+        position: relative;
+        z-index: 1;
+    }
+
+    &__label {
+        font-size: 11px;
+        color: var(--ds-text-secondary);
+        font-weight: 500;
+    }
+}

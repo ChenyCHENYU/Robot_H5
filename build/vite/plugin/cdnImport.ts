@@ -22,10 +22,10 @@ export const configCdnImportPlugin = () => {
                 path: `https://cdn.jsdelivr.net/npm/pinia@2.2.5/dist/pinia.iife.min.js`,
             },
             {
-                name: 'miracle',
-                var: 'miracle',
-                path: 'https://cdn.jsdelivr.net/npm/@miracle-web/ui/lib/miracle.min.js',
-                css: 'https://cdn.jsdelivr.net/npm/@miracle-web/ui/lib/index.min.css',
+                name: 'vant',
+                var: 'vant',
+                path: 'https://cdn.jsdelivr.net/npm/vant/lib/vant.min.js',
+                css: 'https://cdn.jsdelivr.net/npm/vant/lib/index.min.css',
             },
         ],
     });

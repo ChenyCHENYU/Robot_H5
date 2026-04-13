@@ -15,7 +15,7 @@ export const RootRoute: RouteRecordRaw = {
 export const LoginRoute: RouteRecordRaw = {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/login/Login.vue'),
+    component: () => import('@/views/login/index.vue'),
     meta: {
         title: '登录',
     },
@@ -32,7 +32,7 @@ export const ErrorPageRoute: RouteRecordRaw = {
         {
             path: '/:path(.*)*',
             name: 'ErrorPageSon',
-            component: () => import('@/views/exception/404.vue'),
+            component: () => import('@/views/exception/index.vue'),
             meta: {
                 title: 'ErrorPage',
             },

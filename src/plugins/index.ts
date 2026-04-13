@@ -10,12 +10,11 @@ import 'nprogress/nprogress.css';
 import '@/styles/common.scss';
 
 import NativeCallJs from '@/services/nativeCallJs';
-import { miraclePlugins } from './miracleComponents';
+import { vantPlugins } from './miracleComponents';
 
 import { useDirectives } from '@miracle-web/utils';
 import { useDevtool } from './devtool';
 import { useUpdater } from './updater';
-import { useLoadScript } from './loadScript';
 
 window.NativeCallJs = NativeCallJs;
 
@@ -24,9 +23,8 @@ import inputTop from '@/utils/inputTop';
 inputTop.init();
 
 export const setupPlugins = app => {
-    miraclePlugins(app); // UI组件
+    vantPlugins(app); // UI组件
     useDirectives(app); // 指令
     useDevtool(); // 禁止开发工具
     useUpdater(); // 检测更新
-    useLoadScript(); // 动态脚本加载
 };

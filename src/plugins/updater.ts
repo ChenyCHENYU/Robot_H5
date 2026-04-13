@@ -1,6 +1,6 @@
 import { Updater } from '@/utils/updater';
 import { useEnv } from '@/hooks/useEnv';
-import { showConfirmDialog } from '@miracle-web/ui';
+import { showConfirmDialog } from 'vant';
 
 const { isDevMode } = useEnv();
 /**

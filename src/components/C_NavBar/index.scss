@@ -1,0 +1,15 @@
+:deep(.van-nav-bar) {
+  backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(255, 255, 255, 0.72) !important;
+  border-bottom: 0.5px solid var(--ds-divider);
+}
+
+html.dark :deep(.van-nav-bar) {
+  background: rgba(28, 28, 30, 0.72) !important;
+}
+
+@media screen and (min-width: 576px) {
+  :deep(.van-nav-bar--fixed) {
+    top: 29px !important;
+  }
+}

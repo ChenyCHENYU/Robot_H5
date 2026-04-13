@@ -1,0 +1,148 @@
+.mine-page {
+  min-height: 100%;
+  padding: 20px;
+  padding-top: 48px;
+  padding-bottom: 32px;
+  background: var(--ds-bg);
+
+  // ---------- Profile Card ----------
+  &__profile {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background:
+      linear-gradient(135deg, rgba(0, 113, 227, 0.07) 0%, rgba(88, 86, 214, 0.05) 100%), var(--ds-glass-bg);
+    backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate)) brightness(1.02);
+    -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate)) brightness(1.02);
+    border: 1px solid var(--ds-glass-border);
+    border-radius: var(--ds-radius-xl);
+    padding: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    box-shadow: var(--ds-glass-shine), var(--ds-glass-shadow);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 45%;
+      background: var(--ds-glass-gradient);
+      pointer-events: none;
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+
+  &__avatar {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    z-index: 1;
+    box-shadow:
+      0 0 0 2.5px var(--ds-bg),
+      0 0 0 4px var(--ds-accent),
+      0 6px 20px rgba(0, 113, 227, 0.3);
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ds-text-primary);
+    margin: 0 0 4px;
+  }
+
+  &__sign {
+    font-size: 13px;
+    color: var(--ds-text-secondary);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__arrow {
+    font-size: 14px;
+    color: var(--ds-text-tertiary);
+    flex-shrink: 0;
+  }
+
+  // ---------- Settings Group ----------
+  &__group {
+    position: relative;
+    overflow: hidden;
+    background: var(--ds-glass-bg);
+    backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+    -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+    border: 1px solid var(--ds-glass-border);
+    border-radius: var(--ds-radius-lg);
+    margin-bottom: 14px;
+    box-shadow: var(--ds-glass-shine), var(--ds-glass-shadow);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: var(--ds-glass-gradient);
+      pointer-events: none;
+      z-index: 0;
+    }
+  }
+
+  &__cell {
+    background: transparent !important;
+    align-items: center;
+
+    &:not(:last-child) {
+      :deep(.van-cell__wrapper) {
+        border-bottom: 0.5px solid var(--ds-divider);
+      }
+    }
+
+    &:active {
+      background: var(--ds-bg-tertiary) !important;
+    }
+
+    &--danger {
+      :deep(.van-cell__title) {
+        color: var(--ds-danger);
+      }
+    }
+  }
+
+  &__icon-box {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 14px;
+    flex-shrink: 0;
+
+    i {
+      font-size: 16px;
+      color: #fff;
+    }
+  }
+
+  &__hint {
+    font-size: 13px;
+    color: var(--ds-text-tertiary);
+  }
+}

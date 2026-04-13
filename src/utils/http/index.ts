@@ -1,5 +1,5 @@
 // axios配置  可自行根据项目进行更改，只需更改该文件即可，其他文件可以不动
-import { showDialog, showFailToast, showSuccessToast } from '@miracle-web/ui';
+import { showDialog, showFailToast, showSuccessToast } from 'vant';
 import { MAxios, axios, formatRequestDate, joinTimestamp } from '@miracle-web/utils';
 import { setObjToUrlParams, deepMerge, urlReg, isString, BrowserType } from '@miracle-web/utils';
 import type {

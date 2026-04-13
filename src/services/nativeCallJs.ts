@@ -1,23 +1,8 @@
-import emitter from '@/utils/emit';
-import { judgeSystem } from '@miracle-web/utils';
-
-const { isAndroid, isiOS } = judgeSystem();
-
 /**
- * @description: 封装原生App调用js的方法
+ * @description 封装原生 App 调用 JS 的方法
+ * 按需添加具体的回调方法，示例：
+ * static onScanResult(data: string) {
+ *   emitter.emit('scan-result', isAndroid ? JSON.parse(data) : data);
+ * }
  */
-export default class NativeCallJs {
-    /**
-     * @description: xxx
-     * @param {object} data “{num}”
-     * @return {*}
-     */
-    static xxx(data: string) {
-        if (isAndroid) {
-            emitter.emit('xxx', JSON.parse(data));
-        }
-        if (isiOS) {
-            emitter.emit('xxx', data);
-        }
-    }
-}
+export default class NativeCallJs {}

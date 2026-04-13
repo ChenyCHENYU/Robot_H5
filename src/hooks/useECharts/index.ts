@@ -1,9 +1,6 @@
 import type { EChartsOption } from 'echarts';
-import type { Ref } from 'vue';
 
 import type { Fn } from '@vueuse/core';
-import { tryOnUnmounted, useDebounceFn, useTimeoutFn, useEventListener } from '@vueuse/core';
-import { computed, nextTick, ref, unref, watch } from 'vue';
 import { useThemeStore } from '@/store/modules/theme';
 import echarts from './echarts';
 

@@ -1,38 +1,26 @@
-@use 'sass:map';
+// ========== Theme System ==========
+// 主题切换通过 html.light / html.dark class 控制
+// CSS 变量在 variables.scss 的 :root 和 html.dark 中定义
 
-// 主题
-$themes: (
-    // 白亮
-    light: (
-            main-bg-color: #f8f8f8,
-            main-card-color: rgba(255, 255, 255, 0.7),
-            main-text-color: var(--mi-gray-8),
-        ),
-    // 暗黑
-    dark: (
-            main-bg-color: #121212,
-            main-card-color: rgba(30, 30, 30, 0.7),
-            main-text-color: var(--mi-text-color),
-        )
-);
-
-// 当前主题
-$curTheme: light;
-
-// 混合优化（遍历上面的主题）
+// 向下兼容旧代码的 mixin（新代码直接用 var(--ds-xxx)）
 @mixin useTheme() {
-    @each $key, $value in $themes {
-        $curTheme: $key !global; // 当前的主题
-
-        // html 添加class 属性
-        html.#{$key} & {
-            @content;
-        }
+    html.light & {
+        @content;
+    }
+    html.dark & {
+        @content;
     }
 }
 
-// 生成对应主题的变量
+// 向下兼容旧代码的 getVar
 @function getVar($key) {
-    $themeMap: map.get($themes, $curTheme);
-    @return map.get($themeMap, $key);
+    @if $key == 'main-bg-color' {
+        @return var(--ds-bg);
+    } @else if $key == 'main-card-color' {
+        @return var(--ds-surface);
+    } @else if $key == 'main-text-color' {
+        @return var(--ds-text-primary);
+    }
+
+    @return inherit;
 }

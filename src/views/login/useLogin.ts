@@ -1,4 +1,4 @@
-import type { FieldRule } from '@miracle-web/ui';
+import type { FieldRule } from 'vant';
 
 export enum LoginStateEnum {
     LOGIN,

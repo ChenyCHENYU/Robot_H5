@@ -4,11 +4,11 @@
  * https://github.com/antfu/unplugin-auto-import
  */
 import AutoImport from 'unplugin-auto-import/vite';
-import { MiracleResolver } from '@miracle-web/auto-import-resolver';
+import { VantResolver } from '@vant/auto-import-resolver';
 
 export function configAutoImportPlugin() {
     return AutoImport({
-        resolvers: [MiracleResolver()],
+        resolvers: [VantResolver()],
         include: [
             /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
             /\.vue$/,

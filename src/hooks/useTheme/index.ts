@@ -1,7 +1,6 @@
-import { computed } from 'vue';
 import { darken, lighten } from '@miracle-web/utils';
 import { useThemeStore } from '@/store/modules/theme';
-import type { ConfigProviderThemeVars } from '@miracle-web/ui';
+import type { ConfigProviderThemeVars } from 'vant';
 
 export function useTheme() {
     const themeStore = useThemeStore();

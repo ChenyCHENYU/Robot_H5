@@ -5,7 +5,7 @@ import { useRouteStoreWidthOut } from '@/store/modules/route';
 import { useUserStore } from '@/store/modules/user';
 import { PageEnum } from '@/enums/pageEnum';
 
-NProgress.configure({ parent: '#app' });
+NProgress.configure({ parent: '#app', showSpinner: false, minimum: 0.3, speed: 300 });
 
 // 路由白名单
 const whitePathList = [PageEnum.BASE_LOGIN];
@@ -18,9 +18,8 @@ export function createRouterGuards(router: Router) {
             return;
         }
         const userStore = useUserStore();
-        const token = computed(() => userStore.getToken);
 
-        if (!token.value) {
+        if (!userStore.getToken) {
             next(PageEnum.BASE_LOGIN);
             return;
         }

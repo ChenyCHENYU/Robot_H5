@@ -1,0 +1,33 @@
+<template>
+    <van-nav-bar @click-left="onBack()" placeholder fixed>
+        <template #title>
+            {{ getTitle }}
+        </template>
+
+        <template #left>
+            <i class="i-ic:sharp-arrow-back-ios" text-xl />
+        </template>
+
+        <template #right>
+            <slot name="right" />
+        </template>
+    </van-nav-bar>
+</template>
+
+<script setup lang="ts">
+    import './index.scss';
+    import JsCallNative from '@/services/jsCallNative';
+
+    const props = defineProps({
+        title: {
+            type: String,
+            default: '',
+        },
+    });
+
+    const route = useRoute();
+
+    const getTitle = computed(() => props.title || (route.meta.title as string));
+
+    const onBack = () => JsCallNative.back();
+</script>
