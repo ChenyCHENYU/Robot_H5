@@ -17,10 +17,9 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitAny": false,
-        "baseUrl": "./",
         "paths": {
-            "@/*": ["src/*"],
-            "#/*": ["types/*"]
+            "@/*": ["./src/*"],
+            "#/*": ["./types/*"]
         },
         "types": ["vite/client", "node", "vue"]
     },

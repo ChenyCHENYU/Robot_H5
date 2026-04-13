@@ -1,7 +1,6 @@
 import type { Plugin } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
-import eslintPlugin from '@nabla/vite-plugin-eslint';
 import UnoCSS from 'unocss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { configAutoImportPlugin } from './autoImport';
@@ -27,11 +26,6 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
         // UnoCSS支持
         UnoCSS(),
     ];
-
-    // 开发模式下 eslint 在编辑器中校验即可，不阻塞 HMR
-    if (isBuild) {
-        vitePlugins.push(eslintPlugin());
-    }
 
     // 自动按需引入组件
     vitePlugins.push(configAutoComponentsPlugin());

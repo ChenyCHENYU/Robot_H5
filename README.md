@@ -22,6 +22,7 @@
 - [构建与部署](#构建与部署)
 - [环境变量](#环境变量)
 - [常用命令](#常用命令)
+- [提交规范](#提交规范)
 - [架构决策与约定](#架构决策与约定)
 - [扩展与优化建议](#扩展与优化建议)
 - [License](#license)
@@ -64,8 +65,7 @@ pnpm build:prod    # 生产环境
 | 图表 | ECharts | 6.0 |
 | HTTP | Axios (MAxios 封装) | — |
 | Mock | vite-plugin-mock + MockJS | — |
-| 代码规范 | ESLint 9 + Prettier + Husky + lint-staged | — |
-| 提交规范 | Commitlint + cz-git | — |
+| 工程规范 | @robot-admin/git-standards (ESLint + Husky + Commitlint + lint-staged) | 1.0 |
 
 ---
 
@@ -504,10 +504,61 @@ server {
 | `pnpm build:prod` | 生产构建 |
 | `pnpm preview` | 构建 + 预览 |
 | `pnpm type-check` | TypeScript 类型检查 |
-| `pnpm lint:fix` | ESLint 自动修复 |
-| `pnpm format` | Prettier 格式化 |
+| `pnpm lint` | ESLint 检查并自动修复 |
+| `pnpm cz` | 交互式规范提交（Commitizen） |
 | `pnpm clean` | 清理 node_modules + dist |
 | `pnpm deps:check` | 检查依赖更新 |
+
+---
+
+## 提交规范
+
+本项目基于 [`@robot-admin/git-standards`](https://www.npmjs.com/package/@robot-admin/git-standards) 统一管理 Git 工程化标准，采用 **标准模式**（Commitizen + Commitlint + Husky + ESLint + lint-staged + EditorConfig）。
+
+### 提交方式
+
+```bash
+# 交互式规范提交（推荐）
+pnpm cz
+
+# 全局安装 commitizen 后也可使用
+git cz
+```
+
+### 提交类型
+
+| 类型 | 说明 |
+|------|------|
+| `feat` | 🎯 新功能 |
+| `fix` | 🐛 Bug 修复 |
+| `perf` | ⚡️ 性能优化 |
+| `refactor` | ♻️ 重构 |
+| `docs` | 📚 文档变更 |
+| `style` | 💄 代码样式 |
+| `build` | 🧳 构建/打包 |
+| `chore` | 🔧 其他杂项 |
+| `deps` | 📦 依赖更新 |
+| `test` | 🔎 测试相关 |
+| `revert` | 🔙 回退 |
+| `wip` | 🚧 开发中 |
+
+### Git Hooks
+
+| Hook | 触发时机 | 作用 |
+|------|----------|------|
+| `pre-commit` | `git commit` 前 | lint-staged 增量检查暂存文件 |
+| `commit-msg` | 提交信息写入后 | commitlint 校验提交格式 |
+
+### 配置文件
+
+所有配置文件由 `robot-standards init` 生成，独立完整，可直接修改：
+
+| 文件 | 用途 |
+|------|------|
+| `.cz-config.cjs` | Commitizen 提交类型/模板配置 |
+| `commitlint.config.cjs` | 提交信息校验规则 |
+| `eslint.config.ts` | ESLint Flat Config |
+| `.editorconfig` | 编辑器统一格式 |
 
 ---
 
