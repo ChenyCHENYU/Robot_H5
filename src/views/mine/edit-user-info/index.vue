@@ -115,7 +115,7 @@
 <script setup lang="ts">
     import './index.scss';
     import { showToast } from 'vant';
-    import UploaderImage from './components/UploaderImage.vue';
+    import UploaderImage from '../components/UploaderImage.vue';
     import type { FormColumns } from '../pickColumns';
     import { genderColumns, industryColumns } from '../pickColumns';
     import { useUserStore } from '@/store/modules/user';

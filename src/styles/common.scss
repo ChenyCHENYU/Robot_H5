@@ -60,7 +60,9 @@ body {
     border-color: var(--ds-divider);
 }
 
-// Desktop preview frame
+// Desktop preview frame — 模拟手机外框
+// transform: scale() 会创建新的包含块，让 body 内所有 position:fixed
+// 元素（状态栏、TabBar、NavBar）都被约束在手机框内
 @media screen and (min-width: 576px) {
     body {
         max-width: 500px;
@@ -70,6 +72,8 @@ body {
         overflow: hidden !important;
         border: 5px solid #000;
         border-radius: 30px;
+        transform: scale(0.8);
+        transform-origin: top center;
 
         @include scrollbar;
     }
