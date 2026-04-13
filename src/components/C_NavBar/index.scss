@@ -10,6 +10,6 @@ html.dark :deep(.van-nav-bar) {
 
 @media screen and (min-width: 576px) {
   :deep(.van-nav-bar--fixed) {
-    top: 29px !important;
+    top: var(--vbar-h) !important;
   }
 }

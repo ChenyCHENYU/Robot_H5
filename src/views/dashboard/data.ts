@@ -39,8 +39,8 @@ export interface StatItem {
 }
 
 export const statsItems: StatItem[] = [
-    { label: '组件', value: '20+' },
-    { label: '页面', value: '15' },
+    { label: '组件', value: '7' },
+    { label: '页面', value: '20' },
     { label: 'TypeScript', value: '100%', up: true },
 ];
 

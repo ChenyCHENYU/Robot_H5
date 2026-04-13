@@ -80,5 +80,29 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
         define: {
             __APP_INFO__: JSON.stringify(__APP_INFO__),
         },
+        // 预优化依赖，避免首次访问时 Vite 发现新依赖触发 "reloading"
+        optimizeDeps: {
+            include: [
+                'vue',
+                'vue-router',
+                'pinia',
+                '@iconify/vue',
+                'vant/es/config-provider/style/index',
+                'vant/es/tabbar/style/index',
+                'vant/es/tabbar-item/style/index',
+                'vant/es/cell/style/index',
+                'vant/es/image/style/index',
+                'vant/es/switch/style/index',
+                'vant/es/nav-bar/style/index',
+                'vant/es/action-sheet/style/index',
+                'vant/es/popup/style/index',
+                'vant/es/picker/style/index',
+                'vant/es/field/style/index',
+                'vant/es/form/style/index',
+                'vant/es/button/style/index',
+                'vant/es/toast/style/index',
+                'vant/es/uploader/style/index',
+            ],
+        },
     };
 });

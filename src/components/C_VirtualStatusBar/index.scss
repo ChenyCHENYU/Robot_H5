@@ -1,13 +1,11 @@
 .virtual-status-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  position: relative;
   z-index: 1000;
   display: none;
-  height: 30px;
+  height: var(--vbar-h);
   color: var(--ds-text-primary);
   background-color: var(--ds-surface);
+  flex-shrink: 0;
 
   // 仅桌面端预览时显示虚拟状态栏
   @media screen and (min-width: 576px) {

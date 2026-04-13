@@ -62,13 +62,16 @@ body {
 
 // Desktop preview frame — 模拟手机外框
 // transform: scale() 会创建新的包含块，让 body 内所有 position:fixed
-// 元素（状态栏、TabBar、NavBar）都被约束在手机框内
+// 元素（TabBar、NavBar）都被约束在手机框内
 @media screen and (min-width: 576px) {
+    :root {
+        --vbar-h: 30px;
+    }
+
     body {
         max-width: 500px;
         margin: 24px auto 0;
         box-sizing: content-box;
-        padding-top: 30px;
         overflow: hidden !important;
         border: 5px solid #000;
         border-radius: 30px;
@@ -79,6 +82,6 @@ body {
     }
 
     .van-nav-bar--fixed {
-        top: 30px !important;
+        top: var(--vbar-h) !important;
     }
 }

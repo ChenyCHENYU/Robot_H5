@@ -22,6 +22,9 @@ $shadow-3: 0 8px 24px rgba(0, 0, 0, 0.12);
 
 // CSS custom properties (injected on :root)
 :root {
+    // Virtual status bar height (desktop only)
+    --vbar-h: 0px;
+
     // Backgrounds
     --ds-bg: #ffffff;
     --ds-bg-secondary: #f5f5f7;

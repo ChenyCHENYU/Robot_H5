@@ -1,5 +1,5 @@
 .layout {
-    height: 100vh;
+    height: calc(100vh - var(--vbar-h));
     display: flex;
     flex-direction: column;
     background: var(--ds-bg);
