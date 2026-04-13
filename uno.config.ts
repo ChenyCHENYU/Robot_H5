@@ -10,6 +10,14 @@ import transformerDirectives from '@unocss/transformer-directives';
  * @see https://unocss-cn.pages.dev/
  */
 export default defineConfig({
+    // 用 CSS @layer 确保工具类优先级高于组件 SCSS
+    // 组件 scss 后加载会覆盖同优先级的工具类，layer 解决此问题
+    outputToCssLayers: {
+        cssLayerName: (layer) => {
+            if (layer === 'default') return 'utilities';
+            return layer;
+        },
+    },
     presets: [
         /**
          * UnoCSS 预设

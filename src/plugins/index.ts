@@ -1,4 +1,4 @@
-// 引入uno全局样式
+// 声明 CSS layer 顺序：base < components < utilities，确保工具类优先级最高
 import 'virtual:uno.css';
 // uno 样式重置
 import '@unocss/reset/tailwind-compat.css';
