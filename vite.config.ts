@@ -48,7 +48,16 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
                 scss: {
                     // @ts-expect-error
                     api: 'modern-compiler',
-                    additionalData: `@use "@/styles/index.scss" as *;`,
+                    // src/ 下的组件 SCSS 自动包裹进 @layer components
+                    // UnoCSS 工具类在 @layer utilities（后声明 = 高优先级）
+                    // 这样工具类能覆盖组件 SCSS，彻底修复级联冲突
+                    additionalData: (content: string, id: string) => {
+                        const use = `@use "@/styles/index.scss" as *;\n`;
+                        if (id.includes('/src/') && id.endsWith('.scss') && !id.includes('/src/styles/')) {
+                            return `${use}@layer components {\n${content}\n}`;
+                        }
+                        return `${use}${content}`;
+                    },
                 },
             },
             postcss: {
