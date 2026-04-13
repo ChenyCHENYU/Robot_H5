@@ -31,8 +31,8 @@
 
         <div class="login-form__options">
             <div class="flex items-center gap-2">
-                <van-switch v-model="rememberMe" size="18px" />
-                <span class="text-sm" style="color: var(--ds-text-secondary)">记住我</span>
+                <van-switch v-model="rememberMe" size="16px" />
+                <span class="text-xs" style="color: var(--ds-text-secondary); opacity: 0.8">记住我</span>
             </div>
             <a class="login-form__link" @click="setLoginState(LoginStateEnum.RESET_PASSWORD)">忘记密码?</a>
         </div>

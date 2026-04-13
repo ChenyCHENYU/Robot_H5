@@ -2,13 +2,11 @@
  * C_Logo — iOS App 图标风格圆角方块徽标
  *
  * 替换为图片时只需改 HTML:
- *   <img class="logo__img" src="your-logo.png" />
- *   （同时可保留 logo__glow 保持光晕动画）
+ * 将 logo__inner 的内容换成: <img class="logo__img" src="your-logo.png" />
  */
 .logo {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
+      /* block 确保 width/height 明确生效  */
     position: relative;
     flex-shrink: 0;
 
@@ -19,7 +17,7 @@
         border-radius: 50%;
         background: radial-gradient(
             ellipse at 50% 60%,
-            rgba(30, 100, 240, 0.26) 0%,
+            rgba(30, 100, 240, 0.28) 0%,
             rgba(88, 86, 214, 0.12) 45%,
             transparent 70%
         );
@@ -28,75 +26,62 @@
     }
 
     // ── 圆角方块主体 ──────────────────────────────────────────
+        // position: absolute + inset: 0 → 绝对填满父级，不依赖 % 继承
     &__inner {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        // iOS App 图标标准圆角率 ≈ 22.37%
-        border-radius: 22.5%;
+        position: absolute;
+          inset: 0;
+          border-radius: 22.5%;
+          /* iOS App 图标标准圆角率 */
         overflow: hidden;
 
-        // 三段立体渐变：
-        //   左上角亮蓝（光源） → 中段深蓝 → 右下角靛紫（阴影面）
-        background:
-            linear-gradient(
-                148deg,
-                #5badff 0%,
-                #1a74f0 28%,
-                #0a4fd6 58%,
-                #3b2fc9 80%,
-                #5040d8 100%
-            );
+        /* 三段立体渐变：左上亮蓝(光源) → 中蓝 → 右下靛紫(阴影面) */
+          background: linear-gradient(148deg,
+              #5badff 0%,
+              #1a74f0 28%,
+              #0a4fd6 58%,
+              #3b2fc9 80%,
+              #5040d8 100%);
 
-        // 四层阴影构建真实立体感
+        /* 四层阴影：内描边 + 轮廓 + 彩色光晕 + 近景投影 */
         box-shadow:
-            // ① 内描边白边（光源面高光）
-            inset 0 0 0 0.5px rgba(255, 255, 255, 0.18),
-            // ② 轮廓压暗（图标底部边缘）
+            inset 0 0 0 0.5px rgba(255, 255, 255, 0.20),
             0 0 0 0.5px rgba(0, 0, 0, 0.10),
-            // ③ 彩色漫反射（蓝紫光晕）
             0 8px 32px rgba(20, 80, 220, 0.45),
-            // ④ 近景投影（贴近背景的短阴影）
             0 2px 8px rgba(0, 0, 0, 0.18);
 
         display: flex;
         align-items: center;
         justify-content: center;
-        animation: logoFloat 7s ease-in-out infinite;
     }
 
-    // ── 顶部半椭圆玻璃高光 ───────────────────────────────────
-    //    模拟光线从左上方 45° 照射，在表面形成的镜面反射
+        // ── 顶部玻璃高光 ─────────────────────────────────────────
     &__shine {
         position: absolute;
-        // 覆盖上半部分
-        top: -2%;
-        left: -5%;
-        right: -5%;
-        height: 58%;
-        // 椭圆渐变：中心最亮，向边缘和底部衰减
+        top: 0;
+          left: -5%;
+          right: -5%;
+          height: 52%;
         background: radial-gradient(
             ellipse at 40% 0%,
-            rgba(255, 255, 255, 0.38) 0%,
-            rgba(255, 255, 255, 0.16) 40%,
-            transparent 75%
+            rgba(255, 255, 255, 0.40) 0%,
+              rgba(255, 255, 255, 0.14) 45%,
+              transparent 72%
         );
-        border-radius: 50% 50% 40% 40% / 55% 55% 30% 30%;
+        border-radius: 50% 50% 40% 40% / 55% 55% 28% 28%;
         pointer-events: none;
     }
 
-    // ── 左上角镜面光斑 ────────────────────────────────────────
-    //    真实 App 图标在强光下的椭圆高光点
+        // ── 左上角镜面光斑 ───────────────────────────────────────
     &__gloss {
         position: absolute;
         top: 5%;
-        left: 6%;
-        width: 42%;
-        height: 32%;
+          left: 7%;
+          width: 40%;
+          height: 30%;
         background: radial-gradient(
             ellipse at 30% 30%,
-            rgba(255, 255, 255, 0.30) 0%,
-            rgba(255, 255, 255, 0.08) 55%,
+            rgba(255, 255, 255, 0.28) 0%,
+              rgba(255, 255, 255, 0.06) 55%,
             transparent 80%
         );
         border-radius: 50%;
@@ -107,34 +92,33 @@
     &__letter {
         position: relative;
         z-index: 2;
-        // SF Pro Display 是 iOS 系统字体，回退到系统 sans-serif
         font-family: 'SF Pro Display', -apple-system, 'Helvetica Neue', Arial, sans-serif;
         font-size: calc(var(--logo-size, 72px) * 0.46);
         font-weight: 800;
         line-height: 1;
         letter-spacing: -0.03em;
         color: rgba(255, 255, 255, 0.97);
-        // 文字立体感：顶部微亮高光 + 底部微压暗
         text-shadow:
             0 1px 0 rgba(255, 255, 255, 0.35),
             0 -1px 2px rgba(0, 0, 0, 0.22),
             0 2px 8px rgba(0, 0, 0, 0.20);
-        // 轻微上移，视觉居中（字体底部留白补偿）
         transform: translateY(-2%);
         user-select: none;
     }
 
-    // ── 图片替换占位 ─────────────────────────────────────────
+        // ── 图片模式 ─────────────────────────────────────────────
     &__img {
-        width: 100%;
-        height: 100%;
+        position: absolute;
+          inset: 0;
         border-radius: 22.5%;
         object-fit: cover;
         display: block;
+        width: 100%;
+          height: 100%;
     }
 }
 
-// ── 暗色模式：加深基色，保持对比 ─────────────────────────────
+// ── 暗色模式 ─────────────────────────────────────────────────
 html.dark .logo__inner {
     background: linear-gradient(
         148deg,
@@ -144,21 +128,13 @@ html.dark .logo__inner {
         #4540dd 80%,
         #6055e8 100%
     );
-    box-shadow:
-        inset 0 0 0 0.5px rgba(255, 255, 255, 0.22),
-        0 0 0 0.5px rgba(0, 0, 0, 0.20),
-        0 8px 32px rgba(30, 100, 240, 0.50),
-        0 2px 8px rgba(0, 0, 0, 0.28);
 }
 
-// ── 动画 ──────────────────────────────────────────────────────
-@keyframes logoFloat {
-    0%, 100% { transform: translateY(0px);   }
-    35%       { transform: translateY(-5px);  }
-    70%       { transform: translateY(-2px);  }
-}
-
+// ── 动画 ─────────────────────────────────────────────────────
 @keyframes logoGlowPulse {
     0%, 100% { opacity: 1;    transform: scale(1);    }
-    50%       { opacity: 0.5; transform: scale(1.10); }
+        50% {
+          opacity: 0.5;
+          transform: scale(1.08);
+        }
 }
