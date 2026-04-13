@@ -16,10 +16,10 @@
 
 <script setup lang="ts">
     import './index.scss';
-    import LoginTitle from './components/LoginTitle.vue';
-    import LoginForm from './components/LoginForm.vue';
-    import ForgetPasswordForm from './components/ForgetPasswordForm.vue';
-    import RegisterForm from './components/RegisterForm.vue';
+    import LoginTitle from './components/LoginTitle/index.vue';
+    import LoginForm from './components/LoginForm/index.vue';
+    import ForgetPasswordForm from './components/ForgetPasswordForm/index.vue';
+    import RegisterForm from './components/RegisterForm/index.vue';
 
     defineOptions({ name: 'LoginPage' });
 </script>

@@ -13,9 +13,11 @@ export default defineConfig({
     // 将工具类输出到 @layer utilities；preflights 不包层（用于输出 @layer 顺序声明）
     // vite.config.ts 中组件 SCSS 被包裹进 @layer components
     // @layer components, utilities → utilities 排后 = 优先级更高 → 工具类覆盖组件SCSS ✅
+    // important: '#app' 额外提升选择器优先级，双重保障
     outputToCssLayers: {
         cssLayerName: (layer) => layer === 'preflights' ? undefined : 'utilities',
     },
+    important: '#app',
     presets: [
     /**
      * UnoCSS 预设
