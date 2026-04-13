@@ -1,6 +1,6 @@
-# CHENY H5 Template
+# Robot H5
 
-> **Vue 3 + Vite 7 + TypeScript** — 移动端 H5 开发模板  
+> **Vue 3 + Vite 7 + TypeScript** — 移动端 H5 应用框架  
 > 设计语言：Apple HIG Liquid Glass · 暗黑模式 · 响应式 viewport 适配
 
 ---
@@ -484,7 +484,7 @@ server {
 
 | 变量 | 说明 | 示例 |
 |------|------|------|
-| `VITE_GLOB_APP_TITLE` | 应用名称 | `CHENY` |
+| `VITE_GLOB_APP_TITLE` | 应用名称 | `Robot H5` |
 | `VITE_PORT` | 开发端口 | `8888` |
 | `VITE_PUBLIC_PATH` | 公共路径 | `/` |
 | `VITE_PROXY` | 代理配置 | `[["/api","http://host"]]` |
@@ -616,4 +616,4 @@ git cz
 
 **PROPRIETARY** — 本项目为内部私有项目，未经授权不得复制、分发或使用。
 
-© CHENY. All rights reserved.
+© Robot H5. All rights reserved.
