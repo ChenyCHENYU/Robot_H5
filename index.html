@@ -20,6 +20,8 @@
         <meta http-equiv="Cache" content="no-cache" />
         <meta name="full-screen" content="yes" />
         <title> <%= title %> </title>
+        <!-- CSS @layer 优先级声明：base(reset) < components(SCSS) < utilities(UnoCSS) -->
+        <style>@layer base, components, utilities;</style>
     </head>
 
     <body>

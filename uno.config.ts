@@ -14,10 +14,13 @@ export default defineConfig({
     // vite.config.ts 中组件 SCSS 被包裹进 @layer components
     // @layer components, utilities → utilities 排后 = 优先级更高 → 工具类覆盖组件SCSS ✅
     // important: '#app' 额外提升选择器优先级，双重保障
+    // preflights(reset) → @layer base（最低）
+    // 组件SCSS → @layer components（中）（vite.config.ts additionalData 包裹）
+    // 工具类 → @layer utilities（最高）
+    // 层顺序声明在 index.html <style>@layer base, components, utilities;</style>
     outputToCssLayers: {
-        cssLayerName: (layer) => layer === 'preflights' ? undefined : 'utilities',
+        cssLayerName: (layer) => (layer === 'preflights' ? 'base' : 'utilities'),
     },
-    important: '#app',
     presets: [
     /**
      * UnoCSS 预设
@@ -72,14 +75,9 @@ export default defineConfig({
     transformerDirectives(),
   ],
 
-  // 注入 CSS @layer 顺序声明（preflights 不包层，最先输出）
-  // components 在前 = 低优先级；utilities 在后 = 高优先级
-  // 这样 @layer utilities 中的工具类能覆盖 @layer components 中的组件 SCSS
-  preflights: [
-    {
-        getCSS: () => '@layer components, utilities;',
-    },
-  ],
+  // 层顺序声明已移至 index.html，不再需要自定义 preflight
+  // presetWind3 自带 preflight（normalize/reset），会进入 @layer base
+  preflights: [],
 
   // 一些实用的自定义组合
   shortcuts: {

@@ -1,7 +1,5 @@
-// 引入uno全局样式
+// 引入uno全局样式（含 preflight reset，在 @layer base 中）
 import "virtual:uno.css";
-// uno 样式重置
-import "@unocss/reset/tailwind-compat.css";
 // 引入 svg-icons
 import "virtual:svg-icons-register";
 // 引入nprogress样式

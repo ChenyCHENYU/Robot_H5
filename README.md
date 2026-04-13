@@ -91,6 +91,8 @@ pnpm build:prod    # 生产环境
 │   │   ├── icons/                   #   异常页图标
 │   │   └── svgs/                    #   SVG 图标库
 │   ├── components/                  # 全局组件（C_ 前缀）
+│   │   ├── C_Icon/                  #   原子图标
+│   │   ├── C_Logo/                  #   品牌 Logo
 │   │   ├── C_NavBar/                #   导航栏
 │   │   ├── C_PullRefreshList/       #   下拉刷新列表
 │   │   ├── C_SvgIcon/               #   SVG 图标
@@ -128,7 +130,15 @@ pnpm build:prod    # 生产环境
 │       ├── demo/                    #   功能演示
 │       ├── chart/                   #   图表
 │       ├── mine/                    #   个人中心
-│       ├── login/                   #   登录
+│       ├── login/                   #   登录（含组件子文件夹）
+│       │   ├── index.vue            #     页面入口
+│       │   ├── index.scss           #     页面级样式
+│       │   ├── useLogin.ts          #     登录状态管理
+│       │   └── components/          #     子组件（3 文件结构）
+│       │       ├── LoginTitle/      #       标题 + Logo
+│       │       ├── LoginForm/       #       登录表单
+│       │       ├── RegisterForm/    #       注册表单
+│       │       └── ForgetPasswordForm/ #   忘记密码表单
 │       └── exception/               #   404
 │
 ├── types/                           # 全局类型声明
@@ -567,14 +577,38 @@ git cz
 | 约定 | 说明 |
 |------|------|
 | **样式提取** | `.vue` 不写 `<style>`，样式放 `index.scss` 用 `import` 引入 |
+| **CSS @layer 层级** | `@layer base`（reset）< `components`（组件SCSS）< `utilities`（UnoCSS），详见下方 |
 | **BEM 作用域** | 每个页面用唯一根类名隔离（如 `.mine-page`），不使用 `scoped` |
-| **组件命名** | 全局组件 `C_` 前缀；页面子组件放 `components/` |
+| **组件命名** | 全局组件 `C_` 前缀；页面子组件放 `components/`（文件夹 3 文件结构） |
 | **路由命名** | `name` 必须与组件 `defineOptions({ name })` 一致 |
 | **自动导入** | Vue/Router/VueUse API 自动导入，无需手动 `import { ref }` |
 | **Vant 按需** | 通过 `@vant/auto-import-resolver` 自动按需引入 |
 | **图标方案** | 优先 UnoCSS preset-icons，自定义 SVG 放 `assets/svgs/` |
 | **Token 鉴权** | 自动注入 Authorization 头，过期自动跳转登录 |
 | **数据持久化** | Pinia store 带 `persist` 配置，生产环境 AES 加密 |
+
+### CSS @layer 优先级体系
+
+项目采用 **CSS Cascade Layers** 解决 UnoCSS 工具类与组件 SCSS 的优先级冲突：
+
+```
+@layer base        ← UnoCSS preflight（reset/normalize），最低优先级
+@layer components   ← 组件 SCSS（vite.config.ts additionalData 自动包裹）
+@layer utilities    ← UnoCSS 工具类（如 mb-4、flex、text-lg），最高优先级
+```
+
+**关键配置文件：**
+
+| 文件 | 作用 |
+|------|------|
+| `index.html` | `<style>@layer base, components, utilities;</style>` 声明层顺序 |
+| `uno.config.ts` | `outputToCssLayers` 将 preflight → `base`，工具类 → `utilities` |
+| `vite.config.ts` | `additionalData` 将 `src/` 下组件 SCSS 包裹进 `@layer components` |
+
+**效果：**
+- 工具类 `mb-4` 始终能覆盖组件 SCSS 中的 `margin-bottom`
+- 组件 SCSS 始终能覆盖 preflight 的 `h1 { font-size: inherit }`
+- 无需 `!important` 即可实现可预测的样式优先级
 
 ---
 
