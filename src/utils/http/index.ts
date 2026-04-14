@@ -265,8 +265,22 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
 
 export const http = createAxios();
 
+// ======================== 类型 & 工具 ========================
+
+/** 通用 API 响应体（统一放这里，API 文件无需重复定义） */
+export interface ApiRes<T = any> {
+    code: number;
+    message: string;
+    data: T;
+}
+
+/** 快捷构造"成功 Toast"选项 */
+export const toast = (msg: string): Partial<RequestOptions> => ({
+    isShowSuccessMessage: true,
+    successMessageText: msg,
+});
+
 // ======================== 快捷方法 ========================
-// 消除 method / url / params vs data 的模板代码
 
 /** GET 请求 */
 export function get<T = any>(url: string, params?: object, options?: Partial<RequestOptions>) {
