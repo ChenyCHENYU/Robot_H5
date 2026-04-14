@@ -33,8 +33,10 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
     // 自动按需引入依赖
     vitePlugins.push(configAutoImportPlugin());
 
-    // mock数据
-    vitePlugins.push(configMockPlugin(VITE_USE_MOCK, isBuild));
+    // mock数据（仅 VITE_USE_MOCK=true 时加载，生产构建完全跳过）
+    if (VITE_USE_MOCK) {
+        vitePlugins.push(configMockPlugin(isBuild));
+    }
 
     // svgIcon
     vitePlugins.push(configSvgIconsPlugin(isBuild));
