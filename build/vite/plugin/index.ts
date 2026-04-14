@@ -48,9 +48,9 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
             registerType: 'autoUpdate',
             includeAssets: ['favicon.ico'],
             manifest: {
-                name: '金恒 H5',
-                short_name: '金恒',
-                description: '金恒敏捷团队 H5 应用模版',
+                name: 'Robot H5',
+                short_name: 'Robot',
+                description: 'Robot H5 移动端应用框架',
                 theme_color: '#0071E3',
                 background_color: '#F5F5F7',
                 display: 'standalone',

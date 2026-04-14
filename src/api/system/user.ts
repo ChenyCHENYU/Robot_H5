@@ -37,7 +37,7 @@ export function getUserInfo() {
  */
 export function doLogout() {
     return http.request({
-        url: '/logouti',
+        url: '/logout',
         method: 'POST',
     });
 }

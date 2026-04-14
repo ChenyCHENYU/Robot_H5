@@ -1,7 +1,8 @@
 # Robot H5
 
-> **Vue 3 + Vite 7 + TypeScript** — 移动端 H5 应用框架  
-> 设计语言：Apple HIG Liquid Glass · 暗黑模式 · 响应式 viewport 适配
+> **Vue 3 + Vite 7 + TypeScript** 移动端 H5 应用框架
+>
+> 设计语言：Apple HIG Liquid Glass · 暗黑模式 · CSS Cascade Layers · 响应式 viewport 适配
 
 ---
 
@@ -12,20 +13,12 @@
 - [目录结构](#目录结构)
 - [设计系统](#设计系统)
 - [开发指南](#开发指南)
-  - [新增页面](#新增页面)
-  - [新增路由](#新增路由)
-  - [调用 API](#调用-api)
-  - [新增 Mock 数据](#新增-mock-数据)
-  - [使用图标](#使用图标)
-  - [使用组件](#使用组件)
-  - [状态管理](#状态管理)
 - [构建与部署](#构建与部署)
 - [环境变量](#环境变量)
 - [常用命令](#常用命令)
 - [提交规范](#提交规范)
-- [架构决策与约定](#架构决策与约定)
-- [扩展与优化建议](#扩展与优化建议)
-- [License](#license)
+- [架构约定](#架构约定)
+- [已知坑点](#已知坑点)
 
 ---
 
@@ -39,12 +32,11 @@ pnpm >= 8.15.6
 # 安装依赖
 pnpm install
 
-# 启动开发服务
+# 启动开发服务（含 Mock）
 pnpm dev
 
-# 构建产物
-pnpm build:test    # 测试环境
-pnpm build:prod    # 生产环境
+# 生产构建
+pnpm build:prod
 ```
 
 **默认账号**：`admin` / `123456`
@@ -55,96 +47,55 @@ pnpm build:prod    # 生产环境
 
 | 分类 | 技术 | 版本 |
 |------|------|------|
-| 框架 | Vue 3 (Composition API) | 3.5 |
+| 框架 | Vue 3 Composition API | 3.5 |
 | 构建 | Vite | 7.1 |
 | 类型 | TypeScript | 5.9 |
-| UI 库 | Vant 4 (自动导入) | 4.9 |
+| UI 库 | Vant 4（自动导入） | 4.9 |
 | 状态管理 | Pinia + 持久化 | 3.0 |
 | 路由 | Vue Router | 4.5 |
 | 原子 CSS | UnoCSS + preset-icons | 66.5 |
 | 图表 | ECharts | 6.0 |
-| HTTP | Axios (MAxios 封装) | — |
+| HTTP | Axios（MAxios 封装） | — |
 | Mock | vite-plugin-mock + MockJS | — |
-| 工程规范 | @robot-admin/git-standards (ESLint + Husky + Commitlint + lint-staged) | 1.0 |
+| PWA | vite-plugin-pwa | 1.2 |
+| 工程规范 | @robot-admin/git-standards | 1.0 |
 
 ---
 
 ## 目录结构
 
 ```
-├── build/                           # 构建配置
-│   ├── utils.ts                     #   工具函数
+├── build/                      # 构建配置
 │   └── vite/
-│       ├── build.ts                 #   构建选项（chunk 拆分）
-│       ├── proxy.ts                 #   开发代理
-│       └── plugin/                  #   Vite 插件集
+│       ├── build.ts            #   Rollup 输出配置
+│       ├── proxy.ts            #   开发代理
+│       └── plugin/             #   Vite 插件集（按需启用）
 │
-├── mock/                            # Mock 数据
-│   ├── _util.ts                     #   响应工具
-│   └── user/user.ts                 #   用户接口 Mock
+├── mock/                       # Mock 数据（模块 = 目录）
 │
 ├── src/
-│   ├── main.ts                      # 应用入口
-│   ├── App.vue                      # 根组件
-│   ├── api/                         # 接口层（按模块分目录）
-│   ├── assets/                      # 静态资源
-│   │   ├── icons/                   #   异常页图标
-│   │   └── svgs/                    #   SVG 图标库
-│   ├── components/                  # 全局组件（C_ 前缀）
-│   │   ├── C_Icon/                  #   原子图标
-│   │   ├── C_Logo/                  #   品牌 Logo
-│   │   ├── C_NavBar/                #   导航栏
-│   │   ├── C_PullRefreshList/       #   下拉刷新列表
-│   │   ├── C_SvgIcon/               #   SVG 图标
-│   │   ├── C_VirtualStatusBar/      #   虚拟状态栏
-│   │   └── C_WebSite/               #   WebView 容器
-│   ├── enums/                       # 枚举常量
-│   ├── hooks/                       # 组合式函数
-│   │   ├── useTheme/                #   主题切换
-│   │   ├── useEnv/                  #   环境变量
-│   │   ├── useECharts/              #   ECharts 管理
-│   │   └── useScrollCache/          #   滚动缓存
-│   ├── layout/                      # 布局容器（TabBar）
-│   ├── plugins/                     # 插件注册
-│   ├── router/                      # 路由
-│   │   ├── base.ts                  #   基础路由（Login/Root/404）
-│   │   ├── menu.ts                  #   TabBar 菜单路由
-│   │   ├── modules.ts               #   子页面路由
-│   │   └── router-guards.ts         #   路由守卫
-│   ├── services/                    # 原生桥接
-│   ├── store/                       # Pinia 状态管理
-│   │   └── modules/
-│   │       ├── user.ts              #   用户/Token
-│   │       ├── theme.ts             #   主题配置
-│   │       ├── route.ts             #   菜单/KeepAlive
-│   │       └── app.ts               #   应用设置
-│   ├── styles/                      # 全局样式
-│   │   ├── variables.scss           #   CSS Token 定义
-│   │   ├── common.scss              #   基础样式
-│   │   └── transition/              #   转场动画集
-│   ├── utils/                       # 工具函数
-│   │   ├── http/                    #   Axios 封装
-│   │   └── directives/              #   自定义指令
-│   └── views/                       # 页面视图
-│       ├── dashboard/               #   首页
-│       ├── demo/                    #   功能演示
-│       ├── chart/                   #   图表
-│       ├── mine/                    #   个人中心
-│       ├── login/                   #   登录（含组件子文件夹）
-│       │   ├── index.vue            #     页面入口
-│       │   ├── index.scss           #     页面级样式
-│       │   ├── useLogin.ts          #     登录状态管理
-│       │   └── components/          #     子组件（3 文件结构）
-│       │       ├── LoginTitle/      #       标题 + Logo
-│       │       ├── LoginForm/       #       登录表单
-│       │       ├── RegisterForm/    #       注册表单
-│       │       └── ForgetPasswordForm/ #   忘记密码表单
-│       └── exception/               #   404
+│   ├── api/                    # 接口层（按模块分目录）
+│   ├── components/             # 全局组件（C_ 前缀，自动注册）
+│   ├── hooks/                  # 组合式函数
+│   ├── layout/                 # 布局容器（TabBar）
+│   ├── plugins/                # 插件注册入口
+│   ├── router/                 # 路由（守卫 + 菜单 + 子页面）
+│   ├── services/               # 原生桥接（JSBridge）
+│   ├── store/                  # Pinia 状态管理
+│   ├── styles/                 # 全局样式（Token + 动画）
+│   ├── utils/                  # 工具函数（http / directives / const）
+│   └── views/                  # 页面视图
+│       ├── dashboard/          #   首页
+│       ├── chart/              #   图表
+│       ├── demo/               #   功能演示
+│       ├── mine/               #   个人中心
+│       ├── login/              #   登录/注册/找回密码
+│       └── exception/          #   404
 │
-├── types/                           # 全局类型声明
-├── vite.config.ts                   # Vite 配置
-├── uno.config.ts                    # UnoCSS 配置
-└── tsconfig.json                    # TypeScript 配置
+├── types/                      # 全局类型声明
+├── index.html                  # HTML 模板（@layer 声明在此）
+├── vite.config.ts              # Vite 配置
+└── uno.config.ts               # UnoCSS 配置
 ```
 
 ---
@@ -153,22 +104,32 @@ pnpm build:prod    # 生产环境
 
 基于 **Apple HIG Liquid Glass** 设计规范，详见 [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)。
 
-### 核心 Token
+### 核心 CSS Token
 
-| Token | 用途 | 亮色值 |
-|-------|------|--------|
-| `--ds-bg` | 页面背景 | `#FFFFFF` |
-| `--ds-bg-secondary` | 卡片背景 | `#F5F5F7` |
-| `--ds-accent` | 主题强调色 | `#0071E3` |
-| `--ds-text-primary` | 主文本 | `#1D1D1F` |
-| `--ds-glass-bg` | 毛玻璃背景 | `rgba(255,255,255,0.52)` |
-| `--ds-glass-blur` | 背景模糊 | `40px` |
-| `--ds-radius-lg` | 大圆角 | `16px` |
+```css
+/* 背景 */
+--ds-bg / --ds-bg-secondary / --ds-surface
+/* 文字 */
+--ds-text-primary / --ds-text-secondary / --ds-text-tertiary
+/* 强调色（跟随主题色变化） */
+--ds-accent / --ds-accent-hover / --ds-accent-light
+/* 语义色 */
+--ds-success / --ds-warning / --ds-danger
+/* 毛玻璃 */
+--ds-glass-bg / --ds-glass-blur / --ds-glass-border / --ds-glass-shine
+/* 圆角 */
+--ds-radius-sm(8px) / --ds-radius-md(12px) / --ds-radius-lg(16px) / --ds-radius-xl(20px)
+```
 
-### BEM 命名
+### BEM 命名约定
 
 ```scss
-.page-name { &__section { ... } &__cell { &--active { ... } } }
+.page-name {
+    &__section { ... }
+    &__cell {
+        &--active { ... }
+    }
+}
 ```
 
 ---
@@ -177,161 +138,100 @@ pnpm build:prod    # 生产环境
 
 ### 新增页面
 
-**1. 创建目录（标准三文件结构）：**
+**1. 创建三文件结构：**
 
 ```
 src/views/my-page/
-├── index.vue        # 模板 + 逻辑
-├── index.scss       # 样式
-└── data.ts          # 静态数据（可选）
+├── index.vue     # 模板 + 逻辑
+├── index.scss    # 样式（不写 <style>，用 import 引入）
+└── data.ts       # 静态数据（可选，用于 v-for 驱动列表）
 ```
 
-**2. 编写 `index.vue`：**
+**2. `index.vue` 模板：**
 
 ```vue
 <template>
     <div class="my-page">
         <CNavBar />
         <div class="my-page__content">
-            <!-- 页面内容 -->
+            <!-- 内容 -->
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
     import './index.scss';
-    defineOptions({ name: 'MyPage' });
+    defineOptions({ name: 'MyPage' });  // name 必须与路由 name 一致
 </script>
 ```
 
-> **重要**：`defineOptions({ name: 'MyPage' })` 中的 `name` 必须与路由的 `name` 一致，否则 `KeepAlive` 缓存失效。
-
-**3. 编写 `index.scss`：**
+**3. `index.scss` 模板：**
 
 ```scss
 .my-page {
-    min-height: 100%;
-    padding: 0 20px 32px;
+    min-height: 100%;           // ⚠️ 必须 min-height，不能 height:100%（内容会截断）
     background: var(--ds-bg);
 
     &__content {
-        // 毛玻璃卡片
         background: var(--ds-glass-bg);
-        backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
-        border: 1px solid var(--ds-glass-border);
+        backdrop-filter: blur(var(--ds-glass-blur));
         border-radius: var(--ds-radius-lg);
-        box-shadow: var(--ds-glass-shine), var(--ds-glass-shadow);
     }
 }
 ```
 
----
-
 ### 新增路由
 
-**子页面路由**（点击跳转的页面）→ 添加到 `src/router/modules.ts`：
+**子页面**（点击跳转）→ `src/router/modules.ts`：
 
 ```ts
 {
     path: '/myPage',
-    name: 'MyPage',                           // 必须与组件 defineOptions.name 一致
-    meta: {
-        title: '页面标题',                      // 自动设置 document.title
-        keepAlive: false,                      // 是否缓存（默认 false）
-    },
+    name: 'MyPage',                    // ⚠️ 与 defineOptions.name 一致
+    meta: { title: '页面标题', keepAlive: false },
     component: () => import('@/views/my-page/index.vue'),
 },
 ```
 
-**TabBar 主页路由**（底部导航页面）→ 修改 `src/router/menu.ts`：
+**TabBar 主导航页**→`src/router/menu.ts`：
 
 ```ts
-// menu.ts children 数组中添加
 {
     path: '/myTab',
     name: 'MyTab',
-    meta: {
-        title: '标签名',
-        icon: 'i-ph:icon-name-bold',          // UnoCSS 图标类名
-        keepAlive: true,
-    },
+    meta: { title: '标签名', icon: 'i-ph:icon-bold', keepAlive: true },
     component: () => import('@/views/my-tab/index.vue'),
 },
 ```
 
-> **提示**：新增 TabBar 图标后需要在 `uno.config.ts` 的 `safelist` 中添加对应图标类名。
-
----
+> `keepAlive: true` 的页面才会被 `<keep-alive>` 缓存，组件 `name` 必须与路由 `name` 一致。
 
 ### 调用 API
-
-**1. 定义接口（`src/api/` 按模块分目录）：**
 
 ```ts
 // src/api/system/order.ts
 import { http } from '@/utils/http';
 
-// GET 请求
 export const getOrderList = (params?: object) =>
     http.request({ url: '/order/list', method: 'GET', params });
 
-// POST 请求
 export const createOrder = (data: object) =>
-    http.request({
-        url: '/order/create',
-        method: 'POST',
-        data,
-    }, {
-        isShowSuccessMessage: true,           // 成功弹 Toast
-        successMessageText: '创建成功',
-    });
-
-// 不携带 Token 的请求
-export const publicApi = (params?: object) =>
-    http.request({ url: '/public/data', method: 'GET', params }, { withToken: false });
+    http.request({ url: '/order/create', method: 'POST', data },
+        { isShowSuccessMessage: true, successMessageText: '创建成功' });
 ```
 
-**2. 在组件中使用：**
+**HTTP 请求选项（RequestOptions）：**
 
-```vue
-<script setup lang="ts">
-    import { getOrderList, createOrder } from '@/api/system/order';
+| 选项 | 默认 | 说明 |
+|------|------|------|
+| `withToken` | `true` | 是否携带 Token |
+| `isShowSuccessMessage` | `false` | 成功时弹 Toast |
+| `isShowErrorMessage` | `false` | 失败时弹 Toast |
+| `successMessageText` | — | 自定义成功消息 |
+| `isReturnNativeResponse` | `false` | 返回原始 AxiosResponse |
+| `joinTime` | `true` | GET 加时间戳防缓存 |
 
-    // 获取数据
-    const list = ref([]);
-    const fetchList = async () => {
-        const { data } = await getOrderList({ page: 1 });
-        list.value = data.list;
-    };
-
-    // 提交数据
-    const handleCreate = async () => {
-        await createOrder({ name: 'test' });
-        fetchList(); // 刷新列表
-    };
-
-    onMounted(fetchList);
-</script>
-```
-
-**3. HTTP 请求选项 (`RequestOptions`)：**
-
-| 选项 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `withToken` | `boolean` | `true` | 是否携带 Token |
-| `isShowMessage` | `boolean` | `true` | 是否自动显示消息 |
-| `isShowSuccessMessage` | `boolean` | `false` | 成功时弹 Toast |
-| `isShowErrorMessage` | `boolean` | `false` | 失败时弹 Toast |
-| `successMessageText` | `string` | - | 自定义成功消息 |
-| `isReturnNativeResponse` | `boolean` | `false` | 返回原始响应 |
-| `isTransformResponse` | `boolean` | `true` | 返回预处理数据 |
-| `joinTime` | `boolean` | `true` | GET 请求加时间戳防缓存 |
-
----
-
-### 新增 Mock 数据
-
-在 `mock/` 目录下按模块创建文件：
+### Mock 数据
 
 ```ts
 // mock/order/order.ts
@@ -341,122 +241,68 @@ import { resultSuccess, resultError } from '../_util';
 export default [
     {
         url: '/api/order/list',
-        timeout: 500,
         method: 'get',
-        response: ({ query }) => {
-            return resultSuccess({
-                list: [
-                    { id: 1, name: '订单A', status: 'paid' },
-                    { id: 2, name: '订单B', status: 'pending' },
-                ],
-                total: 2,
-            });
-        },
-    },
-    {
-        url: '/api/order/create',
-        timeout: 300,
-        method: 'post',
-        response: ({ body }) => {
-            if (!body.name) return resultError('订单名称不能为空');
-            return resultSuccess({ id: Date.now() });
-        },
+        response: () => resultSuccess({ list: [], total: 0 }),
     },
 ] as MockMethod[];
 ```
 
-> Mock 文件以 `_` 开头的会被忽略（如 `_util.ts`）。
-
----
+> 文件名以 `_` 开头则被忽略（用于工具文件，如 `_util.ts`）。
 
 ### 使用图标
 
-**UnoCSS 图标（推荐）：**
-
 ```html
-<!-- 直接在模板中使用 -->
+<!-- UnoCSS 图标（推荐） -->
 <i class="i-ph:heart-bold" />
-<i class="i-mdi:home" />
-
-<!-- 动态绑定 -->
-<i :class="iconClass" />
+<i :class="dynamicIcon" />
 ```
 
-图标浏览：[icones.js.org](https://icones.js.org/)
+已安装图标集：`ph`、`ic`、`mdi`、`carbon`、`tabler`、`bxs`、`mingcute`、`mage`、`iconamoon`
 
-已安装的图标集：`ph`、`ic`、`mdi`、`carbon`、`tabler`、`bxs`、`mingcute`、`mage`、`iconamoon`
-
-> **注意**：在 `.ts` 数据文件中使用的图标类名需要添加到 `uno.config.ts` 的 `safelist` 中。
-
-**SVG 图标（自定义图标）：**
+> 在 `.ts` 数据文件中用到的图标类名需加入 `uno.config.ts` 的 `safelist`。
 
 ```html
-<!-- 将 SVG 文件放入 src/assets/svgs/ -->
-<SvgIcon name="logo" :size="32" color="#333" />
-```
-
----
-
-### 使用组件
-
-全局组件通过 `unplugin-vue-components` 自动注册，无需手动 import：
-
-```html
-<!-- 导航栏 -->
-<CNavBar title="自定义标题" />
-
-<!-- 下拉刷新列表 -->
-<CPullRefreshList :request="fetchList" :finished="noMore">
-    <div v-for="item in list" :key="item.id">{{ item.name }}</div>
-</CPullRefreshList>
-
-<!-- SVG 图标 -->
+<!-- SVG 图标（自定义图标） -->
+<!-- 将 .svg 文件放入 src/assets/svgs/ -->
 <CSvgIcon name="logo" :size="24" />
-
-<!-- Vant 组件（自动导入） -->
-<van-button type="primary">按钮</van-button>
-<van-cell title="标题" is-link />
 ```
 
----
+### 全局组件
+
+通过 `unplugin-vue-components` 自动注册，无需手动 `import`：
+
+```html
+<CNavBar title="标题" />
+<CIcon name="ph:heart-bold" :size="20" color="var(--ds-accent)" />
+<CSvgIcon name="logo" />
+<CPullRefreshList :request="fetchList" :finished="noMore" />
+<CWebSite />    <!-- 内嵌 WebView 容器 -->
+```
 
 ### 状态管理
 
 ```ts
-// 在组件中使用 Store
 import { useUserStore } from '@/store/modules/user';
-import { useThemeStore } from '@/store/modules/theme';
-
 const userStore = useUserStore();
-const themeStore = useThemeStore();
 
-// 读取（响应式）
 const nickname = computed(() => userStore.getUserInfo.nickname);
-const isDark = computed(() => themeStore.getThemeMode === 'dark');
-
-// 修改
-themeStore.setThemeMode('dark');
 userStore.setToken('xxx');
 ```
 
-新建 Store 模块：
+新建 Store：
 
 ```ts
 // src/store/modules/order.ts
 import { acceptHMRUpdate, defineStore } from 'pinia';
 
 export const useOrderStore = defineStore('app-order-store', {
-    state: () => ({ list: [] }),
-    getters: { getList: state => state.list },
-    actions: {
-        setList(list) { this.list = list; },
-    },
-    persist: { key: 'ORDER-DATA' },  // 可选：持久化
+    state: () => ({ list: [] as any[] }),
+    actions: { setList(list: any[]) { this.list = list; } },
+    persist: { key: 'ORDER-DATA' },
 });
 
-if (import.meta.hot) {
+if (import.meta.hot)
     import.meta.hot.accept(acceptHMRUpdate(useOrderStore, import.meta.hot));
-}
 ```
 
 ---
@@ -468,7 +314,7 @@ pnpm build:prod       # 生产构建（类型检查 + Gzip）
 pnpm preview:dist     # 预览构建产物
 ```
 
-构建产出目录为 `dist/`，支持 Gzip 压缩。部署到 Nginx 示例：
+**Nginx 部署示例：**
 
 ```nginx
 server {
@@ -479,10 +325,9 @@ server {
         try_files $uri $uri/ /index.html;
     }
 
-    # 开启 Gzip
     gzip on;
-    gzip_types text/css application/javascript application/json image/svg+xml;
     gzip_static on;
+    gzip_types text/css application/javascript application/json image/svg+xml;
 }
 ```
 
@@ -490,19 +335,17 @@ server {
 
 ## 环境变量
 
-配置文件：`.env.development` / `.env.test` / `.env.production`
-
-| 变量 | 说明 | 示例 |
-|------|------|------|
-| `VITE_GLOB_APP_TITLE` | 应用名称 | `Robot H5` |
-| `VITE_PORT` | 开发端口 | `8888` |
-| `VITE_PUBLIC_PATH` | 公共路径 | `/` |
-| `VITE_PROXY` | 代理配置 | `[["/api","http://host"]]` |
-| `VITE_GLOB_API_URL` | API 地址 | `http://api.example.com` |
-| `VITE_GLOB_API_URL_PREFIX` | 接口前缀 | `/api` |
-| `VITE_USE_MOCK` | 启用 Mock | `true` |
-| `VITE_HASH_ROUTE` | Hash 路由 | `false` |
-| `VITE_BUILD_COMPRESS` | 压缩方式 | `gzip` / `brotli` / `none` |
+| 变量 | 说明 |
+|------|------|
+| `VITE_GLOB_APP_TITLE` | 应用名称 |
+| `VITE_PORT` | 开发端口（默认 8888） |
+| `VITE_PUBLIC_PATH` | 公共路径（部署子目录时配置） |
+| `VITE_PROXY` | 开发代理 `[["/api","http://host"]]` |
+| `VITE_GLOB_API_URL` | 接口 Base URL |
+| `VITE_GLOB_API_URL_PREFIX` | 接口前缀（默认 `/api`） |
+| `VITE_USE_MOCK` | 启用 Mock（**生产环境必须为 false**） |
+| `VITE_HASH_ROUTE` | 启用 Hash 路由 |
+| `VITE_BUILD_COMPRESS` | 压缩方式 `gzip` / `brotli` / `none` |
 
 ---
 
@@ -510,7 +353,7 @@ server {
 
 | 命令 | 说明 |
 |------|------|
-| `pnpm dev` | 启动开发服务器 |
+| `pnpm dev` | 启动开发服务器（含 Mock） |
 | `pnpm build:prod` | 生产构建 |
 | `pnpm preview` | 构建 + 预览 |
 | `pnpm type-check` | TypeScript 类型检查 |
@@ -523,131 +366,109 @@ server {
 
 ## 提交规范
 
-本项目基于 [`@robot-admin/git-standards`](https://www.npmjs.com/package/@robot-admin/git-standards) 统一管理 Git 工程化标准，采用 **标准模式**（Commitizen + Commitlint + Husky + ESLint + lint-staged + EditorConfig）。
-
-### 提交方式
-
 ```bash
-# 交互式规范提交（推荐）
-pnpm cz
-
-# 全局安装 commitizen 后也可使用
-git cz
+pnpm cz   # 交互式规范提交（推荐）
 ```
 
-### 提交类型
+基于 [`@robot-admin/git-standards`](https://www.npmjs.com/package/@robot-admin/git-standards)，包含 Commitizen + Commitlint + Husky + lint-staged。
 
 | 类型 | 说明 |
 |------|------|
-| `feat` | 🎯 新功能 |
-| `fix` | 🐛 Bug 修复 |
-| `perf` | ⚡️ 性能优化 |
-| `refactor` | ♻️ 重构 |
-| `docs` | 📚 文档变更 |
-| `style` | 💄 代码样式 |
-| `build` | 🧳 构建/打包 |
-| `chore` | 🔧 其他杂项 |
-| `deps` | 📦 依赖更新 |
-| `test` | 🔎 测试相关 |
-| `revert` | 🔙 回退 |
-| `wip` | 🚧 开发中 |
+| `feat` | 新功能 |
+| `fix` | Bug 修复 |
+| `perf` | 性能优化 |
+| `refactor` | 重构 |
+| `docs` | 文档变更 |
+| `style` | 代码样式 |
+| `build` | 构建/打包 |
+| `chore` | 其他杂项 |
+| `revert` | 回退 |
 
-### Git Hooks
+**Git Hooks：**
 
-| Hook | 触发时机 | 作用 |
-|------|----------|------|
-| `pre-commit` | `git commit` 前 | lint-staged 增量检查暂存文件 |
-| `commit-msg` | 提交信息写入后 | commitlint 校验提交格式 |
-
-### 配置文件
-
-所有配置文件由 `robot-standards init` 生成，独立完整，可直接修改：
-
-| 文件 | 用途 |
+| Hook | 作用 |
 |------|------|
-| `.cz-config.cjs` | Commitizen 提交类型/模板配置 |
-| `commitlint.config.cjs` | 提交信息校验规则 |
-| `eslint.config.ts` | ESLint Flat Config |
-| `.editorconfig` | 编辑器统一格式 |
+| `pre-commit` | lint-staged 增量检查暂存文件 |
+| `commit-msg` | commitlint 校验提交格式 |
 
 ---
 
-## 架构决策与约定
+## 架构约定
 
 | 约定 | 说明 |
 |------|------|
-| **样式提取** | `.vue` 不写 `<style>`，样式放 `index.scss` 用 `import` 引入 |
-| **CSS @layer 层级** | `@layer base`（reset）< `components`（组件SCSS）< `utilities`（UnoCSS），详见下方 |
+| **样式文件分离** | `.vue` 不写 `<style>`，样式放 `index.scss` 用 `import './index.scss'` 引入 |
+| **CSS @layer 层级** | `base`（reset）< `components`（SCSS）< `utilities`（UnoCSS），见下方 |
 | **BEM 作用域** | 每个页面用唯一根类名隔离（如 `.mine-page`），不使用 `scoped` |
-| **组件命名** | 全局组件 `C_` 前缀；页面子组件放 `components/`（文件夹 3 文件结构） |
-| **路由命名** | `name` 必须与组件 `defineOptions({ name })` 一致 |
-| **自动导入** | Vue/Router/VueUse API 自动导入，无需手动 `import { ref }` |
-| **Vant 按需** | 通过 `@vant/auto-import-resolver` 自动按需引入 |
-| **图标方案** | 优先 UnoCSS preset-icons，自定义 SVG 放 `assets/svgs/` |
-| **Token 鉴权** | 自动注入 Authorization 头，过期自动跳转登录 |
-| **数据持久化** | Pinia store 带 `persist` 配置，生产环境 AES 加密 |
+| **页面最小高度** | 页面根类 `min-height: 100%`（非 `height: 100%`），防止短内容垂直截断 |
+| **组件命名** | 全局组件 `C_` 前缀；页面子组件放 `components/`（三文件结构） |
+| **路由 name 一致性** | 路由 `name` 必须与组件 `defineOptions({ name })` 完全一致 |
+| **自动导入** | Vue / VueRouter / VueUse API 均自动导入，无需手动 `import { ref }` |
+| **数据驱动模板** | 重复列表标签提取到 `data.ts` 用 `v-for` 驱动，避免硬编码冗余 |
+| **Token 鉴权** | HTTP 请求自动注入 `Authorization`，401 自动跳转登录 |
+| **数据持久化** | Pinia persist：生产环境 AES 加密，开发环境 JSON |
 
 ### CSS @layer 优先级体系
 
-项目采用 **CSS Cascade Layers** 解决 UnoCSS 工具类与组件 SCSS 的优先级冲突：
-
 ```
-@layer base        ← UnoCSS preflight（reset/normalize），最低优先级
+@layer base         ← UnoCSS preflight（reset/normalize），最低优先级
 @layer components   ← 组件 SCSS（vite.config.ts additionalData 自动包裹）
-@layer utilities    ← UnoCSS 工具类（如 mb-4、flex、text-lg），最高优先级
+@layer utilities    ← UnoCSS 工具类（flex / mb-4 等），最高优先级
 ```
 
-**关键配置文件：**
-
-| 文件 | 作用 |
-|------|------|
+| 关键文件 | 作用 |
+|----------|------|
 | `index.html` | `<style>@layer base, components, utilities;</style>` 声明层顺序 |
-| `uno.config.ts` | `outputToCssLayers` 将 preflight → `base`，工具类 → `utilities` |
-| `vite.config.ts` | `additionalData` 将 `src/` 下组件 SCSS 包裹进 `@layer components` |
-
-**效果：**
-- 工具类 `mb-4` 始终能覆盖组件 SCSS 中的 `margin-bottom`
-- 组件 SCSS 始终能覆盖 preflight 的 `h1 { font-size: inherit }`
-- 无需 `!important` 即可实现可预测的样式优先级
+| `uno.config.ts` | `outputToCssLayers`：preflight → `base`，工具类 → `utilities` |
+| `vite.config.ts` | `additionalData`：`src/` 下 SCSS 自动包裹进 `@layer components` |
 
 ---
 
-## 扩展与优化建议
+## 已知坑点
 
-### 短期优化
+### Vue Router v-slot class fallthrough（已修复）
 
-| 建议 | 说明 |
-|------|------|
-| **图片资源优化** | 引入 `vite-plugin-imagemin` 或使用 WebP 格式，减少首屏加载体积 |
-| **路由懒加载预取** | 对高频页面使用 `<link rel="prefetch">` 或 Vite 的 `modulePreload` |
-| **骨架屏** | 首页和列表页加入 Vant Skeleton 组件，提升感知速度 |
-| **请求缓存** | 引入 `@tanstack/vue-query` 或 `useFetch` 实现 SWR 缓存策略 |
-| **字体子集化** | 使用 `fonttools` 裁剪中文字体子集，减少字体文件体积 |
+```vue
+<!-- ❌ 错误写法：class 会 fallthrough 到匹配组件根元素 -->
+<routerView v-slot="{ Component }" class="overflow-hidden">
 
-### 中期扩展
+<!-- ✅ 正确写法：用真实 div 承接 class -->
+<div class="flex-1 overflow-hidden">
+    <routerView v-slot="{ Component }">
+        <component :is="Component" />
+    </routerView>
+</div>
+```
 
-| 建议 | 说明 |
-|------|------|
-| **权限管理** | 路由层面 `meta.roles` + 指令层面 `v-permission` |
-| **国际化 i18n** | 集成 `vue-i18n`，配合 locale 文件按需加载 |
-| **单元测试** | 引入 `Vitest` + `@vue/test-utils`，为核心 hooks 和 utils 编写测试 |
-| **E2E 测试** | 使用 `Playwright` 覆盖登录、表单提交等关键路径 |
-| **PWA 支持** | 集成 `vite-plugin-pwa`，支持离线访问和桌面安装 |
-| **错误监控** | 接入 Sentry 或自建上报，Vue errorHandler + unhandledrejection |
+原因：Vue Router 4 的 `v-slot` 会把 `<routerView>` 上的 class 透传给子组件根元素。
+当 `overflow-hidden`（UnoCSS utilities 层，最高优先级）被注入页面根元素时，会覆盖页面 SCSS 的 `overflow-y: auto`，导致所有页面内部滚动失效。
 
-### 长期架构
+### Flexbox top-clip bug（已修复）
 
-| 建议 | 说明 |
-|------|------|
-| **微前端** | 使用 `qiankun` 或 `Module Federation` 拆分独立业务模块 |
-| **CI/CD** | GitHub Actions / GitLab CI 自动化构建、测试、部署 |
-| **性能监控** | 接入 Web Vitals (LCP/FID/CLS) 采集和告警 |
-| **组件文档** | 使用 `Storybook` 或 `Histoire` 构建组件库文档 |
+```scss
+// ❌ 错误：内容超出时 margin:auto 将上方溢出推入不可滚动区域
+&__inner { margin-top: auto; margin-bottom: auto; }
+
+// ✅ 正确：伪元素占位，内容短时居中，内容长时收缩为 0 可滚动
+&__inner { flex-shrink: 0; }
+&::before, &::after { content: ''; flex: 1 1 0; }
+```
+
+### SCSS @layer 包裹与 :deep() 不兼容
+
+`vite.config.ts additionalData` 将组件 SCSS 包裹进 `@layer components { ... }`，
+因此不能在 `.vue` 的 `<style>` 中使用 `:deep()`（会被包进层导致选择器失效）。
+统一用 `index.scss` + `.class :deep(.van-xx)` 的方式覆盖 Vant 样式。
+
+### 生产环境必须关闭 Mock
+
+`.env.production` 中 `VITE_USE_MOCK = false`（已配置）。
+如果设置为 `true` 会将 Mock 数据打包进产物，暴露接口数据结构。
+
+### KeepAlive 与路由 name 一致性
+
+`<keep-alive>` 按组件 `name` 匹配缓存，路由 `name` 与 `defineOptions({ name })` 不一致时缓存静默失效，表现为每次进入页面都重新加载。
 
 ---
 
-## License
-
-**PROPRIETARY** — 本项目为内部私有项目，未经授权不得复制、分发或使用。
-
-© Robot H5. All rights reserved.
+**PROPRIETARY** — 内部私有项目。© Robot H5. All rights reserved.
