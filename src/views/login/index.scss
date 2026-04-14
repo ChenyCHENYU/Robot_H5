@@ -4,6 +4,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    width: 100%;
+    box-sizing: border-box;
     background: var(--ds-bg);
     padding: 32px 24px;
     position: relative;
@@ -73,6 +75,8 @@
 
         // ---- 毛玻璃表单卡片 ----
         &__card {
+            width: 100%;
+            box-sizing: border-box;
         background: rgba(255, 255, 255, 0.68);
             backdrop-filter: blur(24px) saturate(200%);
             -webkit-backdrop-filter: blur(24px) saturate(200%);
@@ -104,12 +108,14 @@
     }
 
     &__inner {
-        width: 100%;
+        width: min(100%, 380px);
         max-width: 380px;
         display: flex;
         flex-direction: column;
         position: relative;
         z-index: 1;
+        margin-left: auto;
+        margin-right: auto;
         margin-top: auto;
         margin-bottom: auto;
         animation: loginFadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
