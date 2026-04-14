@@ -2,9 +2,13 @@
     <van-config-provider :theme="getThemeMode" :theme-vars="themeVarsCache">
         <div class="h-screen w-full flex flex-col overflow-hidden">
             <CVirtualStatusBar />
-            <routerView v-slot="{ Component }" class="w-full flex-1 overflow-hidden">
-                <component :is="Component" />
-            </routerView>
+            <!-- 用真实 div 承接 flex-1/overflow-hidden，避免 routerView v-slot fallthrough
+                 把 overflow:hidden 传递到子路由组件根元素导致内部滚动失效 -->
+            <div class="w-full flex-1 min-h-0 overflow-hidden">
+                <routerView v-slot="{ Component }">
+                    <component :is="Component" />
+                </routerView>
+            </div>
         </div>
     </van-config-provider>
 </template>
