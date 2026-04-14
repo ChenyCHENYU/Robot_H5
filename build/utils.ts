@@ -15,6 +15,15 @@ export function wrapperEnv(envConf: Recordable): ViteEnv {
         let realName = envConf[envName].replace(/\\n/g, '\n');
         realName = realName === 'true' ? true : realName === 'false' ? false : realName;
 
+        // VITE_PROXY 是 JSON 数组字符串，需要解析
+        if (envName === 'VITE_PROXY' && typeof realName === 'string') {
+            try {
+                realName = JSON.parse(realName);
+            } catch {
+                realName = [];
+            }
+        }
+
         ret[envName] = realName;
         if (typeof realName === 'string') {
             process.env[envName] = realName;

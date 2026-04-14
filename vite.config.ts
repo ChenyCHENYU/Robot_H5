@@ -74,7 +74,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
             open: true,
             hmr: true, // 开启热更新
             port: Number(VITE_PORT),
-            proxy: createProxy(),
+            proxy: createProxy(viteEnv.VITE_PROXY),
             // 预热文件以降低启动期间的初始页面加载时长
             warmup: {
                 // 预热的客户端文件：首页、views、 components

@@ -1,4 +1,4 @@
-import { http } from '@/utils/http';
+import { get, post } from '@/utils/http';
 
 export interface BasicResponseModel<T = any> {
     code: number;
@@ -6,38 +6,26 @@ export interface BasicResponseModel<T = any> {
     data: T;
 }
 
-/**
- * @description: 用户登录
- */
-export function login(params: any) {
-    return http.request<BasicResponseModel>(
-        {
-            url: '/login',
-            method: 'POST',
-            params,
-        },
-        {
-            successMessageText: '登录成功，即将进入系统',
-        }
-    );
+export interface LoginParams {
+    username: string;
+    password: string;
 }
 
-/**
- * @description: 获取用户信息
- */
-export function getUserInfo() {
-    return http.request({
-        url: '/getUserInfo',
-        method: 'get',
-    });
+export interface UserInfo {
+    userId: string;
+    username: string;
+    nickname: string;
+    avatar: string;
 }
 
-/**
- * @description: 用户登出
- */
-export function doLogout() {
-    return http.request({
-        url: '/logout',
-        method: 'POST',
-    });
-}
+/** 用户登录 */
+export const login = (data: LoginParams) =>
+    post<BasicResponseModel>('/login', data, { successMessageText: '登录成功，即将进入系统' });
+
+/** 获取用户信息 */
+export const getUserInfo = () =>
+    get<UserInfo>('/getUserInfo');
+
+/** 用户登出 */
+export const doLogout = () =>
+    post('/logout');

@@ -264,3 +264,26 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
 }
 
 export const http = createAxios();
+
+// ======================== 快捷方法 ========================
+// 消除 method / url / params vs data 的模板代码
+
+/** GET 请求 */
+export function get<T = any>(url: string, params?: object, options?: Partial<RequestOptions>) {
+    return http.request<T>({ url, method: 'GET', params }, options);
+}
+
+/** POST 请求 */
+export function post<T = any>(url: string, data?: object, options?: Partial<RequestOptions>) {
+    return http.request<T>({ url, method: 'POST', data }, options);
+}
+
+/** PUT 请求 */
+export function put<T = any>(url: string, data?: object, options?: Partial<RequestOptions>) {
+    return http.request<T>({ url, method: 'PUT', data }, options);
+}
+
+/** DELETE 请求 */
+export function del<T = any>(url: string, params?: object, options?: Partial<RequestOptions>) {
+    return http.request<T>({ url, method: 'DELETE', params }, options);
+}
