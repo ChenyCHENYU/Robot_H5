@@ -1,43 +1,23 @@
 <template>
     <van-form v-if="getShow" ref="formRef" class="forget-form" @submit="handleReset">
+        <!-- 通用字段：由 data.ts 的 forgetPasswordFields 驱动 -->
         <van-field
-            v-model="formData.username"
+            v-for="field in forgetPasswordFields"
+            :key="field.key"
+            v-model="(formData as Record<string, string>)[field.key]"
             class="forget-form__field"
-            name="username"
-            placeholder="用户名"
-            :rules="getFormRules.username"
+            :name="field.key"
+            :placeholder="field.placeholder"
+            :rules="getFormRules[field.key]"
+            :center="field.center"
+            :clearable="field.clearable"
         >
             <template #left-icon>
-                <i class="i-ph:user-bold forget-form__icon" />
+                <i :class="[field.icon, 'forget-form__icon']" />
             </template>
-        </van-field>
-
-        <van-field
-            v-model="formData.mobile"
-            class="forget-form__field"
-            name="mobile"
-            placeholder="手机号码"
-            :rules="getFormRules.mobile"
-        >
-            <template #left-icon>
-                <i class="i-ph:device-mobile-bold forget-form__icon" />
-            </template>
-        </van-field>
-
-        <van-field
-            v-model="formData.sms"
-            class="forget-form__field"
-            center
-            clearable
-            placeholder="请输入短信验证码"
-            :rules="getFormRules.sms"
-        >
-            <template #left-icon>
-                <i class="i-ph:chat-text-bold forget-form__icon" />
-            </template>
-            <template #button>
+            <template v-if="field.hasButton" #button>
                 <van-button size="small" type="primary" style="border-radius: var(--ds-radius-sm)">
-                    发送验证码
+                    {{ field.buttonText }}
                 </van-button>
             </template>
         </van-field>
@@ -62,6 +42,7 @@
     import './index.scss';
     import type { FormInstance } from 'vant';
     import { LoginStateEnum, useFormRules, useLoginState } from '../../useLogin';
+    import { forgetPasswordFields } from '../../data';
 
     const { handleBackLogin, getLoginState } = useLoginState();
     const { getFormRules } = useFormRules();

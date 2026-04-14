@@ -1,83 +1,33 @@
 <template>
     <van-form v-if="getShow" ref="formRef" class="register-form" @submit="handleRegister">
+        <!-- 通用字段：由 data.ts 的 registerFields 驱动，新增/删除字段只改数据 -->
         <van-field
-            v-model="formData.username"
+            v-for="field in registerFields"
+            :key="field.key"
+            v-model="(formData as Record<string, string>)[field.key]"
             class="register-form__field"
-            name="username"
-            placeholder="用户名"
-            :rules="getFormRules.username"
+            :name="field.key"
+            :placeholder="field.placeholder"
+            :rules="getFormRules[field.key]"
+            :type="field.isPassword ? (passTypeMap[field.key] ? 'password' : 'text') : 'text'"
+            :center="field.center"
+            :clearable="field.clearable"
+            @click-right-icon="field.isPassword && togglePass(field.key)"
         >
             <template #left-icon>
-                <i class="i-ph:user-bold register-form__icon" />
+                <i :class="[field.icon, 'register-form__icon']" />
             </template>
-        </van-field>
-
-        <van-field
-            v-model="formData.mobile"
-            class="register-form__field"
-            name="mobile"
-            placeholder="手机号码"
-            :rules="getFormRules.mobile"
-        >
-            <template #left-icon>
-                <i class="i-ph:device-mobile-bold register-form__icon" />
+            <template v-if="field.isPassword" #right-icon>
+                <i :class="[passTypeMap[field.key] ? 'i-mdi:eye-outline' : 'i-mdi:eye-off', 'register-form__icon']" />
             </template>
-        </van-field>
-
-        <van-field
-            v-model="formData.sms"
-            class="register-form__field"
-            center
-            clearable
-            placeholder="请输入短信验证码"
-            :rules="getFormRules.sms"
-        >
-            <template #left-icon>
-                <i class="i-ph:chat-text-bold register-form__icon" />
-            </template>
-            <template #button>
+            <template v-if="field.hasButton" #button>
                 <van-button size="small" type="primary" style="border-radius: var(--ds-radius-sm)">
-                    发送验证码
+                    {{ field.buttonText }}
                 </van-button>
             </template>
         </van-field>
 
-        <van-field
-            v-model="formData.password"
-            class="register-form__field"
-            :type="switchPassType ? 'password' : 'text'"
-            name="password"
-            placeholder="密码"
-            :rules="getFormRules.password"
-            @click-right-icon="switchPassType = !switchPassType"
-        >
-            <template #left-icon>
-                <i class="i-iconamoon:lock-bold register-form__icon" />
-            </template>
-            <template #right-icon>
-                <i v-if="switchPassType" class="i-mdi:eye-outline register-form__icon" />
-                <i v-else class="i-mdi:eye-off register-form__icon" />
-            </template>
-        </van-field>
-
-        <van-field
-            v-model="formData.confirmPassword"
-            class="register-form__field"
-            :type="switchConfirmPassType ? 'password' : 'text'"
-            name="confirmPassword"
-            placeholder="确认密码"
-            :rules="getFormRules.confirmPassword"
-            @click-right-icon="switchConfirmPassType = !switchConfirmPassType"
-        >
-            <template #left-icon>
-                <i class="i-iconamoon:lock-bold register-form__icon" />
-            </template>
-            <template #right-icon>
-                <i v-if="switchConfirmPassType" class="i-mdi:eye-outline register-form__icon" />
-                <i v-else class="i-mdi:eye-off register-form__icon" />
-            </template>
-        </van-field>
-
+        <!-- policy 复选框结构特殊，单独渲染 -->
         <van-field name="policy" class="register-form__field" :rules="getFormRules.policy">
             <template #input>
                 <van-checkbox v-model="formData.policy" icon-size="14px" shape="square">
@@ -106,6 +56,7 @@
     import './index.scss';
     import type { FormInstance } from 'vant';
     import { LoginStateEnum, useFormRules, useLoginState } from '../../useLogin';
+    import { registerFields } from '../../data';
 
     const { handleBackLogin, getLoginState } = useLoginState();
     const getShow = computed(() => unref(getLoginState) === LoginStateEnum.REGISTER);
@@ -124,8 +75,15 @@
 
     const { getFormRules } = useFormRules(formData);
 
-    const switchPassType = ref(true);
-    const switchConfirmPassType = ref(true);
+    // 每个密码字段独立维护显隐状态：true = 隐藏（password），false = 明文
+    const passTypeMap = reactive<Record<string, boolean>>({
+        password: true,
+        confirmPassword: true,
+    });
+
+    function togglePass(key: string) {
+        passTypeMap[key] = !passTypeMap[key];
+    }
 
     function handleRegister() {
         formRef.value

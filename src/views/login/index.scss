@@ -13,6 +13,13 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 
+    // 用伪元素代替 margin:auto 实现居中，内容超出时自动收缩为 0 保证可滚动
+    &::before,
+    &::after {
+        content: '';
+        flex: 1 1 0;
+    }
+
     // ---- 背景彩色光球 ----
     &__orb {
         position: absolute;
@@ -114,10 +121,9 @@
         flex-direction: column;
         position: relative;
         z-index: 1;
+        flex-shrink: 0;
         margin-left: auto;
         margin-right: auto;
-        margin-top: auto;
-        margin-bottom: auto;
         animation: loginFadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 }
