@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import './index.scss';
+    import { iconList } from './data';
 
     const addAnimation = () => {
         document.querySelector('.unocss-demo__text')?.classList.add('animate-bounce-alt', 'animate-count-infinite', 'animate-duration-1s');
@@ -13,11 +14,6 @@
     const resetFont = () => {
         document.querySelector('.unocss-demo__text')?.classList.remove('font-msz');
     };
-
-    const icons = [
-        'i-ic:baseline-10k', 'i-ic:baseline-agriculture', 'i-ic:baseline-21mp',
-        'i-ic:baseline-60fps', 'i-ic:baseline-light-mode', 'i-ic:baseline-surfing',
-    ];
 </script>
 
 <template>
@@ -44,7 +40,7 @@
                 <div class="unocss-page__card">
                     <div class="unocss-page__card-shine" />
                     <div class="unocss-page__icon-row">
-                        <div v-for="icon in icons" :key="icon" class="unocss-page__icon-box">
+                        <div v-for="icon in iconList" :key="icon" class="unocss-page__icon-box">
                             <i :class="icon" />
                         </div>
                     </div>

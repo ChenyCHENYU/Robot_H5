@@ -133,11 +133,11 @@
         100% {
             transform: translate(0, 0) scale(1);
         }
-    
+
         33% {
             transform: translate(10px, -20px) scale(1.06);
         }
-    
+
         66% {
             transform: translate(-8px, 12px) scale(0.96);
         }
@@ -147,7 +147,7 @@
             opacity: 0;
             transform: translateY(16px);
         }
-    
+
         to {
             opacity: 1;
             transform: translateY(0);

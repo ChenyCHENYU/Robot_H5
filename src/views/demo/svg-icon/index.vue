@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import './index.scss';
-    const svgList = ['logo', 'email', 'excel', 'img', 'mobile', 'pc', 'pdf', 'sdk', 'wps'];
+    import { svgList } from './data';
 </script>
 
 <template>

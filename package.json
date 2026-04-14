@@ -1,11 +1,26 @@
 {
-  "name": "robot-h5",
-  "version": "1.0.0",
+  "name": "@robot/h5-app",
+  "version": "1.1.0",
+  "description": "Vue 3 + Vite 7 + TypeScript 企业级移动端 H5 应用框架",
   "private": true,
   "type": "module",
+  "license": "UNLICENSED",
   "author": {
-    "name": "CHENY"
+    "name": "CHENY",
+    "email": "cheny@agile-team.cn"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://git.yourcompany.com/robot/robot-h5.git"
+  },
+  "keywords": [
+    "vue3",
+    "vite7",
+    "h5",
+    "mobile",
+    "typescript",
+    "enterprise"
+  ],
   "scripts": {
     "prepare": "husky",
     "dev": "vite --mode development",
@@ -21,7 +36,12 @@
     "cz": "git-cz",
     "deps:check": "pnpm outdated",
     "deps:update": "pnpm update --latest",
-    "preinstall": "npx only-allow pnpm"
+    "preinstall": "npx only-allow pnpm",
+    "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "release:patch": "standard-version --release-as patch",
+    "release:first": "standard-version --first-release"
   },
   "dependencies": {
     "@iconify/vue": "5.0.0",
@@ -55,7 +75,6 @@
     "@types/mockjs": "^1.0.10",
     "@types/node": "^24.4.0",
     "@types/nprogress": "^0.2.3",
-    "mockjs": "^1.1.0",
     "@typescript-eslint/eslint-plugin": "8.58.1",
     "@typescript-eslint/parser": "8.58.1",
     "@unocss/preset-icons": "^66.5.1",
@@ -74,12 +93,14 @@
     "eslint-plugin-vue": "10.8.0",
     "husky": "9.1.7",
     "lint-staged": "16.4.0",
+    "mockjs": "^1.1.0",
     "postcss": "^8.5.6",
     "postcss-mobile-forever": "^5.0.0",
     "rimraf": "^5.0.0",
     "rollup-plugin-visualizer": "^6.0.3",
     "sass": "^1.92.1",
     "sass-loader": "^16.0.5",
+    "standard-version": "9.5.0",
     "typescript": "~5.9.2",
     "unocss": "^66.5.1",
     "unplugin-auto-import": "^20.1.0",

@@ -257,26 +257,40 @@ export const menuItems: MenuItem[] = [
 `src/api/system/order.ts`：
 
 ```ts
-import { http } from '@/utils/http';
+import { get, post, del, toast } from '@/utils/http';
 
 /** 获取订单列表 */
-export const getOrderList = (params?: object) =>
-    http.request({
-        url: '/order/list',
-        method: 'GET',
-        params,
-    });
+export const getOrderList = (params?: object) => get('/order/list', params);
 
 /** 创建订单（成功后自动弹 Toast） */
-export const createOrder = (data: object) =>
-    http.request(
-        { url: '/order/create', method: 'POST', data },
-        { isShowSuccessMessage: true, successMessageText: '创建成功' },
-    );
+export const createOrder = (data: object) => post('/order/create', data, toast('创建成功'));
 
-/** 删除订单（需确认弹窗，调用方自行处理） */
-export const deleteOrder = (id: string) =>
-    http.request({ url: `/order/delete/${id}`, method: 'DELETE' });
+/** 删除订单 */
+export const deleteOrder = (id: string) => del(`/order/delete/${id}`);
+```
+
+**快捷方法一览：**
+
+| 方法 | 用途 | 示例 |
+|------|------|------|
+| `get<T>(url, params?, options?)` | GET 请求 | `get('/list', { page: 1 })` |
+| `post<T>(url, data?, options?)` | POST 请求 | `post('/create', formData)` |
+| `put<T>(url, data?, options?)` | PUT 请求 | `put('/update', formData)` |
+| `del<T>(url, params?, options?)` | DELETE 请求 | `del('/remove/1')` |
+| `toast(msg)` | 成功 Toast 选项 | `post('/save', data, toast('保存成功'))` |
+| `ApiRes<T>` | 通用响应类型 | `import { ApiRes } from '@/utils/http'` |
+
+> 泛型 `T` 默认 `any`，不关心返回类型时可省略。需要类型时：`get<UserInfo>('/info')`。
+
+**进阶：直接使用 `http.request()`**
+
+当快捷方法不满足需求时（如 FormData 上传、自定义 Content-Type），可直接调用底层：
+
+```ts
+import { http } from '@/utils/http';
+
+export const uploadFile = (data: FormData) =>
+    http.request({ url: '/upload', method: 'POST', data }, { withToken: true });
 ```
 
 **HTTP 请求选项（RequestOptions）：**
@@ -286,7 +300,7 @@ export const deleteOrder = (id: string) =>
 | `withToken` | `true` | 自动携带 Authorization |
 | `isShowSuccessMessage` | `false` | 成功时弹 Toast |
 | `isShowErrorMessage` | `false` | 失败时弹 Toast |
-| `successMessageText` | — | 自定义成功消息 |
+| `successMessageText` | — | 自定义成功消息（推荐用 `toast()` 替代） |
 | `isReturnNativeResponse` | `false` | 返回原始 AxiosResponse |
 | `joinTime` | `true` | GET 请求加时间戳防缓存 |
 | `joinPrefix` | `true` | 拼接 VITE_GLOB_API_URL_PREFIX |
@@ -524,8 +538,8 @@ if (import.meta.hot)
 | 文件 | 环境 | Mock | 代理 | 用途 |
 |------|------|------|------|------|
 | `.env.development` | 开发 | ✅ 开启 | ✅ localhost:8001 | 本地开发调试 |
-| `.env.test` | 测试 | ✅ 开启 | ✅ localhost:8001 | 测试环境构建 |
-| `.env.production` | 生产 | ❌ 关闭 | ❌ 无 | 正式上线构建 |
+| `.env.test` | 测试 | ❌ 关闭 | ❌ 直连测试服 | 测试环境构建 |
+| `.env.production` | 生产 | ❌ 关闭 | ❌ 直连生产服 | 正式上线构建 |
 
 ### 关键变量说明
 
@@ -666,8 +680,9 @@ pnpm cz   # 交互式规范提交（推荐）
 | 规则 | 说明 |
 |------|------|
 | 一个模块一个文件 | `src/api/system/xxx.ts`，按业务模块组织 |
-| 导入 http | `import { http } from '@/utils/http'` |
-| 类型安全 | 定义 Response 接口，泛型传入 `http.request<T>()` |
+| 快捷方法优先 | `import { get, post, toast } from '@/utils/http'` |
+| 类型按需 | 不关心返回类型就不写泛型，需要时 `get<UserInfo>(...)` |
+| 成功提示 | 用 `toast('消息')` 替代手写 `{ isShowSuccessMessage: true, ... }` |
 | Mock 对应 | 每个 API 必须有对应 Mock 文件，接口 URL 一致（含 `/api` 前缀） |
 
 ### 自动导入
