@@ -9,6 +9,7 @@
 ## 目录
 
 - [快速开始](#快速开始)
+- [内置 Demo](#内置-demo)
 - [技术栈](#技术栈)
 - [目录结构](#目录结构)
 - [开发全流程](#开发全流程从-0-到-1-完整闭环)
@@ -41,6 +42,28 @@ pnpm build:prod
 ```
 
 **默认账号**：`admin` / `123456`
+
+---
+
+## 内置 Demo
+
+底部 TabBar「Demo」页提供 13 个交互示例，覆盖常见移动端场景：
+
+| 示例 | 路由 | 亮点 |
+|------|------|------|
+| 主题设置 | `/themeSetting` | 暗黑/跟随系统、主题色、字体缩放、动画开关 |
+| 状态缓存 | `/keepAliveDemo` | keep-alive 计数器 + 表单 + 生命周期日志 |
+| 404 页面 | `/404` | Liquid Glass 毛玻璃动画 |
+| 自定义指令 | `/directives` | v-long-press、v-ripple 等 |
+| SVG 图标 | `/svgIcon` | 本地 SVG + Iconify 在线图标（点击复制） |
+| UnoCSS 样式 | `/unoCss` | 原子 CSS 能力展示 |
+| 滚动位置缓存 | `/scrollCache` | 返回页面自动恢复滚动位置 |
+| 下拉刷新列表 | `/pullRefreshList` | CPullRefreshList 组件封装 |
+| 渲染性能优化 | `/requestAnimationFrame` | rAF 动画帧对比 |
+| 弹出层组合 | `/popupDemo` | ActionSheet / Popup 5 方位 / Dialog |
+| 手势交互 | `/gestureDemo` | SwipeCell 删除、长按菜单、多按钮滑动 |
+| 骨架屏 | `/skeletonDemo` | 基础骨架、商品卡片、联系人列表 |
+| 表单验证 | `/formDemo` | 异步校验、动态规则、多步骤表单 |
 
 ---
 
@@ -374,7 +397,7 @@ http.request 自动拼接 prefix + token + timestamp
 pnpm dev
 
 # 浏览器访问
-http://localhost:8888/robot-h5/site-h5/#/order
+http://localhost:8888/robot-h5/#/order
 ```
 
 **调试清单：**
@@ -548,7 +571,7 @@ if (import.meta.hot)
 | `VITE_ENV` | 环境标识 | `development` / `test` / `production` |
 | `VITE_GLOB_APP_TITLE` | 应用名称 | `CHENY` |
 | `VITE_PORT` | 开发端口 | `8888` |
-| `VITE_PUBLIC_PATH` | 部署路径 | `/robot-h5/site-h5/` |
+| `VITE_PUBLIC_PATH` | 部署路径 | `/robot-h5/` |
 | `VITE_USE_MOCK` | Mock 开关 | `true` / `false` |
 | `VITE_PROXY` | 开发代理 | `[["/appApi","http://host"]]` |
 | `VITE_GLOB_API_URL` | 接口 Base URL | 生产环境填写真实地址 |
