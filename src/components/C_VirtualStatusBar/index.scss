@@ -1,17 +1,13 @@
 .virtual-status-bar {
-  // 参与 App.vue 的 flex 布局流（flex-col 第一个子节点），不再使用 position:fixed
-  // position:fixed 脱离 flex 流 + body.overflow:hidden 两者叠加会导致状态栏被裁切不显示
+  // 默认隐藏（移动端）
+  // "桌面端显示" 规则放在 common.scss 的 @media 块中（unlayered），
+  // 避免被 @layer components 包裹后优先级低于 unlayered CSS 而失效
   flex-shrink: 0;
   display: none;
   height: 30px;
   width: 100%;
   color: var(--ds-text-primary);
   background-color: var(--ds-surface);
-
-  // 仅桌面端预览时显示虚拟状态栏
-  @media screen and (min-width: 576px) {
-    display: block;
-  }
 
   .content {
     display: flex;

@@ -68,6 +68,12 @@ body {
         --vbar-h: 30px;
     }
 
+    // 虚拟状态栏：放在 unlayered CSS 中控制显示，
+    // 确保优先级高于被 @layer components 包裹的组件 SCSS
+    .virtual-status-bar {
+        display: block;
+    }
+
     body {
         max-width: 500px;
         margin: 24px auto 0;
