@@ -1,9 +1,10 @@
 .virtual-status-bar {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
+  // 参与 App.vue 的 flex 布局流（flex-col 第一个子节点），不再使用 position:fixed
+  // position:fixed 脱离 flex 流 + body.overflow:hidden 两者叠加会导致状态栏被裁切不显示
+  flex-shrink: 0;
   display: none;
   height: 30px;
+  width: 100%;
   color: var(--ds-text-primary);
   background-color: var(--ds-surface);
 
