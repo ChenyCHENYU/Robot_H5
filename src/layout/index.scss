@@ -48,11 +48,11 @@ html.dark .layout__tabbar {
 
 // Tab 切换过渡 — 极轻量，避免"闪烁重载感"
 .tab-fade-enter-active {
-    transition: opacity 0.18s ease;
+    transition: opacity 0.12s ease-out;
 }
 
 .tab-fade-leave-active {
-    transition: opacity 0.12s ease;
+    transition: opacity 0.08s ease-in;
 }
 
 .tab-fade-enter-from,

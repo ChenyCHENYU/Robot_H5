@@ -53,6 +53,19 @@
         }
     }
 
+    &__cell-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-right: 12px;
+
+        i { font-size: 16px; color: #fff; }
+    }
+
     &__colors {
         display: grid;
         grid-template-columns: repeat(8, 1fr);
@@ -82,5 +95,86 @@
         &:active {
             transform: scale(0.9);
         }
+    }
+
+    // 主题色预览卡片
+    &__preview {
+        position: relative;
+        overflow: hidden;
+        background: var(--ds-glass-bg);
+        backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        border: 1px solid var(--ds-glass-border);
+        border-radius: var(--ds-radius-lg);
+        box-shadow: var(--ds-glass-shine), var(--ds-glass-shadow);
+        padding: 16px;
+        margin-top: 10px;
+    }
+
+    &__preview-shine {
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 50%;
+        background: var(--ds-glass-gradient);
+        pointer-events: none;
+    }
+
+    &__preview-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 14px;
+        position: relative;
+        z-index: 1;
+    }
+
+    &__preview-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--preview-color);
+        box-shadow: 0 0 6px var(--preview-color);
+    }
+
+    &__preview-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ds-text-secondary);
+    }
+
+    &__preview-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    // 字体大小调节
+    &__font-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px 16px;
+        position: relative;
+        z-index: 1;
+    }
+
+    &__font-label {
+        font-weight: 700;
+        color: var(--ds-text-secondary);
+        flex-shrink: 0;
+        width: 24px;
+        text-align: center;
+    }
+
+    &__font-hint {
+        font-size: 12px;
+        color: var(--ds-text-tertiary);
+        text-align: center;
+        margin: 0;
+        padding: 0 16px 14px;
+        position: relative;
+        z-index: 1;
     }
 }

@@ -9,6 +9,10 @@ export interface IThemeState {
     isPageAnimate: boolean;
     // 路由动画类型
     pageAnimateType: string;
+    // 字体大小缩放因子 (0.85 | 1 | 1.15)
+    fontScale: number;
+    // 是否跟随系统暗色模式
+    followSystem: boolean;
 }
 
 export const animates = [
@@ -67,4 +71,8 @@ export const setting: IThemeState = {
     isPageAnimate: true,
     // 路由动画类型
     pageAnimateType: 'fade',
+    // 字体大小缩放因子
+    fontScale: 1,
+    // 是否跟随系统暗色模式
+    followSystem: false,
 };

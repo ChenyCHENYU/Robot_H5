@@ -5,11 +5,19 @@ import scrollUtil from './scrollUtil';
  * 1.确保页面有keepAlive属性
  * 2.确保页面文件名称和路由name字段名称一致
  * 3.如果不一致（可设置页面组件名称）如：	defineOptions({ name: 'ScrollCache' })
- * @param dom
+ * @param dom 滚动容器元素，传 null 时自动查找 layout 滚动容器 (.layout__content)
  * @param animeStatus
  * @returns
  */
-export function useScrollCache(dom, animeStatus = false) {
+export function useScrollCache(dom?: HTMLElement | null, animeStatus = false) {
+    // 自动查找 layout 滚动容器
+    if (!dom) {
+        dom = document.querySelector('.layout__content') as HTMLElement;
+    }
+    if (!dom) {
+        console.warn('[useScrollCache] 未找到滚动容器');
+        return ref({ top: 0, left: 0 });
+    }
     const scrollPosition = ref({ top: 0, left: 0 });
     const duration = 200;
 

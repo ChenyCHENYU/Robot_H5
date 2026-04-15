@@ -65,7 +65,7 @@ export default defineConfigWithVueTs(
       'no-undef': 'off',
 
       //! 引号规范
-      '@typescript-eslint/quotes': ['error', 'single'],
+      'quotes': ['error', 'single'],
       'vue/html-quotes': ['error', 'double'],
 
       //! TypeScript 安全

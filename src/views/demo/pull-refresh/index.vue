@@ -5,14 +5,16 @@
 
     defineOptions({ name: 'PullRefreshDemo' });
 
-    interface ListItem { id: number; name: string; }
+    interface ListItem { id: number; name: string; desc: string; }
 
     const getMockData = ({ pageNo, pageSize }: { pageNo: number; pageSize: number }) => {
         showToast({ message: `加载第 ${pageNo} 页`, position: 'top' });
         const total = 55;
+        const tags = ['前端', '后端', 'UI', '测试', '运维', '产品'];
         const allData = Array.from({ length: total }, (_, i) => ({
             id: i + 1,
             name: `用户_${Math.random().toString(36).substring(2, 8)}`,
+            desc: tags[i % tags.length],
         }));
         const start = (pageNo - 1) * pageSize;
         return { total, data: allData.slice(start, start + pageSize) };
@@ -34,16 +36,25 @@
 <template>
     <div class="prl-page">
         <CNavBar />
+
         <div class="prl-page__toolbar">
-            <van-button
+            <VanButton
                 size="small"
-                :type="disabledRefresh ? 'primary' : 'default'"
+                round
+                :type="disabledRefresh ? 'warning' : 'primary'"
+                @click="disabledRefresh = !disabledRefresh"
             >
-                {{ disabledRefresh ? '开启下拉刷新' : '关闭下拉刷新' }}
-            </van-button>
-            <van-button size="small" type="danger" plain @click="listRef?.setError()">
-                模拟加载失败
-            </van-button>
+                <i :class="disabledRefresh ? 'i-ph:lock-bold' : 'i-ph:lock-open-bold'" style="margin-right:4px" />
+                {{ disabledRefresh ? '下拉已关闭' : '下拉已开启' }}
+            </VanButton>
+            <VanButton size="small" round type="danger" plain @click="listRef?.setError()">
+                <i class="i-ph:warning-bold" style="margin-right:4px" />
+                模拟失败
+            </VanButton>
+            <VanButton size="small" round plain @click="listRef?.refresh()">
+                <i class="i-ph:arrow-counter-clockwise-bold" style="margin-right:4px" />
+                刷新
+            </VanButton>
         </div>
 
         <CPullRefreshList
@@ -60,7 +71,9 @@
                             <span class="prl-page__item-name">{{ item.name }}</span>
                             <span class="prl-page__item-id">ID: {{ item.id }}</span>
                         </div>
-                        <i class="i-ph:caret-right-bold prl-page__item-arrow" />
+                        <VanTag round :type="item.id % 2 === 0 ? 'primary' : 'success'" size="medium">
+                            {{ item.desc }}
+                        </VanTag>
                     </div>
                 </div>
             </template>

@@ -1,16 +1,19 @@
 .prl-page {
-    height: 100vh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     background: var(--ds-bg);
 
     &__toolbar {
         display: flex;
-        gap: 10px;
+        gap: 8px;
         padding: 10px 16px;
-        background: var(--ds-surface);
+        background: var(--ds-glass-bg);
+        backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
         border-bottom: 0.5px solid var(--ds-divider);
         flex-shrink: 0;
+        overflow-x: auto;
     }
 
     &__list {

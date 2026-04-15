@@ -1,1 +1,28 @@
 export const svgList = ['logo', 'email', 'excel', 'img', 'mobile', 'pc', 'pdf', 'sdk', 'wps'];
+
+export const iconifyList = [
+    { name: 'ph:house-bold', label: 'house' },
+    { name: 'ph:user-bold', label: 'user' },
+    { name: 'ph:gear-bold', label: 'gear' },
+    { name: 'ph:bell-bold', label: 'bell' },
+    { name: 'ph:heart-bold', label: 'heart' },
+    { name: 'ph:star-bold', label: 'star' },
+    { name: 'ph:magnifying-glass-bold', label: 'search' },
+    { name: 'ph:camera-bold', label: 'camera' },
+    { name: 'ph:chat-circle-bold', label: 'chat' },
+    { name: 'ph:share-network-bold', label: 'share' },
+    { name: 'ph:map-pin-bold', label: 'location' },
+    { name: 'ph:calendar-bold', label: 'calendar' },
+    { name: 'ph:cloud-bold', label: 'cloud' },
+    { name: 'ph:lock-bold', label: 'lock' },
+    { name: 'ph:lightning-bold', label: 'lightning' },
+    { name: 'ph:palette-bold', label: 'palette' },
+    { name: 'ph:code-bold', label: 'code' },
+    { name: 'ph:terminal-bold', label: 'terminal' },
+    { name: 'ph:rocket-launch-bold', label: 'rocket' },
+    { name: 'ph:fire-bold', label: 'fire' },
+    { name: 'ph:shield-check-bold', label: 'shield' },
+    { name: 'ph:trophy-bold', label: 'trophy' },
+    { name: 'ph:chart-bar-bold', label: 'chart' },
+    { name: 'ph:paper-plane-tilt-bold', label: 'send' },
+];

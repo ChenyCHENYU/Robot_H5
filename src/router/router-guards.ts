@@ -1,11 +1,10 @@
-import type { Router } from 'vue-router';
-import { isNavigationFailure } from 'vue-router';
+import { type Router, isNavigationFailure } from 'vue-router';
 import NProgress from 'nprogress';
 import { useRouteStoreWidthOut } from '@/store/modules/route';
 import { useUserStore } from '@/store/modules/user';
 import { PageEnum } from '@/enums/pageEnum';
 
-NProgress.configure({ parent: '#app', showSpinner: false, minimum: 0.3, speed: 300 });
+NProgress.configure({ parent: '#app', showSpinner: false, minimum: 0.3, speed: 200 });
 
 let npTimer: ReturnType<typeof setTimeout>;
 
@@ -15,7 +14,7 @@ export function createRouterGuards(router: Router) {
     router.beforeEach(async (to, _from, next) => {
         // 延迟显示 NProgress，快速导航（tab切换）不会出现进度条闪烁
         clearTimeout(npTimer);
-        npTimer = setTimeout(() => NProgress.start(), 200);
+        npTimer = setTimeout(() => NProgress.start(), 80);
 
         if (whitePathList.includes(to.path as PageEnum)) {
             next();
@@ -42,7 +41,7 @@ export function createRouterGuards(router: Router) {
 
         const routeStore = useRouteStoreWidthOut();
         // 在这里设置需要缓存的组件名称
-        const keepAliveComponents = routeStore.keepAliveComponents;
+        const {keepAliveComponents} = routeStore;
 
         // 获取当前组件名
         const currentComName: any = to.matched.find(item => item.name === to.name)?.name;

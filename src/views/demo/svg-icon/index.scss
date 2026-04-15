@@ -5,13 +5,19 @@
 
     &__body { padding: 20px; }
 
+    &__tabs {
+        :deep(.van-tabs__nav) {
+            background: transparent;
+        }
+    }
+
     &__tip {
         display: flex;
         align-items: center;
         gap: 6px;
         font-size: 13px;
         color: var(--ds-text-secondary);
-        margin: 0 0 20px;
+        margin: 12px 0 20px;
         padding: 10px 14px;
         background: var(--ds-accent-light);
         border-radius: var(--ds-radius-md);
@@ -30,7 +36,7 @@
 
     &__grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 14px;
     }
 

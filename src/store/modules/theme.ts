@@ -4,7 +4,7 @@ import { setting, type IThemeState } from '@/utils/const/theme';
 import { encryptAES, decryptAES } from '@miracle-web/utils';
 import { useEnv } from '@/hooks/useEnv';
 
-const { themeMode, themeColor, themeColorList, isPageAnimate, pageAnimateType } = setting;
+const { themeMode, themeColor, themeColorList, isPageAnimate, pageAnimateType, fontScale, followSystem } = setting;
 
 const { isProdMode } = useEnv();
 
@@ -15,6 +15,8 @@ export const useThemeStore = defineStore('app-theme-store', {
         themeColorList,
         isPageAnimate,
         pageAnimateType,
+        fontScale,
+        followSystem,
     }),
     getters: {
         getThemeMode(): 'light' | 'dark' {
@@ -32,6 +34,12 @@ export const useThemeStore = defineStore('app-theme-store', {
         getPageAnimateType(): string {
             return this.pageAnimateType;
         },
+        getFontScale(): number {
+            return this.fontScale;
+        },
+        getFollowSystem(): boolean {
+            return this.followSystem;
+        },
     },
     actions: {
         setThemeMode(mode: 'light' | 'dark'): void {
@@ -39,6 +47,13 @@ export const useThemeStore = defineStore('app-theme-store', {
         },
         setPageAnimateType(type: string): void {
             this.pageAnimateType = type;
+        },
+        setFontScale(scale: number): void {
+            this.fontScale = scale;
+            document.documentElement.style.setProperty('--ds-font-scale', String(scale));
+        },
+        setFollowSystem(follow: boolean): void {
+            this.followSystem = follow;
         },
     },
     // 开启数据缓存

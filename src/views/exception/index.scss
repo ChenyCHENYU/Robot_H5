@@ -5,34 +5,111 @@
     justify-content: center;
     padding: 24px;
     background: var(--ds-bg);
+    position: relative;
+    overflow: hidden;
+
+    // 装饰光球
+    &__orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(60px);
+        opacity: 0.5;
+        pointer-events: none;
+
+        &--1 {
+            width: 200px;
+            height: 200px;
+            background: var(--ds-accent);
+            top: 15%;
+            left: -40px;
+            animation: error-float 6s ease-in-out infinite;
+        }
+
+        &--2 {
+            width: 160px;
+            height: 160px;
+            background: #ff9500;
+            bottom: 20%;
+            right: -30px;
+            animation: error-float 8s ease-in-out 2s infinite reverse;
+        }
+    }
 
     &__content {
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 340px;
     }
 
-    &__img {
-        width: 200px;
-        margin-bottom: 32px;
-        opacity: 0.6;
+    &__card {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        padding: 48px 32px 36px;
+        background: var(--ds-glass-bg);
+        backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        border: 1px solid var(--ds-glass-border);
+        border-radius: var(--ds-radius-xl);
+        box-shadow: var(--ds-glass-shine), var(--ds-glass-shadow);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &__card-shine {
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 50%;
+        background: var(--ds-glass-gradient);
+        pointer-events: none;
+    }
+
+    &__code {
+        font-size: 72px;
+        font-weight: 900;
+        letter-spacing: -2px;
+        background: linear-gradient(135deg, var(--ds-accent), #ff9500);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 1;
     }
 
     &__title {
-        font-size: 22px;
+        font-size: 20px;
         font-weight: 700;
         color: var(--ds-text-primary);
         margin: 0 0 8px;
+        position: relative;
+        z-index: 1;
     }
 
     &__desc {
-        font-size: 15px;
+        font-size: 14px;
         color: var(--ds-text-secondary);
-        margin: 0 0 32px;
+        margin: 0 0 28px;
+        line-height: 1.5;
+        position: relative;
+        z-index: 1;
     }
 
     &__btn {
         min-width: 160px;
+        position: relative;
+        z-index: 1;
     }
+}
+
+@keyframes error-float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-20px) scale(1.05); }
 }

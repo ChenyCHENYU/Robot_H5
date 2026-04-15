@@ -1,5 +1,4 @@
-import type { ActionSheetAction } from 'vant';
-import { showToast } from 'vant';
+import { type ActionSheetAction, showToast } from 'vant';
 import { useUserStore } from '@/store/modules/user';
 
 export interface SettingCell {
@@ -18,7 +17,7 @@ export const settingsGroups: SettingCell[][] = [
         { title: '主题与外观', icon: 'ph:palette-bold', color: '#34c759', to: '/themeSetting' },
     ],
     [
-        { title: '关于', icon: 'ph:info-bold', color: '#8e8e93', value: 'v1.0.0' },
+        { title: '关于', icon: 'ph:info-bold', color: '#8e8e93', to: '/about' },
     ],
     [
         { title: '退出登录', icon: 'ph:sign-out-bold', color: '#ff3b30', danger: true, action: 'logout' },

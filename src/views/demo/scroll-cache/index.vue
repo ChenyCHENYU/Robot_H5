@@ -8,7 +8,6 @@
     const loading = ref(false);
     const finished = ref(false);
     const refreshing = ref(false);
-    const cacheBox = ref(null);
 
     const onLoad = () => {
         setTimeout(() => {
@@ -21,14 +20,14 @@
 
     const onRefresh = () => { finished.value = false; loading.value = true; onLoad(); };
 
-    onMounted(() => useScrollCache(cacheBox.value));
+    onMounted(() => useScrollCache());
 </script>
 
 <template>
-    <div class="sc-page" ref="cacheBox">
+    <div class="sc-page">
         <CNavBar>
             <template #right>
-                <van-button size="small" type="primary" to="/dependence">子页面</van-button>
+                <VanButton size="small" type="primary" to="/about">子页面</VanButton>
             </template>
         </CNavBar>
 
@@ -37,8 +36,8 @@
             滑动列表后跳转子页面，返回后查看滚动位置是否恢复
         </div>
 
-        <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-            <van-list
+        <VanPullRefresh v-model="refreshing" @refresh="onRefresh">
+            <VanList
                 v-model:loading="loading"
                 :finished="finished"
                 finished-text="— 没有更多了 —"
@@ -50,7 +49,7 @@
                     <span class="sc-page__item-text">列表项 #{{ item }}</span>
                     <i class="i-ph:caret-right-bold sc-page__item-arrow" />
                 </div>
-            </van-list>
-        </van-pull-refresh>
+            </VanList>
+        </VanPullRefresh>
     </div>
 </template>

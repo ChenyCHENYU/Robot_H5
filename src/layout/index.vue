@@ -1,15 +1,17 @@
 <template>
     <div class="layout">
         <div class="layout__content">
-            <routerView v-slot="{ Component, route }">
-                <keep-alive :include="keepAliveComponents">
-                    <component :is="Component" :key="route.name" />
-                </keep-alive>
-            </routerView>
+            <RouterView v-slot="{ Component, route }">
+                <transition name="tab-fade" mode="out-in">
+                    <KeepAlive :include="keepAliveComponents">
+                        <component :is="Component" :key="route.name" />
+                    </KeepAlive>
+                </transition>
+            </RouterView>
         </div>
 
-        <van-tabbar route fixed placeholder class="layout__tabbar">
-            <van-tabbar-item v-for="menu in getMenus[0].children" :key="menu.name" replace :to="menu.path">
+        <VanTabbar route fixed placeholder class="layout__tabbar">
+            <VanTabbarItem v-for="menu in getMenus[0].children" :key="menu.name" replace :to="menu.path">
                 <template #icon="{ active }">
                     <C_Icon
                         :name="String(menu.meta?.icon || '')"
@@ -18,8 +20,8 @@
                     />
                 </template>
                 {{ menu.meta?.title }}
-            </van-tabbar-item>
-        </van-tabbar>
+            </VanTabbarItem>
+        </VanTabbar>
     </div>
 </template>
 
