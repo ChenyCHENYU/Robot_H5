@@ -21,6 +21,7 @@
 - [构建与部署](#构建与部署)
 - [工程规范](#工程规范)
 - [最佳实践](#最佳实践)
+- [@robot/h5-core 通用能力包](#roboth5-core-通用能力包)
 
 ---
 
@@ -485,7 +486,7 @@ border-radius: 16px;
 | `<CSvgIcon>` | 自定义 SVG | `<CSvgIcon name="logo" :size="24" />` |
 | `<CPullRefreshList>` | 下拉刷新 + 无限滚动 | `<CPullRefreshList :request="fn" />` |
 | `<CWebSite>` | WebView 容器 | `<CWebSite />` |
-| `<CVirtualStatusBar>` | 虚拟状态栏（桌面模拟） | 自动注入 |
+| `<C_VirtualStatusBar>` | 虚拟状态栏（桌面模拟） | 自动注入 |
 
 > 全局组件以 `C_` 开头命名（`src/components/C_xxx/`），Vant 组件也自动导入。
 
@@ -717,6 +718,80 @@ pnpm cz   # 交互式规范提交（推荐）
 | VueUse | `useStorage`、`useDark` 等自动可用 |
 | Vant 组件 | `<van-button>`、`<van-field>` 等自动注册 |
 | 全局组件 | `<CNavBar>`、`<CIcon>` 等自动注册 |
+
+---
+
+## @robot/h5-core 通用能力包
+
+> 本项目配套的**企业级移动端通用能力包**，详细架构设计见 [robot-h5-core/DESIGN.md](../robot-h5-core/DESIGN.md)。
+
+### 核心理念：包做厚、项目做薄
+
+`@robot/h5-core` 封装了移动端所有复杂的原生能力接入逻辑。业务项目只需**配置 + 引用**，即可开箱获得完整能力，大幅提升交付效率。
+
+### 能力清单
+
+| 类别 | 能力 | 说明 |
+|------|------|------|
+| **Hooks** | `useCamera` | 拍照/选图 → File/Base64 + 自动压缩 |
+| | `useLocation` | GPS 定位，自动坐标系转换（GCJ-02/WGS-84） |
+| | `useQrScanner` | 二维码/条形码扫描 |
+| | `useFileUpload` | 分片上传 + 进度条 + 自动压缩 |
+| | `useSignature` | Canvas 手写签名板 |
+| | `useWatermark` | 拍照水印（时间 + 地点 + 人员） |
+| | `usePermission` | 系统权限请求/检查 |
+| | ...共 14 个 | 覆盖主流移动端场景 |
+| **Bridge** | `NativeBridge` | APP WebView 适配 |
+| | `DingtalkBridge` | 钉钉适配 |
+| | `WechatBridge` | 微信/企微适配 |
+| | `BrowserBridge` | 浏览器降级 |
+| **Utils** | `image` | 压缩/Base64/Blob 互转 |
+| | `coord` | GCJ-02 ↔ WGS-84 坐标转换 |
+| | `validate` | 手机号/身份证/邮箱/统一社会信用代码 |
+| | `format` | 日期/金额格式化 |
+| | ...共 6 个模块 | 纯函数，零依赖，tree-shaking 友好 |
+
+### 快速上手
+
+```bash
+pnpm add @robot/h5-core
+```
+
+```ts
+// main.ts — 一次配置，全局生效
+import { defineAppConfig } from '@robot/h5-core';
+
+defineAppConfig(app, {
+  bridge: { platform: 'auto', nativeUA: 'robot-app' },
+  upload: { action: '/api/file/upload', chunkSize: 2 * 1024 * 1024 },
+  image:  { maxSize: 1024, quality: 0.8 },
+});
+```
+
+```vue
+<script setup lang="ts">
+// 页面中使用 — 2 行代码，压缩/Bridge/错误处理全在包里
+import { useCamera } from '@robot/h5-core/hooks';
+
+const { photo, loading, capture } = useCamera();
+</script>
+```
+
+### 扩展机制
+
+项目可注册自定义 Bridge 适配器或覆盖 Hook 行为，包本体代码永远不变：
+
+```ts
+import { registerAdapter } from '@robot/h5-core/bridge';
+
+// 接入自研 APP 私有协议
+registerAdapter('my-native', {
+  camera: { async capture(opts) { return window.MyBridge.invokeCamera(opts); } },
+  // 未实现的能力自动 fallback 到 BrowserBridge
+});
+```
+
+> 完整架构设计（三层模型、配置 API、测试策略、发布规范）参见 [robot-h5-core/DESIGN.md](../robot-h5-core/DESIGN.md)。
 
 ---
 

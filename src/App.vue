@@ -1,7 +1,7 @@
 <template>
     <VanConfigProvider :theme="getThemeMode" :theme-vars="themeVarsCache">
         <div class="h-screen w-full flex flex-col overflow-hidden">
-            <CVirtualStatusBar />
+            <C_VirtualStatusBar />
             <!-- 用真实 div 承接 flex-1，避免 routerView v-slot fallthrough
                  把样式传递到子路由组件根元素导致内部滚动失效
                  overflow-y-auto 让非 Layout 的子页面（demo 等）可滚动 -->
