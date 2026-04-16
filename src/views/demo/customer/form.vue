@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import './form.scss';
     import { showToast, showConfirmDialog } from 'vant';
-    import { MOCK_CUSTOMERS, CATEGORY_MAP } from './data';
+    import { MOCK_CUSTOMERS, CATEGORY_MAP, CLASS_OPTIONS, CATEGORY_OPTIONS } from './data';
 
     defineOptions({ name: 'CustomerForm' });
 
@@ -40,14 +40,12 @@
 
     // ── 分类选择 ──
     const showClassPicker = ref(false);
-    const classOptions = ['重要客户', '普通客户', '潜在客户'];
     const onClassConfirm = ({ selectedValues }: { selectedValues: string[] }) => {
         form.customerClass = selectedValues[0];
         showClassPicker.value = false;
     };
 
     const showCategoryPicker = ref(false);
-    const categoryOptions = Object.entries(CATEGORY_MAP).map(([k, v]) => ({ text: v.text, value: k }));
     const onCategoryConfirm = ({ selectedValues }: { selectedValues: string[] }) => {
         form.category = selectedValues[0];
         showCategoryPicker.value = false;
@@ -209,7 +207,7 @@
         <!-- Picker 弹出 -->
         <VanPopup v-model:show="showClassPicker" position="bottom" round>
             <VanPicker
-                :columns="classOptions"
+                :columns="CLASS_OPTIONS"
                 @confirm="onClassConfirm"
                 @cancel="showClassPicker = false"
             />
@@ -217,7 +215,7 @@
 
         <VanPopup v-model:show="showCategoryPicker" position="bottom" round>
             <VanPicker
-                :columns="categoryOptions"
+                :columns="CATEGORY_OPTIONS"
                 @confirm="onCategoryConfirm"
                 @cancel="showCategoryPicker = false"
             />

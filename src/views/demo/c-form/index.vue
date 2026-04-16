@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import { showToast, showConfirmDialog } from 'vant';
+    import { FAULT_OPTIONS, FAULT_LABEL_MAP, URGENCY_OPTIONS, PART_OPTIONS } from './data';
 
     defineOptions({ name: 'CFormDemo' });
 
@@ -18,29 +19,14 @@
         notifyManager: true,
     });
 
+    // ── 故障类型 ──
     const showFaultPicker = ref(false);
-    const faultColumns = ['机械故障', '电气故障', '液压故障', '仪表异常', '其他'];
-    const faultValueMap: Record<string, string> = {
-        机械故障: 'mechanical',
-        电气故障: 'electrical',
-        液压故障: 'hydraulic',
-        仪表异常: 'instrument',
-        其他: 'other',
-    };
-    const faultLabelMap: Record<string, string> = Object.fromEntries(
-        Object.entries(faultValueMap).map(([k, v]) => [v, k]),
-    );
     const onFaultConfirm = ({ selectedValues }: { selectedValues: string[] }) => {
-        form.faultType = faultValueMap[selectedValues[0]] ?? selectedValues[0];
+        form.faultType = selectedValues[0] ?? '';
         showFaultPicker.value = false;
     };
 
-    const partOptions = [
-        { name: '主体', value: 'body' },
-        { name: '传动系统', value: 'drive' },
-        { name: '控制系统', value: 'control' },
-        { name: '润滑系统', value: 'lube' },
-    ];
+    // ── 故障部位 ──
     const togglePart = (val: string) => {
         const idx = form.faultParts.indexOf(val);
         if (idx >= 0) form.faultParts.splice(idx, 1);
@@ -70,12 +56,6 @@
             .then(() => router.back())
             .catch(() => {});
     };
-
-    const urgencyConfig = [
-        { value: 'normal', label: '一般', color: 'var(--ds-text-secondary)' },
-        { value: 'urgent', label: '紧急', color: 'var(--ds-warning)' },
-        { value: 'critical', label: '特急', color: 'var(--ds-danger)' },
-    ];
 </script>
 
 <template>
@@ -139,7 +119,7 @@
                     <span>故障信息</span>
                 </div>
                 <VanField
-                    :model-value="faultLabelMap[form.faultType] ?? ''"
+                    :model-value="FAULT_LABEL_MAP[form.faultType] ?? ''"
                     name="faultType"
                     label="故障类型"
                     placeholder="请选择"
@@ -154,7 +134,7 @@
                     <span class="repair-form__row-label">紧急程度</span>
                     <div class="repair-form__pills">
                         <button
-                            v-for="u in urgencyConfig"
+                            v-for="u in URGENCY_OPTIONS"
                             :key="u.value"
                             type="button"
                             class="repair-form__pill"
@@ -170,7 +150,7 @@
                     <span class="repair-form__row-label">故障部位</span>
                     <div class="repair-form__chips">
                         <button
-                            v-for="p in partOptions"
+                            v-for="p in PART_OPTIONS"
                             :key="p.value"
                             type="button"
                             class="repair-form__chip"
@@ -254,7 +234,7 @@
 
         <VanPopup v-model:show="showFaultPicker" position="bottom" round>
             <VanPicker
-                :columns="faultColumns"
+                :columns="FAULT_OPTIONS"
                 @confirm="onFaultConfirm"
                 @cancel="showFaultPicker = false"
             />

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import type { TableColumn, TableOperation } from '@/components/C_Table/index.vue';
+    import type { TableColumn, TableOperation } from '@/components/C_Table/types';
 
     defineOptions({ name: 'CTableDemo' });
 
