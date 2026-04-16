@@ -182,6 +182,30 @@ const routeModuleList: Array<RouteRecordRaw> = [
     },
     component: () => import('@/views/demo/c-table/index.vue'),
   },
+  {
+    path: '/customerArchive',
+    name: 'CustomerArchive',
+    meta: {
+      title: '客户档案',
+    },
+    component: () => import('@/views/demo/customer/index.vue'),
+  },
+  {
+    path: '/customerDetail',
+    name: 'CustomerDetail',
+    meta: {
+      title: '客户档案详情',
+    },
+    component: () => import('@/views/demo/customer/detail.vue'),
+  },
+  {
+    path: '/customerForm',
+    name: 'CustomerForm',
+    meta: {
+      title: '新增客户',
+    },
+    component: () => import('@/views/demo/customer/form.vue'),
+  },
 ];
 
 export default routeModuleList;

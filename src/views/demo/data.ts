@@ -112,4 +112,11 @@ export const menuItems: MenuItem[] = [
     icon: 'ph:table-bold',
     color: '#5856D6',
   },
+  {
+    title: '客户档案',
+    desc: '列表 · 搜索过滤 · 详情 · 新增编辑',
+    route: '/customerArchive',
+    icon: 'ph:address-book-bold',
+    color: '#007AFF',
+  },
 ];

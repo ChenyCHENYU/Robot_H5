@@ -7,96 +7,109 @@
     const submitting = ref(false);
 
     const formValues = ref<Record<string, any>>({
-        username: '',
+        deviceName: '',
+        deviceCode: '',
+        faultType: '',
+        urgency: '',
+        location: '',
+        reporter: '',
         phone: '',
-        password: '',
-        gender: '',
-        role: '',
-        bio: '',
-        notify: true,
-        interests: [],
+        faultDesc: '',
+        notifyManager: true,
+        faultParts: [],
     });
 
     const fields: FormField[] = [
         {
-            key: 'username',
-            label: '用户名',
-            placeholder: '请输入用户名',
+            key: 'deviceName',
+            label: '设备名称',
+            placeholder: '请输入设备名称',
+            prefixIcon: 'i-ph:gear-bold',
+            required: true,
+            rules: [{ required: true, message: '请输入设备名称' }],
+        },
+        {
+            key: 'deviceCode',
+            label: '设备编号',
+            placeholder: '如 EQ-2024-001',
+            prefixIcon: 'i-ph:barcode-bold',
+            required: true,
+            rules: [{ required: true, message: '请输入设备编号' }],
+        },
+        {
+            key: 'faultType',
+            label: '故障类型',
+            type: 'select',
+            required: true,
+            options: [
+                { text: '机械故障', value: 'mechanical' },
+                { text: '电气故障', value: 'electrical' },
+                { text: '液压故障', value: 'hydraulic' },
+                { text: '仪表异常', value: 'instrument' },
+                { text: '其他', value: 'other' },
+            ],
+        },
+        {
+            key: 'urgency',
+            label: '紧急程度',
+            type: 'radio',
+            required: true,
+            options: [
+                { text: '一般', value: 'normal' },
+                { text: '紧急', value: 'urgent' },
+                { text: '特急', value: 'critical' },
+            ],
+        },
+        {
+            key: 'faultParts',
+            label: '故障部位',
+            type: 'checkbox',
+            options: [
+                { text: '主体', value: 'body' },
+                { text: '传动系统', value: 'drive' },
+                { text: '控制系统', value: 'control' },
+                { text: '润滑系统', value: 'lube' },
+            ],
+        },
+        {
+            key: 'location',
+            label: '所在车间',
+            placeholder: '请输入车间位置',
+            prefixIcon: 'i-ph:map-pin-bold',
+        },
+        {
+            key: 'reporter',
+            label: '报修人',
+            placeholder: '请输入姓名',
             prefixIcon: 'i-ph:user-bold',
             required: true,
-            rules: [{ min: 2, max: 16, message: '用户名 2-16 个字符' }],
+            rules: [{ required: true, message: '请输入报修人' }],
         },
         {
             key: 'phone',
-            label: '手机号',
+            label: '联系电话',
             type: 'digit',
             placeholder: '请输入手机号',
             prefixIcon: 'i-ph:phone-bold',
             maxlength: 11,
             required: true,
-            rules: [{ pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确' }],
-        },
-        {
-            key: 'password',
-            label: '密码',
-            type: 'password',
-            placeholder: '字母 + 数字，至少 6 位',
-            prefixIcon: 'i-ph:lock-bold',
-            required: true,
             rules: [
-                {
-                    validator: (val) => {
-                        if (!val || val.length < 6) return '密码至少 6 位';
-                        if (!/[A-Za-z]/.test(val) || !/\d/.test(val)) return '需包含字母和数字';
-                        return true;
-                    },
-                },
+                { required: true, message: '请输入联系电话' },
+                { pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确' },
             ],
         },
         {
-            key: 'gender',
-            label: '性别',
-            type: 'radio',
-            options: [
-                { text: '男', value: 'male' },
-                { text: '女', value: 'female' },
-                { text: '保密', value: 'secret' },
-            ],
-        },
-        {
-            key: 'role',
-            label: '角色',
-            type: 'select',
-            required: true,
-            options: [
-                { text: '普通用户', value: 'user' },
-                { text: '管理员', value: 'admin' },
-                { text: '超级管理员', value: 'super' },
-            ],
-        },
-        {
-            key: 'interests',
-            label: '兴趣',
-            type: 'checkbox',
-            options: [
-                { text: '前端', value: 'fe' },
-                { text: '后端', value: 'be' },
-                { text: 'AI', value: 'ai' },
-                { text: '移动端', value: 'mobile' },
-            ],
-        },
-        {
-            key: 'bio',
-            label: '简介',
+            key: 'faultDesc',
+            label: '故障描述',
             type: 'textarea',
-            placeholder: '写点什么...',
-            maxlength: 200,
+            placeholder: '请描述故障现象、发生时间等',
+            maxlength: 300,
             showWordLimit: true,
             rows: 3,
         },
         {
-            key: 'notify',
-            label: '消息通知',
+            key: 'notifyManager',
+            label: '通知主管',
             type: 'switch',
         },
     ];
@@ -105,7 +118,7 @@
         submitting.value = true;
         await new Promise((r) => setTimeout(r, 1200));
         submitting.value = false;
-        console.log('表单提交：', values);
+        console.log('报修提交：', values);
     };
 </script>
 
@@ -116,8 +129,8 @@
         <div class="c-form-demo__body">
             <!-- Section header -->
             <div class="c-form-demo__section-head">
-                <h2 class="c-form-demo__title">用户注册</h2>
-                <p class="c-form-demo__desc">配置驱动，支持 8 种字段类型与内置验证</p>
+                <h2 class="c-form-demo__title">设备报修</h2>
+                <p class="c-form-demo__desc">配置驱动 · 内置验证 · 多类型字段</p>
             </div>
 
             <!-- Form card -->
@@ -127,7 +140,7 @@
                     v-model:values="formValues"
                     :fields="fields"
                     :loading="submitting"
-                    submit-text="注册"
+                    submit-text="提交报修"
                     reset-text="重置"
                     label-width="5em"
                     @submit="handleSubmit"

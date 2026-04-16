@@ -131,7 +131,7 @@
             showActions: true,
             labelWidth: '6em',
             inputAlign: 'right',
-            showError: true,
+            showError: false,
             scrollToError: true,
         },
     );

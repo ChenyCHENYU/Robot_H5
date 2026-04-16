@@ -1,0 +1,87 @@
+.customer-form {
+    min-height: 100dvh;
+    background: var(--ds-bg);
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 72px;
+
+    // ── 分区 ──
+    &__section {
+        margin-bottom: 4px;
+
+        &-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px 4px;
+        }
+
+        &-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ds-text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            &::before {
+                content: '';
+                width: 3px;
+                height: 14px;
+                border-radius: 2px;
+                background: var(--ds-accent);
+            }
+        }
+    }
+
+    &__toggle {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--ds-text-tertiary);
+    }
+
+    &__cells {
+        :deep(.van-field) {
+            font-size: 13px;
+            padding: 10px 14px;
+        }
+
+        :deep(.van-field__label) {
+            width: 5em;
+            color: var(--ds-text-secondary);
+        }
+
+        :deep(.van-field__control) {
+            color: var(--ds-text-primary);
+        }
+
+        :deep(.van-field__error-message) {
+            font-size: 11px;
+        }
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    // ── 底部按钮 ──
+    &__footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        gap: 12px;
+        padding: 8px 16px;
+        padding-bottom: calc(8px + env(safe-area-inset-bottom));
+        background: var(--ds-bg);
+        border-top: 0.5px solid var(--ds-divider);
+
+        .van-button {
+            height: 40px;
+            font-size: 14px;
+        }
+    }
+}
