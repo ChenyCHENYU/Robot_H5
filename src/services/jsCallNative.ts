@@ -17,7 +17,7 @@ export default class JsCallNative {
                 router.go(-1);
             }
             if (isAndroid) {
-                window[this.AppKey].back();
+                (window as Record<string, any>)[this.AppKey].back();
             }
             if (isiOS) {
                 window.webkit.messageHandlers.back.postMessage({});

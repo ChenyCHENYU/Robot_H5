@@ -6,14 +6,15 @@ class inputTop {
 
     lastInnerHeight = window.innerHeight;
 
-    calcScrollTop = (visualHeight, scrollObj) => {
+    calcScrollTop = (visualHeight: number | undefined, scrollObj: Element | Window) => {
         scrollObj = scrollObj || window;
         const currentInputTop = this.currentInput.getBoundingClientRect().top;
         // 已经偏移（滚动）的量
         let yOffset = window.pageYOffset;
-        if (scrollObj !== window) {
+        if (scrollObj !== window && scrollObj instanceof Element) {
             yOffset = scrollObj.scrollTop;
         }
+        if (!visualHeight) return;
         // 不在可视视口中
         // 被软键盘遮住
         if (currentInputTop > visualHeight) {
@@ -24,10 +25,10 @@ class inputTop {
         }
     };
 
-    handleClickPage = e => {
-        const el = e || window.event;
-        if (/^input$/i.test(el.target.tagName)) {
-            this.currentInput = el.target;
+    handleClickPage = (e: Event) => {
+        const el = e.target as HTMLElement | null;
+        if (el && /^input$/i.test(el.tagName)) {
+            this.currentInput = el;
         }
     };
 
@@ -44,7 +45,7 @@ class inputTop {
         }
     };
 
-    focusinPage = e => {
+    focusinPage = (e: FocusEvent) => {
         this.currentInput = (e || window.event).target;
         setTimeout(() => {
             // 第二个参数采用默认的window，在ios中不论页面布局怎样，只要软键盘出现前已经出现过可视视口的，那么软键盘出现后必然能通过webview平移看得到

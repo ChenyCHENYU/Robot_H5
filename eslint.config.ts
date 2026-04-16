@@ -154,7 +154,6 @@ export default defineConfigWithVueTs(
       'src/assets/images/**/*',
       '**/*.d.ts',
       '**/auto-imports.d.ts',
-      'src/views/**/components/*.vue',
       'scripts/**/*',
     ],
   },

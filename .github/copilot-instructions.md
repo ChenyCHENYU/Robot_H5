@@ -85,7 +85,9 @@ export const MOCK_CUSTOMERS: Customer[] = [ ... ];
 
 推送到 `main` 分支后 CI 自动根据 commit type 升版本号：
 - `fix` → patch, `feat` → minor, `BREAKING CHANGE` → major
+- CI 发版前自动执行 `pnpm type-check` 质量门禁
 - 基于 standard-version + `.versionrc.cjs`
+- commitlint 允许的所有 type（`wip` / `deps` / `test` 等）必须在 `.versionrc.cjs` 的 `types` 中同步声明（可 `hidden: true`）
 
 ### 10. 页面生成后检查清单
 

@@ -22,7 +22,7 @@ const ob = new IntersectionObserver(entires => {
  * @param {HTMLElement} el - 要判断的元素
  * @returns {boolean} - 如果元素在视图范围之外则返回true，否则返回false
  */
-function isBelowViewPort(el) {
+function isBelowViewPort(el: HTMLElement) {
     const rect = el.getBoundingClientRect();
     return rect.top > window.innerHeight;
 }
@@ -46,7 +46,7 @@ const slideIn: Directive = {
                         opacity: 0.5,
                     },
                     {
-                        transform: `translateY(0px)`,
+                        transform: 'translateY(0px)',
                         opacity: 1,
                     },
                 ],

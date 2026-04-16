@@ -16,7 +16,6 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
-        "noImplicitAny": false,
         "paths": {
             "@/*": ["./src/*"],
             "#/*": ["./types/*"]
@@ -24,17 +23,14 @@
         "types": ["vite/client", "node", "vue"]
     },
     "vueCompilerOptions": {
-        "target": 3.3
+        "target": 3.5
     },
     "include": [
         "src/**/*",
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "src/**/*.vue",
         "types/**/*.d.ts",
         "mock/**/*.ts",
         "build/**/*.ts",
         "vite.config.ts"
     ],
-    "exclude": ["node_modules", "dist", "**/*.js", "build/vite/plugin/imageminCompress.ts"]
+    "exclude": ["node_modules", "dist", "**/*.js"]
 }

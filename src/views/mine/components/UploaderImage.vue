@@ -1,5 +1,5 @@
 <template>
-    <van-uploader
+    <VanUploader
         :max-size="700 * 1024"
         :max-count="1"
         :before-read="beforeRead"
@@ -9,21 +9,18 @@
         <template #default>
             <slot name="default" />
         </template>
-    </van-uploader>
+    </VanUploader>
 </template>
 
 <script setup lang="ts">
-    import { showFailToast } from 'vant';
+    import { type UploaderFileListItem, showFailToast } from 'vant';
 
-    function beforeRead(file) {
-        if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg') {
-            return true;
-        }
-        showFailToast('请上传正确格式的图片');
-        return false;
+    function beforeRead(file: File | File[]) {
+        const files = Array.isArray(file) ? file : [file];
+        return files.every(f => ['image/jpeg', 'image/png', 'image/jpg'].includes(f.type)) || (showFailToast('请上传正确格式的图片'), false);
     }
 
-    function afterRead(file) {
+    function afterRead(file: UploaderFileListItem | UploaderFileListItem[]) {
         console.log('%c [ file ]-43', 'font-size:13px; background:pink; color:#bf2c9f;', file);
         // 这里写上传逻辑
     }

@@ -134,14 +134,14 @@
         genderValues: [0],
     });
 
-    function handleGender({ selectedOptions }) {
+    function handleGender({ selectedOptions }: { selectedOptions: { text: string; value: number }[] }) {
         state.genderText = selectedOptions[0].text;
         showToast(JSON.stringify(selectedOptions));
         // do something
         showGenderPicker.value = false;
     }
 
-    function handleIndustry({ selectedOptions }) {
+    function handleIndustry({ selectedOptions }: { selectedOptions: { text: string; value: number }[] }) {
         state.industryText = selectedOptions[0].text;
         showToast(JSON.stringify(selectedOptions));
         // do something
@@ -154,7 +154,7 @@
 
     function initState() {
         Object.keys(state).forEach(key => {
-            state[key] = userStore.getUserInfo[key];
+            (state as Record<string, unknown>)[key] = (userStore.getUserInfo as Record<string, unknown>)[key];
         });
         // set field text value.
         state.genderText = getFromText(genderColumns, gender) ?? '';

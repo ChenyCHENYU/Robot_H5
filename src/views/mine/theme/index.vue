@@ -207,7 +207,7 @@
         }
     }
 
-    function handleSaveAnimateType({ selectedOptions }) {
+    function handleSaveAnimateType({ selectedOptions }: { selectedOptions: { text: string; value: string }[] }) {
         animateState.text = selectedOptions[0].text;
         themeStore.setPageAnimateType(selectedOptions[0].value);
         animateState.showPicker = false;

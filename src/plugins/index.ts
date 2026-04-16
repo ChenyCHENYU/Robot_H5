@@ -24,7 +24,7 @@ inputTop.init();
 // 预注册 Iconify 图标集到运行时，消除首次渲染时的 CDN 网络请求
 setupIconify();
 
-export const setupPlugins = (app) => {
+export const setupPlugins = (app: import('vue').App) => {
   vantPlugins(app); // UI组件
   useDirectives(app); // 指令
   useDevtool(); // 禁止开发工具

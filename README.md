@@ -30,7 +30,7 @@
 ```bash
 # 环境要求
 node >= 20.0.0
-pnpm >= 8.15.6
+pnpm >= 10.0.0
 
 # 安装依赖
 pnpm install
@@ -656,6 +656,9 @@ pnpm cz   # 交互式规范提交（推荐）
 | `style` | 代码格式（不改逻辑） |
 | `build` | 构建/打包 |
 | `chore` | 其他杂项 |
+| `wip` | 开发中（不进 CHANGELOG） |
+| `deps` | 依赖更新（不进 CHANGELOG） |
+| `test` | 测试（不进 CHANGELOG） |
 
 **Git Hooks**：`pre-commit` 运行 lint-staged，`commit-msg` 校验提交格式。
 
@@ -685,6 +688,7 @@ pnpm type-check        # 运行 vue-tsc --noEmit，必须零错误
 | 命令 | 说明 |
 |------|------|
 | `pnpm dev` | 启动开发服务器 |
+| `pnpm dev:prod` | 以生产模式启动 dev server |
 | `pnpm build:prod` | 生产构建 |
 | `pnpm build:test` | 测试构建 |
 | `pnpm preview:dist` | 预览构建产物 |
