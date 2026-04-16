@@ -15,7 +15,7 @@ UI 库 Vant 4（自动导入），原子 CSS 为 UnoCSS，状态管理 Pinia。
 
 | 文件 | 职责 |
 |------|------|
-| `index.vue` | 模板 + 逻辑，`<script setup lang="ts">` 在上，`<template>` 在下，**禁止 `<style>` 块** |
+| `index.vue` | 模板 + 逻辑，`<template>` 在上，`<script setup lang="ts">` 在下，**禁止 `<style>` 块** |
 | `index.scss` | 样式，BEM 命名，使用 `--ds-*` 设计令牌，通过 `import './index.scss'` 引入 |
 | `data.ts` | 类型定义 + 常量映射 + 静态数据 + Mock 数据 |
 

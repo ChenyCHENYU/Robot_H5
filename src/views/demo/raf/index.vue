@@ -1,12 +1,3 @@
-<script setup lang="ts">
-    import './index.scss';
-    import { renderModes } from './data';
-    import NormalComplexBlock from './components/NormalComplexBlock.vue';
-    import OptimizedComplexBlock from './components/OptimizedComplexBlock.vue';
-
-    const renderMode = ref<'normal' | 'optimized'>('normal');
-</script>
-
 <template>
     <div class="raf-page">
         <C_NavBar />
@@ -46,3 +37,12 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './index.scss';
+    import { renderModes } from './data';
+    import NormalComplexBlock from './components/NormalComplexBlock.vue';
+    import OptimizedComplexBlock from './components/OptimizedComplexBlock.vue';
+
+    const renderMode = ref<'normal' | 'optimized'>('normal');
+</script>

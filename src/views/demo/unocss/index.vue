@@ -1,21 +1,3 @@
-<script setup lang="ts">
-    import './index.scss';
-    import { iconList } from './data';
-
-    const addAnimation = () => {
-        document.querySelector('.unocss-demo__text')?.classList.add('animate-bounce-alt', 'animate-count-infinite', 'animate-duration-1s');
-    };
-    const removeAnimation = () => {
-        document.querySelector('.unocss-demo__text')?.classList.remove('animate-bounce-alt', 'animate-count-infinite', 'animate-duration-1s');
-    };
-    const changeFont = () => {
-        document.querySelector('.unocss-demo__text')?.classList.add('font-msz');
-    };
-    const resetFont = () => {
-        document.querySelector('.unocss-demo__text')?.classList.remove('font-msz');
-    };
-</script>
-
 <template>
     <div class="unocss-page">
         <C_NavBar />
@@ -63,3 +45,21 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './index.scss';
+    import { iconList } from './data';
+
+    const addAnimation = () => {
+        document.querySelector('.unocss-demo__text')?.classList.add('animate-bounce-alt', 'animate-count-infinite', 'animate-duration-1s');
+    };
+    const removeAnimation = () => {
+        document.querySelector('.unocss-demo__text')?.classList.remove('animate-bounce-alt', 'animate-count-infinite', 'animate-duration-1s');
+    };
+    const changeFont = () => {
+        document.querySelector('.unocss-demo__text')?.classList.add('font-msz');
+    };
+    const resetFont = () => {
+        document.querySelector('.unocss-demo__text')?.classList.remove('font-msz');
+    };
+</script>

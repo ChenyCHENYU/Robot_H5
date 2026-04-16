@@ -1,13 +1,3 @@
-<script setup lang="ts">
-    import './index.scss';
-    import { useUserStore } from '@/store/modules/user';
-
-    const { pkg, lastBuildTime } = __APP_INFO__;
-    const { dependencies, devDependencies, name, version } = pkg;
-    const userStore = useUserStore();
-    const { avatar } = userStore.userInfo;
-</script>
-
 <template>
     <div class="dep-page">
         <C_NavBar />
@@ -47,3 +37,13 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './index.scss';
+    import { useUserStore } from '@/store/modules/user';
+
+    const { pkg, lastBuildTime } = __APP_INFO__;
+    const { dependencies, devDependencies, name, version } = pkg;
+    const userStore = useUserStore();
+    const { avatar } = userStore.userInfo;
+</script>

@@ -1,36 +1,135 @@
+<template>
+    <VanPullRefresh
+        v-model="isRefreshing"
+        class="c-table"
+        :disabled="disablePullRefresh"
+        @refresh="handleRefresh"
+    >
+        <VanList
+            v-model:loading="isLoading"
+            v-model:error="isError"
+            :finished="isFinished"
+            :immediate-check="false"
+            error-text="加载失败，点击重试"
+            finished-text="没有更多了"
+            @load="handleLoad"
+        >
+            <!-- 空状态 -->
+            <template v-if="!data.length && !isLoading && !isRefreshing" #default>
+                <slot name="empty">
+                    <VanEmpty class="c-table__empty" :description="emptyText">
+                        <template #image>
+                            <i class="i-ph:clipboard-text-bold c-table__empty-icon" />
+                        </template>
+                    </VanEmpty>
+                </slot>
+            </template>
+
+            <!-- 数据列表 -->
+            <div v-if="data.length" class="c-table__list">
+                <div
+                    v-for="row in data"
+                    :key="(row as any)[rowKey]"
+                    class="c-table__card"
+                >
+                    <!-- 卡片头部：主标题 + 右侧列/操作 -->
+                    <div class="c-table__card-head">
+                        <div class="c-table__card-head-left">
+                            <template v-if="primaryColumn">
+                                <template v-if="primaryColumn.slot">
+                                    <slot :name="`cell-${primaryColumn.key}`" :row="row" :col="primaryColumn" />
+                                </template>
+                                <span v-else class="c-table__primary">
+                                    {{ renderValue(primaryColumn, row) }}
+                                </span>
+                            </template>
+                            <template v-if="secondaryColumn">
+                                <template v-if="secondaryColumn.slot">
+                                    <slot :name="`cell-${secondaryColumn.key}`" :row="row" :col="secondaryColumn" />
+                                </template>
+                                <span v-else class="c-table__secondary">
+                                    {{ renderValue(secondaryColumn, row) }}
+                                </span>
+                            </template>
+                        </div>
+
+                        <div class="c-table__card-head-right">
+                            <template v-for="col in rightColumns" :key="col.key">
+                                <template v-if="col.slot">
+                                    <slot :name="`cell-${col.key}`" :row="row" :col="col" />
+                                </template>
+                                <template v-else-if="col.tagMap">
+                                    <VanTag
+                                        v-if="renderTag(col, row)"
+                                        :type="renderTag(col, row)!.type"
+                                        round
+                                        size="medium"
+                                    >
+                                        {{ renderTag(col, row)!.text }}
+                                    </VanTag>
+                                </template>
+                                <span v-else class="c-table__right-val">
+                                    {{ renderValue(col, row) }}
+                                </span>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- meta 行 -->
+                    <div v-if="metaColumns.length" class="c-table__card-meta">
+                        <div
+                            v-for="col in metaColumns"
+                            :key="col.key"
+                            class="c-table__meta-item"
+                        >
+                            <span class="c-table__meta-label">{{ col.label }}</span>
+                            <template v-if="col.slot">
+                                <slot :name="`cell-${col.key}`" :row="row" :col="col" />
+                            </template>
+                            <template v-else-if="col.tagMap">
+                                <VanTag
+                                    v-if="renderTag(col, row)"
+                                    :type="renderTag(col, row)!.type"
+                                    size="medium"
+                                >
+                                    {{ renderTag(col, row)!.text }}
+                                </VanTag>
+                            </template>
+                            <span v-else class="c-table__meta-val">{{ renderValue(col, row) }}</span>
+                        </div>
+                    </div>
+
+                    <!-- 操作按钮行 -->
+                    <div v-if="visibleOps(row).length" class="c-table__card-ops">
+                        <VanButton
+                            v-for="op in visibleOps(row)"
+                            :key="op.label"
+                            size="small"
+                            round
+                            :type="op.type || 'primary'"
+                            :plain="op.type !== 'danger'"
+                            :disabled="op.disabled ? op.disabled(row) : false"
+                            class="c-table__op-btn"
+                            @click.stop="op.onClick(row)"
+                        >
+                            <i v-if="op.icon" :class="[op.icon, 'c-table__op-icon']" />
+                            {{ op.label }}
+                        </VanButton>
+                    </div>
+                </div>
+            </div>
+        </VanList>
+    </VanPullRefresh>
+</template>
+
 <script setup lang="ts" generic="T extends Record<string, any>">
     /**
      * C_Table — 移动端配置驱动列表/表格组件
-     *
-     * 设计目标：
-     *  1. 配置驱动：通过 columns 数组描述列，支持自定义渲染插槽
-     *  2. 卡片式布局：每行数据渲染为一张卡片（更适合移动端）
-     *  3. 支持下拉刷新 + 上拉加载（集成 van-pull-refresh + van-list）
-     *  4. 操作列：通过 operations 配置行内操作按钮，支持条件显示/禁用
-     *  5. 状态列：通过 tagMap 配置 Tag 颜色映射
-     *  6. 空状态/加载/错误 三种空屏处理
-     *
-     * 用法示例：
-     *  <C_Table
-     *    :columns="columnsDef"
-     *    :data="tableData"
-     *    :total="total"
-     *    :loading="loading"
-     *    @load="onLoad"
-     *    @refresh="onRefresh"
-     *  >
-     *    <template #cell-status="{ row }">
-     *      <van-tag :type="statusMap[row.status]">{{ row.statusText }}</van-tag>
-     *    </template>
-     *  </C_Table>
      */
     import './index.scss';
     import type { TagType, TableOperation, TableColumn, CTableInstance } from '#/Table/type';
 
     defineOptions({ name: 'C_Table' });
-
-    // 类型定义：#/Table/type.ts
-    // 下方不再内联 export，避免 script setup 限制
 
     // ── Props / Emits ─────────────────────────────────────────
 
@@ -161,130 +260,3 @@
     const visibleOps = (row: T) =>
         props.operations.filter((op) => (op.show ? op.show(row) : true));
 </script>
-
-<template>
-    <VanPullRefresh
-        v-model="isRefreshing"
-        class="c-table"
-        :disabled="disablePullRefresh"
-        @refresh="handleRefresh"
-    >
-        <VanList
-            v-model:loading="isLoading"
-            v-model:error="isError"
-            :finished="isFinished"
-            :immediate-check="false"
-            error-text="加载失败，点击重试"
-            finished-text="没有更多了"
-            @load="handleLoad"
-        >
-            <!-- 空状态 -->
-            <template v-if="!data.length && !isLoading && !isRefreshing" #default>
-                <slot name="empty">
-                    <VanEmpty class="c-table__empty" :description="emptyText">
-                        <template #image>
-                            <i class="i-ph:clipboard-text-bold c-table__empty-icon" />
-                        </template>
-                    </VanEmpty>
-                </slot>
-            </template>
-
-            <!-- 数据列表 -->
-            <div v-if="data.length" class="c-table__list">
-                <div
-                    v-for="row in data"
-                    :key="(row as any)[rowKey]"
-                    class="c-table__card"
-                >
-                    <!-- 卡片头部：主标题 + 右侧列/操作 -->
-                    <div class="c-table__card-head">
-                        <div class="c-table__card-head-left">
-                            <!-- 主标题（primary 列）-->
-                            <template v-if="primaryColumn">
-                                <template v-if="primaryColumn.slot">
-                                    <slot :name="`cell-${primaryColumn.key}`" :row="row" :col="primaryColumn" />
-                                </template>
-                                <span v-else class="c-table__primary">
-                                    {{ renderValue(primaryColumn, row) }}
-                                </span>
-                            </template>
-                            <!-- 副标题（secondary 列）-->
-                            <template v-if="secondaryColumn">
-                                <template v-if="secondaryColumn.slot">
-                                    <slot :name="`cell-${secondaryColumn.key}`" :row="row" :col="secondaryColumn" />
-                                </template>
-                                <span v-else class="c-table__secondary">
-                                    {{ renderValue(secondaryColumn, row) }}
-                                </span>
-                            </template>
-                        </div>
-
-                        <!-- 右侧：alignRight 列（如状态 Tag）-->
-                        <div class="c-table__card-head-right">
-                            <template v-for="col in rightColumns" :key="col.key">
-                                <template v-if="col.slot">
-                                    <slot :name="`cell-${col.key}`" :row="row" :col="col" />
-                                </template>
-                                <template v-else-if="col.tagMap">
-                                    <VanTag
-                                        v-if="renderTag(col, row)"
-                                        :type="renderTag(col, row)!.type"
-                                        round
-                                        size="medium"
-                                    >
-                                        {{ renderTag(col, row)!.text }}
-                                    </VanTag>
-                                </template>
-                                <span v-else class="c-table__right-val">
-                                    {{ renderValue(col, row) }}
-                                </span>
-                            </template>
-                        </div>
-                    </div>
-
-                    <!-- meta 行：label: value 网格 -->
-                    <div v-if="metaColumns.length" class="c-table__card-meta">
-                        <div
-                            v-for="col in metaColumns"
-                            :key="col.key"
-                            class="c-table__meta-item"
-                        >
-                            <span class="c-table__meta-label">{{ col.label }}</span>
-                            <template v-if="col.slot">
-                                <slot :name="`cell-${col.key}`" :row="row" :col="col" />
-                            </template>
-                            <template v-else-if="col.tagMap">
-                                <VanTag
-                                    v-if="renderTag(col, row)"
-                                    :type="renderTag(col, row)!.type"
-                                    size="medium"
-                                >
-                                    {{ renderTag(col, row)!.text }}
-                                </VanTag>
-                            </template>
-                            <span v-else class="c-table__meta-val">{{ renderValue(col, row) }}</span>
-                        </div>
-                    </div>
-
-                    <!-- 操作按钮行 -->
-                    <div v-if="visibleOps(row).length" class="c-table__card-ops">
-                        <VanButton
-                            v-for="op in visibleOps(row)"
-                            :key="op.label"
-                            size="small"
-                            round
-                            :type="op.type || 'primary'"
-                            :plain="op.type !== 'danger'"
-                            :disabled="op.disabled ? op.disabled(row) : false"
-                            class="c-table__op-btn"
-                            @click.stop="op.onClick(row)"
-                        >
-                            <i v-if="op.icon" :class="[op.icon, 'c-table__op-icon']" />
-                            {{ op.label }}
-                        </VanButton>
-                    </div>
-                </div>
-            </div>
-        </VanList>
-    </VanPullRefresh>
-</template>

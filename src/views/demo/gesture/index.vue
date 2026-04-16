@@ -1,68 +1,3 @@
-<script setup lang="ts">
-import './index.scss';
-import { showToast } from 'vant';
-
-// ---- SwipeCell 滑动删除 ----
-const swipeList = ref([
-  { id: 1, name: '待办事项 A', done: false },
-  { id: 2, name: '待办事项 B', done: true },
-  { id: 3, name: '待办事项 C', done: false },
-  { id: 4, name: '待办事项 D', done: false },
-  { id: 5, name: '待办事项 E', done: true },
-]);
-
-const handleDelete = (id: number) => {
-  swipeList.value = swipeList.value.filter((item) => item.id !== id);
-  showToast({ message: '已删除', position: 'top' });
-};
-
-const handleToggle = (item: { id: number; done: boolean }) => {
-  item.done = !item.done;
-  showToast({
-    message: item.done ? '已完成' : '已恢复',
-    position: 'top',
-  });
-};
-
-// ---- 长按操作 ----
-const longPressTarget = ref('');
-const showLongPressSheet = ref(false);
-const longPressActions = [
-  { name: '复制' },
-  { name: '编辑' },
-  { name: '置顶' },
-  { name: '删除', color: '#ff3b30' },
-];
-
-const handleLongPress = (name: string) => {
-  longPressTarget.value = name;
-  showLongPressSheet.value = true;
-};
-
-const handleLongPressAction = (action: { name: string }) => {
-  showToast({
-    message: `对「${longPressTarget.value}」执行：${action.name}`,
-    position: 'top',
-  });
-};
-
-// ---- 侧滑操作菜单 ----
-const menuList = ref([
-  { id: 1, title: '项目文档', desc: '最近编辑于 2 小时前', unread: true },
-  { id: 2, title: '会议记录', desc: '最近编辑于 1 天前', unread: false },
-  { id: 3, title: '设计稿评审', desc: '最近编辑于 3 天前', unread: true },
-]);
-
-const handlePin = (id: number) => {
-  showToast({ message: `已置顶 #${id}`, position: 'top' });
-};
-
-const handleArchive = (id: number) => {
-  menuList.value = menuList.value.filter((item) => item.id !== id);
-  showToast({ message: '已归档', position: 'top' });
-};
-</script>
-
 <template>
   <div class="ges-page">
     <C_NavBar />
@@ -196,3 +131,68 @@ const handleArchive = (id: number) => {
     />
   </div>
 </template>
+
+<script setup lang="ts">
+import './index.scss';
+import { showToast } from 'vant';
+
+// ---- SwipeCell 滑动删除 ----
+const swipeList = ref([
+  { id: 1, name: '待办事项 A', done: false },
+  { id: 2, name: '待办事项 B', done: true },
+  { id: 3, name: '待办事项 C', done: false },
+  { id: 4, name: '待办事项 D', done: false },
+  { id: 5, name: '待办事项 E', done: true },
+]);
+
+const handleDelete = (id: number) => {
+  swipeList.value = swipeList.value.filter((item) => item.id !== id);
+  showToast({ message: '已删除', position: 'top' });
+};
+
+const handleToggle = (item: { id: number; done: boolean }) => {
+  item.done = !item.done;
+  showToast({
+    message: item.done ? '已完成' : '已恢复',
+    position: 'top',
+  });
+};
+
+// ---- 长按操作 ----
+const longPressTarget = ref('');
+const showLongPressSheet = ref(false);
+const longPressActions = [
+  { name: '复制' },
+  { name: '编辑' },
+  { name: '置顶' },
+  { name: '删除', color: '#ff3b30' },
+];
+
+const handleLongPress = (name: string) => {
+  longPressTarget.value = name;
+  showLongPressSheet.value = true;
+};
+
+const handleLongPressAction = (action: { name: string }) => {
+  showToast({
+    message: `对「${longPressTarget.value}」执行：${action.name}`,
+    position: 'top',
+  });
+};
+
+// ---- 侧滑操作菜单 ----
+const menuList = ref([
+  { id: 1, title: '项目文档', desc: '最近编辑于 2 小时前', unread: true },
+  { id: 2, title: '会议记录', desc: '最近编辑于 1 天前', unread: false },
+  { id: 3, title: '设计稿评审', desc: '最近编辑于 3 天前', unread: true },
+]);
+
+const handlePin = (id: number) => {
+  showToast({ message: `已置顶 #${id}`, position: 'top' });
+};
+
+const handleArchive = (id: number) => {
+  menuList.value = menuList.value.filter((item) => item.id !== id);
+  showToast({ message: '已归档', position: 'top' });
+};
+</script>

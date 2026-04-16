@@ -78,6 +78,11 @@ hero 头部（渐变背景 + 标题 + 说明）
 ### 文件结构
 
 ```vue
+<template>
+<!-- ...模板 -->
+</template>
+<!-- 禁止 <style> 块 -->
+
 <script setup lang="ts">
 import './index.scss';
 import { ... } from 'vant';
@@ -86,11 +91,6 @@ import { ... } from './data';
 defineOptions({ name: 'PageName' });
 // ...逻辑
 </script>
-
-<template>
-<!-- ...模板 -->
-</template>
-<!-- 禁止 <style> 块 -->
 ```
 
 ### 样式规范

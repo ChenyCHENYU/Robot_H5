@@ -1,3 +1,25 @@
+<template>
+    <div>
+        <div v-if="renderTime !== null" class="render-time"> 渲染耗时: {{ renderTime.toFixed(2) }} 毫秒 </div>
+        <div class="complex-block-container">
+            <div
+                v-for="block in blockList"
+                :key="block.id"
+                class="block-item"
+                :style="{
+                    width: '4px',
+                    height: '4px',
+                    backgroundColor: block.color,
+                    borderRadius: block.borderRadius + 'px',
+                    boxShadow: block.shadow,
+                    margin: '4px',
+                }"
+            >
+            </div>
+        </div>
+    </div>
+</template>
+
 <script setup lang="ts">
     import './NormalComplexBlock.scss';
 
@@ -67,25 +89,3 @@
         renderTime.value = performance.now() - renderStartTime.value;
     });
 </script>
-
-<template>
-    <div>
-        <div v-if="renderTime !== null" class="render-time"> 渲染耗时: {{ renderTime.toFixed(2) }} 毫秒 </div>
-        <div class="complex-block-container">
-            <div
-                v-for="block in blockList"
-                :key="block.id"
-                class="block-item"
-                :style="{
-                    width: '4px',
-                    height: '4px',
-                    backgroundColor: block.color,
-                    borderRadius: block.borderRadius + 'px',
-                    boxShadow: block.shadow,
-                    margin: '4px',
-                }"
-            >
-            </div>
-        </div>
-    </div>
-</template>

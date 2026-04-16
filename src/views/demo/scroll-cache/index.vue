@@ -1,28 +1,3 @@
-<script setup lang="ts">
-    import './index.scss';
-    import { useScrollCache } from '@/hooks/useScrollCache';
-
-    defineOptions({ name: 'ScrollCache' });
-
-    const list = ref<number[]>([]);
-    const loading = ref(false);
-    const finished = ref(false);
-    const refreshing = ref(false);
-
-    const onLoad = () => {
-        setTimeout(() => {
-            if (refreshing.value) { list.value = []; refreshing.value = false; }
-            for (let i = 0; i < 10; i++) list.value.push(list.value.length + 1);
-            loading.value = false;
-            if (list.value.length >= 40) finished.value = true;
-        }, 800);
-    };
-
-    const onRefresh = () => { finished.value = false; loading.value = true; onLoad(); };
-
-    onMounted(() => useScrollCache());
-</script>
-
 <template>
     <div class="sc-page">
         <C_NavBar>
@@ -53,3 +28,28 @@
         </VanPullRefresh>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './index.scss';
+    import { useScrollCache } from '@/hooks/useScrollCache';
+
+    defineOptions({ name: 'ScrollCache' });
+
+    const list = ref<number[]>([]);
+    const loading = ref(false);
+    const finished = ref(false);
+    const refreshing = ref(false);
+
+    const onLoad = () => {
+        setTimeout(() => {
+            if (refreshing.value) { list.value = []; refreshing.value = false; }
+            for (let i = 0; i < 10; i++) list.value.push(list.value.length + 1);
+            loading.value = false;
+            if (list.value.length >= 40) finished.value = true;
+        }, 800);
+    };
+
+    const onRefresh = () => { finished.value = false; loading.value = true; onLoad(); };
+
+    onMounted(() => useScrollCache());
+</script>

@@ -1,3 +1,28 @@
+<template>
+    <div>
+        <div class="render-time">
+            <span v-if="renderTime !== null">渲染耗时: {{ renderTime.toFixed(2) }} 毫秒</span>
+            <span v-else>渲染中... (已渲染 {{ visibleBlocks.length }} / {{ blockList.length }} 元素)</span>
+        </div>
+        <div class="complex-block-container">
+            <div
+                v-for="block in visibleBlocks"
+                :key="block.id"
+                class="block-item"
+                :style="{
+                    width: '4px',
+                    height: '4px',
+                    backgroundColor: block.color,
+                    borderRadius: block.borderRadius + 'px',
+                    boxShadow: block.shadow,
+                    margin: '4px',
+                }"
+            >
+            </div>
+        </div>
+    </div>
+</template>
+
 <script setup lang="ts">
     import './OptimizedComplexBlock.scss';
     import { useDefer } from '../hooks/useDefer';
@@ -86,28 +111,3 @@
         }
     });
 </script>
-
-<template>
-    <div>
-        <div class="render-time">
-            <span v-if="renderTime !== null">渲染耗时: {{ renderTime.toFixed(2) }} 毫秒</span>
-            <span v-else>渲染中... (已渲染 {{ visibleBlocks.length }} / {{ blockList.length }} 元素)</span>
-        </div>
-        <div class="complex-block-container">
-            <div
-                v-for="block in visibleBlocks"
-                :key="block.id"
-                class="block-item"
-                :style="{
-                    width: '4px',
-                    height: '4px',
-                    backgroundColor: block.color,
-                    borderRadius: block.borderRadius + 'px',
-                    boxShadow: block.shadow,
-                    margin: '4px',
-                }"
-            >
-            </div>
-        </div>
-    </div>
-</template>

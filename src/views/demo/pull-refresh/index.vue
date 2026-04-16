@@ -1,3 +1,78 @@
+<template>
+    <div class="prl-page">
+        <C_NavBar title="下拉刷新演示" />
+
+        <div class="prl-page__sticky-header">
+            <div class="prl-page__banner">
+                <span class="prl-page__hint">
+                    <i class="i-ph:arrow-fat-lines-down-bold prl-page__hint-icon" />
+                    <span>滚到顶部后按住鼠标向下拖即可刷新</span>
+                </span>
+                <span v-if="lastRefreshTime" class="prl-page__refreshed">
+                    <i class="i-ph:check-circle-bold" />
+                    {{ lastRefreshTime }} 已刷新
+                </span>
+            </div>
+            <div class="prl-page__toolbar">
+                <VanButton
+                    size="small"
+                    round
+                    :type="disabledRefresh ? 'warning' : 'primary'"
+                    @click="disabledRefresh = !disabledRefresh"
+                >
+                    <i
+                        :class="disabledRefresh ? 'i-ph:lock-bold' : 'i-ph:lock-open-bold'"
+                        style="margin-right: 4px"
+                    />
+                    {{ disabledRefresh ? '下拉已锁定' : '下拉已开启' }}
+                </VanButton>
+                <VanButton size="small" round type="danger" plain @click="listRef?.setError()">
+                    <i class="i-ph:warning-bold" style="margin-right: 4px" />
+                    模拟失败
+                </VanButton>
+                <VanButton size="small" round plain @click="listRef?.refresh()">
+                    <i class="i-ph:arrows-clockwise-bold" style="margin-right: 4px" />
+                    手动刷新
+                </VanButton>
+            </div>
+        </div>
+
+        <C_PullRefreshList
+            ref="listRef"
+            class="prl-page__list"
+            :disabled="disabledRefresh"
+            @on-load="onLoadData"
+        >
+            <template #list="{ list }">
+                <div class="prl-page__feed">
+                    <div
+                        v-for="item in list"
+                        :key="item.id"
+                        :class="['prl-page__item', item.isNew && 'prl-page__item--new']"
+                    >
+                        <div class="prl-page__item-body">
+                            <div class="prl-page__item-top">
+                                <VanTag :type="(item.categoryType as any)" size="medium" round>
+                                    {{ item.category }}
+                                </VanTag>
+                                <span v-if="item.isNew" class="prl-page__new-label">
+                                    <i class="i-ph:sparkle-bold" />
+                                    NEW
+                                </span>
+                            </div>
+                            <p class="prl-page__title">{{ item.title }}</p>
+                            <p class="prl-page__desc">{{ item.desc }}</p>
+                        </div>
+                        <div class="prl-page__item-meta">
+                            <span class="prl-page__time">{{ item.time }}</span>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </C_PullRefreshList>
+    </div>
+</template>
+
 <script setup lang="ts">
     import './index.scss';
     import type { PullRefreshListInstance } from '@/components/C_PullRefreshList/index.vue';
@@ -75,78 +150,3 @@
         listRef.value?.updateList(data, TOTAL);
     };
 </script>
-
-<template>
-    <div class="prl-page">
-        <C_NavBar title="下拉刷新演示" />
-
-        <div class="prl-page__sticky-header">
-            <div class="prl-page__banner">
-                <span class="prl-page__hint">
-                    <i class="i-ph:arrow-fat-lines-down-bold prl-page__hint-icon" />
-                    <span>滚到顶部后按住鼠标向下拖即可刷新</span>
-                </span>
-                <span v-if="lastRefreshTime" class="prl-page__refreshed">
-                    <i class="i-ph:check-circle-bold" />
-                    {{ lastRefreshTime }} 已刷新
-                </span>
-            </div>
-            <div class="prl-page__toolbar">
-                <VanButton
-                    size="small"
-                    round
-                    :type="disabledRefresh ? 'warning' : 'primary'"
-                    @click="disabledRefresh = !disabledRefresh"
-                >
-                    <i
-                        :class="disabledRefresh ? 'i-ph:lock-bold' : 'i-ph:lock-open-bold'"
-                        style="margin-right: 4px"
-                    />
-                    {{ disabledRefresh ? '下拉已锁定' : '下拉已开启' }}
-                </VanButton>
-                <VanButton size="small" round type="danger" plain @click="listRef?.setError()">
-                    <i class="i-ph:warning-bold" style="margin-right: 4px" />
-                    模拟失败
-                </VanButton>
-                <VanButton size="small" round plain @click="listRef?.refresh()">
-                    <i class="i-ph:arrows-clockwise-bold" style="margin-right: 4px" />
-                    手动刷新
-                </VanButton>
-            </div>
-        </div>
-
-        <C_PullRefreshList
-            ref="listRef"
-            class="prl-page__list"
-            :disabled="disabledRefresh"
-            @on-load="onLoadData"
-        >
-            <template #list="{ list }">
-                <div class="prl-page__feed">
-                    <div
-                        v-for="item in list"
-                        :key="item.id"
-                        :class="['prl-page__item', item.isNew && 'prl-page__item--new']"
-                    >
-                        <div class="prl-page__item-body">
-                            <div class="prl-page__item-top">
-                                <VanTag :type="(item.categoryType as any)" size="medium" round>
-                                    {{ item.category }}
-                                </VanTag>
-                                <span v-if="item.isNew" class="prl-page__new-label">
-                                    <i class="i-ph:sparkle-bold" />
-                                    NEW
-                                </span>
-                            </div>
-                            <p class="prl-page__title">{{ item.title }}</p>
-                            <p class="prl-page__desc">{{ item.desc }}</p>
-                        </div>
-                        <div class="prl-page__item-meta">
-                            <span class="prl-page__time">{{ item.time }}</span>
-                        </div>
-                    </div>
-                </div>
-            </template>
-        </C_PullRefreshList>
-    </div>
-</template>

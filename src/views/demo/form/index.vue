@@ -1,109 +1,3 @@
-<script setup lang="ts">
-    import './index.scss';
-    import { type FormInstance, showToast } from 'vant';
-
-// ---- Step 控制 ----
-const step = ref(0);
-
-// ---- Step 1: 基本信息 ----
-const formRef1 = ref<FormInstance>();
-const form1 = reactive({
-  username: '',
-  phone: '',
-});
-
-const validateUsername = (value: string) => {
-  if (!value) return '请输入用户名';
-  if (value.length < 2 || value.length > 16) return '用户名 2-16 个字符';
-  return true;
-};
-
-// 异步校验 — 模拟检查用户名是否已存在
-const asyncCheckUsername = (value: string) =>
-  new Promise<boolean | string>((resolve) => {
-    setTimeout(() => {
-      resolve(value === 'admin' ? '该用户名已被占用' : true);
-    }, 800);
-  });
-
-const validatePhone = (value: string) => {
-  if (!value) return '请输入手机号';
-  if (!/^1[3-9]\d{9}$/.test(value)) return '手机号格式不正确';
-  return true;
-};
-
-const handleNext1 = async () => {
-  try {
-    await formRef1.value?.validate();
-    step.value = 1;
-  } catch {}
-};
-
-// ---- Step 2: 密码设置 ----
-const formRef2 = ref<FormInstance>();
-const form2 = reactive({
-  password: '',
-  confirmPassword: '',
-});
-const showPass = ref(false);
-const showConfirmPass = ref(false);
-
-const validatePassword = (value: string) => {
-  if (!value) return '请设置密码';
-  if (value.length < 6) return '密码至少 6 位';
-  if (!/[A-Za-z]/.test(value) || !/\d/.test(value)) return '需包含字母和数字';
-  return true;
-};
-
-const validateConfirm = (value: string) => {
-  if (!value) return '请再次输入密码';
-  if (value !== form2.password) return '两次密码不一致';
-  return true;
-};
-
-const handleNext2 = async () => {
-  try {
-    await formRef2.value?.validate();
-    step.value = 2;
-  } catch {}
-};
-
-// ---- Step 3: 补充信息（动态规则） ----
-const formRef3 = ref<FormInstance>();
-const form3 = reactive({
-  nickname: '',
-  email: '',
-  needInvoice: false,
-  company: '',
-});
-
-// 动态规则 — 勾选"需要发票"后"公司名称"变为必填
-const companyRules = computed(() =>
-  form3.needInvoice
-    ? [{ required: true, message: '勾选发票后必须填写公司名称' }]
-    : [],
-);
-
-const handleSubmit = async () => {
-  try {
-    await formRef3.value?.validate();
-    showToast({ message: '注册成功！', type: 'success' });
-    // Reset
-    setTimeout(() => {
-      step.value = 0;
-      Object.assign(form1, { username: '', phone: '' });
-      Object.assign(form2, { password: '', confirmPassword: '' });
-      Object.assign(form3, {
-        nickname: '',
-        email: '',
-        needInvoice: false,
-        company: '',
-      });
-    }, 500);
-  } catch {}
-};
-</script>
-
 <template>
   <div class="form-demo">
     <C_NavBar />
@@ -271,3 +165,109 @@ const handleSubmit = async () => {
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+    import './index.scss';
+    import { type FormInstance, showToast } from 'vant';
+
+// ---- Step 控制 ----
+const step = ref(0);
+
+// ---- Step 1: 基本信息 ----
+const formRef1 = ref<FormInstance>();
+const form1 = reactive({
+  username: '',
+  phone: '',
+});
+
+const validateUsername = (value: string) => {
+  if (!value) return '请输入用户名';
+  if (value.length < 2 || value.length > 16) return '用户名 2-16 个字符';
+  return true;
+};
+
+// 异步校验 — 模拟检查用户名是否已存在
+const asyncCheckUsername = (value: string) =>
+  new Promise<boolean | string>((resolve) => {
+    setTimeout(() => {
+      resolve(value === 'admin' ? '该用户名已被占用' : true);
+    }, 800);
+  });
+
+const validatePhone = (value: string) => {
+  if (!value) return '请输入手机号';
+  if (!/^1[3-9]\d{9}$/.test(value)) return '手机号格式不正确';
+  return true;
+};
+
+const handleNext1 = async () => {
+  try {
+    await formRef1.value?.validate();
+    step.value = 1;
+  } catch {}
+};
+
+// ---- Step 2: 密码设置 ----
+const formRef2 = ref<FormInstance>();
+const form2 = reactive({
+  password: '',
+  confirmPassword: '',
+});
+const showPass = ref(false);
+const showConfirmPass = ref(false);
+
+const validatePassword = (value: string) => {
+  if (!value) return '请设置密码';
+  if (value.length < 6) return '密码至少 6 位';
+  if (!/[A-Za-z]/.test(value) || !/\d/.test(value)) return '需包含字母和数字';
+  return true;
+};
+
+const validateConfirm = (value: string) => {
+  if (!value) return '请再次输入密码';
+  if (value !== form2.password) return '两次密码不一致';
+  return true;
+};
+
+const handleNext2 = async () => {
+  try {
+    await formRef2.value?.validate();
+    step.value = 2;
+  } catch {}
+};
+
+// ---- Step 3: 补充信息（动态规则） ----
+const formRef3 = ref<FormInstance>();
+const form3 = reactive({
+  nickname: '',
+  email: '',
+  needInvoice: false,
+  company: '',
+});
+
+// 动态规则 — 勾选"需要发票"后"公司名称"变为必填
+const companyRules = computed(() =>
+  form3.needInvoice
+    ? [{ required: true, message: '勾选发票后必须填写公司名称' }]
+    : [],
+);
+
+const handleSubmit = async () => {
+  try {
+    await formRef3.value?.validate();
+    showToast({ message: '注册成功！', type: 'success' });
+    // Reset
+    setTimeout(() => {
+      step.value = 0;
+      Object.assign(form1, { username: '', phone: '' });
+      Object.assign(form2, { password: '', confirmPassword: '' });
+      Object.assign(form3, {
+        nickname: '',
+        email: '',
+        needInvoice: false,
+        company: '',
+      });
+    }, 500);
+  } catch {}
+};
+</script>

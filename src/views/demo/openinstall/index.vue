@@ -1,20 +1,3 @@
-<script setup lang="ts">
-    import './index.scss';
-    import { useOpenInstall } from '@/hooks/useOpeninstall';
-
-    const { openInstall } = useOpenInstall('3rqhu6');
-
-    const onInstall = () => openInstall.value?.install();
-    const onWakeup = () => openInstall.value?.schemeWakeup();
-    const onWakeupOrInstall = () => openInstall.value?.wakeupOrInstall();
-
-    const actions = [
-        { icon: 'i-ph:device-mobile-bold', color: '#0071e3', title: '安装 App', desc: '调用此方法可安装 APP', handler: onInstall },
-        { icon: 'i-ph:arrow-square-out-bold', color: '#34c759', title: '唤起 App', desc: '在已安装情况下唤起 APP', handler: onWakeup },
-        { icon: 'i-ph:rocket-launch-bold', color: '#5856d6', title: '唤起或安装', desc: '自动判断唤起或安装 APP', handler: onWakeupOrInstall },
-    ];
-</script>
-
 <template>
     <div class="oi-page">
         <C_NavBar />
@@ -46,3 +29,20 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './index.scss';
+    import { useOpenInstall } from '@/hooks/useOpeninstall';
+
+    const { openInstall } = useOpenInstall('3rqhu6');
+
+    const onInstall = () => openInstall.value?.install();
+    const onWakeup = () => openInstall.value?.schemeWakeup();
+    const onWakeupOrInstall = () => openInstall.value?.wakeupOrInstall();
+
+    const actions = [
+        { icon: 'i-ph:device-mobile-bold', color: '#0071e3', title: '安装 App', desc: '调用此方法可安装 APP', handler: onInstall },
+        { icon: 'i-ph:arrow-square-out-bold', color: '#34c759', title: '唤起 App', desc: '在已安装情况下唤起 APP', handler: onWakeup },
+        { icon: 'i-ph:rocket-launch-bold', color: '#5856d6', title: '唤起或安装', desc: '自动判断唤起或安装 APP', handler: onWakeupOrInstall },
+    ];
+</script>

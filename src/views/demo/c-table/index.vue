@@ -1,3 +1,20 @@
+<template>
+    <div class="c-table-demo">
+        <C_NavBar title="表格组件" />
+        <C_Table
+            :columns="columns"
+            :data="tableData"
+            :total="total"
+            :loading="loading"
+            :finished="finished"
+            :operations="operations"
+            empty-text="暂无用户数据"
+            @load="onLoad"
+            @refresh="onRefresh"
+        />
+    </div>
+</template>
+
 <script setup lang="ts">
     import type { TableColumn, TableOperation } from '#/Table/type';
 
@@ -117,23 +134,6 @@
     // 首次加载
     onMounted(() => onLoad(1));
 </script>
-
-<template>
-    <div class="c-table-demo">
-        <C_NavBar title="表格组件" />
-        <C_Table
-            :columns="columns"
-            :data="tableData"
-            :total="total"
-            :loading="loading"
-            :finished="finished"
-            :operations="operations"
-            empty-text="暂无用户数据"
-            @load="onLoad"
-            @refresh="onRefresh"
-        />
-    </div>
-</template>
 
 <style lang="scss" scoped>
 .c-table-demo {

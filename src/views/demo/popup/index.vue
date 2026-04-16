@@ -1,65 +1,3 @@
-<script setup lang="ts">
-import './index.scss';
-import { showToast, showDialog, showConfirmDialog } from 'vant';
-
-// ---- ActionSheet ----
-const showActionSheet = ref(false);
-const actionSheetActions = [
-  {
-    name: '拍照',
-    icon: 'https://fastly.jsdelivr.net/npm/@vant/assets/icon-demo.png',
-  },
-  { name: '从相册选择' },
-  { name: '保存图片' },
-];
-const handleActionSelect = (action: { name: string }) => {
-  showToast({ message: `选择了：${action.name}`, position: 'top' });
-};
-
-// ---- 带取消和描述的 ActionSheet ----
-const showActionSheet2 = ref(false);
-const actionSheetActions2 = [
-  { name: '微信', subname: '推荐好友' },
-  { name: '朋友圈' },
-  { name: 'QQ' },
-  { name: '微博', disabled: true },
-];
-
-// ---- Popup 各方向 ----
-const popupPos = ref<'center' | 'top' | 'bottom' | 'left' | 'right'>('center');
-const showPopup = ref(false);
-const openPopup = (pos: typeof popupPos.value) => {
-  popupPos.value = pos;
-  showPopup.value = true;
-};
-
-// ---- Dialog ----
-const handleAlert = () => {
-  showDialog({ title: '提示', message: '这是一段提示信息' });
-};
-
-const handleConfirm = () => {
-  showConfirmDialog({
-    title: '确认操作',
-    message: '确定要删除这条数据吗？此操作不可撤销。',
-    confirmButtonText: '删除',
-    confirmButtonColor: 'var(--ds-danger)',
-  })
-    .then(() => showToast({ message: '已删除', position: 'top' }))
-    .catch(() => showToast({ message: '已取消', position: 'top' }));
-};
-
-const handleRoundDialog = () => {
-  showConfirmDialog({
-    title: '系统升级',
-    message: '发现新版本 v2.0.0，是否立即更新？',
-    theme: 'round-button',
-    confirmButtonText: '立即更新',
-    cancelButtonText: '稍后',
-  }).catch(() => {});
-};
-</script>
-
 <template>
   <div class="popup-page">
     <C_NavBar />
@@ -200,3 +138,65 @@ const handleRoundDialog = () => {
     </VanPopup>
   </div>
 </template>
+
+<script setup lang="ts">
+import './index.scss';
+import { showToast, showDialog, showConfirmDialog } from 'vant';
+
+// ---- ActionSheet ----
+const showActionSheet = ref(false);
+const actionSheetActions = [
+  {
+    name: '拍照',
+    icon: 'https://fastly.jsdelivr.net/npm/@vant/assets/icon-demo.png',
+  },
+  { name: '从相册选择' },
+  { name: '保存图片' },
+];
+const handleActionSelect = (action: { name: string }) => {
+  showToast({ message: `选择了：${action.name}`, position: 'top' });
+};
+
+// ---- 带取消和描述的 ActionSheet ----
+const showActionSheet2 = ref(false);
+const actionSheetActions2 = [
+  { name: '微信', subname: '推荐好友' },
+  { name: '朋友圈' },
+  { name: 'QQ' },
+  { name: '微博', disabled: true },
+];
+
+// ---- Popup 各方向 ----
+const popupPos = ref<'center' | 'top' | 'bottom' | 'left' | 'right'>('center');
+const showPopup = ref(false);
+const openPopup = (pos: typeof popupPos.value) => {
+  popupPos.value = pos;
+  showPopup.value = true;
+};
+
+// ---- Dialog ----
+const handleAlert = () => {
+  showDialog({ title: '提示', message: '这是一段提示信息' });
+};
+
+const handleConfirm = () => {
+  showConfirmDialog({
+    title: '确认操作',
+    message: '确定要删除这条数据吗？此操作不可撤销。',
+    confirmButtonText: '删除',
+    confirmButtonColor: 'var(--ds-danger)',
+  })
+    .then(() => showToast({ message: '已删除', position: 'top' }))
+    .catch(() => showToast({ message: '已取消', position: 'top' }));
+};
+
+const handleRoundDialog = () => {
+  showConfirmDialog({
+    title: '系统升级',
+    message: '发现新版本 v2.0.0，是否立即更新？',
+    theme: 'round-button',
+    confirmButtonText: '立即更新',
+    cancelButtonText: '稍后',
+  }).catch(() => {});
+};
+</script>

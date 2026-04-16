@@ -1,22 +1,3 @@
-<script setup lang="ts">
-    import './index.scss';
-    import { showToast, type FormInstance } from 'vant';
-    import { useUserStore } from '@/store/modules/user';
-
-    const userStore = useUserStore();
-    const { sign } = userStore.getUserInfo;
-    const formRef = ref<FormInstance>();
-    const formValue = reactive({ sign: sign ?? '' });
-
-    const handleSave = () => {
-        formRef.value?.validate().then(async () => {
-            try {
-                showToast({ message: '签名已保存' });
-            } finally {}
-        }).catch(() => {});
-    };
-</script>
-
 <template>
     <div class="form-page">
         <C_NavBar>
@@ -47,3 +28,22 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './index.scss';
+    import { showToast, type FormInstance } from 'vant';
+    import { useUserStore } from '@/store/modules/user';
+
+    const userStore = useUserStore();
+    const { sign } = userStore.getUserInfo;
+    const formRef = ref<FormInstance>();
+    const formValue = reactive({ sign: sign ?? '' });
+
+    const handleSave = () => {
+        formRef.value?.validate().then(async () => {
+            try {
+                showToast({ message: '签名已保存' });
+            } finally {}
+        }).catch(() => {});
+    };
+</script>

@@ -1,11 +1,3 @@
-<script setup lang="ts">
-    import './index.scss';
-    import { showToast } from 'vant';
-
-    const copyText = ref('');
-    const imgUrl = ref('https://cdn.seovx.com/ha/?mom=302');
-</script>
-
 <template>
     <div class="dir-page">
         <C_NavBar />
@@ -134,3 +126,11 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './index.scss';
+    import { showToast } from 'vant';
+
+    const copyText = ref('');
+    const imgUrl = ref('https://cdn.seovx.com/ha/?mom=302');
+</script>

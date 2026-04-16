@@ -1,36 +1,3 @@
-<script setup lang="ts">
-    import './detail.scss';
-    import { showToast } from 'vant';
-    import {
-        MOCK_CUSTOMERS,
-        STATUS_MAP,
-        CATEGORY_MAP,
-        type Customer,
-    } from './data';
-
-    defineOptions({ name: 'CustomerDetail' });
-
-    const route = useRoute();
-    const router = useRouter();
-
-    // 按 query.id 取数据
-    const customer = computed<Customer | undefined>(() => {
-        const id = Number(route.query.id);
-        return MOCK_CUSTOMERS.find((c) => c.id === id) ?? MOCK_CUSTOMERS[0];
-    });
-
-    const statusInfo = (val: string) => STATUS_MAP[val as keyof typeof STATUS_MAP] ?? { text: val, type: 'default' as const };
-    const categoryInfo = (val: string) => CATEGORY_MAP[val] ?? { text: val, type: 'primary' as const };
-
-    const onConvert = () => showToast('转化');
-    const onTransferPublic = () => showToast('转公海');
-    const onEdit = () => {
-        if (customer.value) {
-            router.push({ path: '/customerForm', query: { id: String(customer.value.id) } });
-        }
-    };
-</script>
-
 <template>
     <div v-if="customer" class="customer-detail">
         <C_NavBar title="客户档案详情" />
@@ -140,3 +107,36 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './detail.scss';
+    import { showToast } from 'vant';
+    import {
+        MOCK_CUSTOMERS,
+        STATUS_MAP,
+        CATEGORY_MAP,
+        type Customer,
+    } from './data';
+
+    defineOptions({ name: 'CustomerDetail' });
+
+    const route = useRoute();
+    const router = useRouter();
+
+    // 按 query.id 取数据
+    const customer = computed<Customer | undefined>(() => {
+        const id = Number(route.query.id);
+        return MOCK_CUSTOMERS.find((c) => c.id === id) ?? MOCK_CUSTOMERS[0];
+    });
+
+    const statusInfo = (val: string) => STATUS_MAP[val as keyof typeof STATUS_MAP] ?? { text: val, type: 'default' as const };
+    const categoryInfo = (val: string) => CATEGORY_MAP[val] ?? { text: val, type: 'primary' as const };
+
+    const onConvert = () => showToast('转化');
+    const onTransferPublic = () => showToast('转公海');
+    const onEdit = () => {
+        if (customer.value) {
+            router.push({ path: '/customerForm', query: { id: String(customer.value.id) } });
+        }
+    };
+</script>

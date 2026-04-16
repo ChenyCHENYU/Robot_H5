@@ -1,26 +1,3 @@
-<script setup lang="ts">
-    import './index.scss';
-
-    // 设置组件名
-    defineOptions({
-        name: 'VirtualStatusBar',
-    });
-
-    // 获取当前时间
-    const getCurrentTime = () => {
-        const now = new Date();
-        const hours = now.getHours().toString().padStart(2, '0');
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        return `${hours}:${minutes}`;
-    };
-
-    // 获取电池电量百分比
-    const getBatteryLevel = () => {
-        // 这里可以集成真实的电池API，目前返回模拟值
-        return 100;
-    };
-</script>
-
 <template>
     <div class="virtual-status-bar">
         <div class="content">
@@ -51,5 +28,28 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './index.scss';
+
+    // 设置组件名
+    defineOptions({
+        name: 'VirtualStatusBar',
+    });
+
+    // 获取当前时间
+    const getCurrentTime = () => {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
+    };
+
+    // 获取电池电量百分比
+    const getBatteryLevel = () => {
+        // 这里可以集成真实的电池API，目前返回模拟值
+        return 100;
+    };
+</script>
 
 <!-- styles extracted to ./index.scss -->

@@ -1,30 +1,3 @@
-<script setup lang="ts">
-    import './index.scss';
-    import { quotes, quickActions, features, statsItems, heroOrbCount } from './data';
-    import { useScrollCache } from '@/hooks/useScrollCache';
-    import { useUserStore } from '@/store/modules/user';
-
-    defineOptions({ name: 'Dashboard' });
-
-    const router = useRouter();
-    const userStore = useUserStore();
-    const cacheBox = ref(null);
-
-    const greeting = computed(() => {
-        const h = new Date().getHours();
-        if (h < 6) return '夜深了';
-        if (h < 12) return '早上好';
-        if (h < 18) return '下午好';
-        return '晚上好';
-    });
-
-    const currentQuote = computed(() => quotes[new Date().getDate() % quotes.length]);
-
-    onMounted(() => {
-        useScrollCache(cacheBox.value);
-    });
-</script>
-
 <template>
     <div ref="cacheBox" class="dashboard">
         <!-- Mesh Gradient Hero -->
@@ -101,3 +74,30 @@
         </section>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './index.scss';
+    import { quotes, quickActions, features, statsItems, heroOrbCount } from './data';
+    import { useScrollCache } from '@/hooks/useScrollCache';
+    import { useUserStore } from '@/store/modules/user';
+
+    defineOptions({ name: 'DashboardPage' });
+
+    const router = useRouter();
+    const userStore = useUserStore();
+    const cacheBox = ref(null);
+
+    const greeting = computed(() => {
+        const h = new Date().getHours();
+        if (h < 6) return '夜深了';
+        if (h < 12) return '早上好';
+        if (h < 18) return '下午好';
+        return '晚上好';
+    });
+
+    const currentQuote = computed(() => quotes[new Date().getDate() % quotes.length]);
+
+    onMounted(() => {
+        useScrollCache(cacheBox.value);
+    });
+</script>

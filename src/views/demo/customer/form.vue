@@ -1,89 +1,3 @@
-<script setup lang="ts">
-    import './form.scss';
-    import { showToast, showConfirmDialog } from 'vant';
-    import { MOCK_CUSTOMERS, CATEGORY_MAP, CLASS_OPTIONS, CATEGORY_OPTIONS } from './data';
-
-    defineOptions({ name: 'CustomerForm' });
-
-    const route = useRoute();
-    const router = useRouter();
-
-    const isEdit = computed(() => !!route.query.id);
-    const pageTitle = computed(() => (isEdit.value ? '编辑客户' : '新增客户'));
-
-    // ── 表单数据 ──
-    const form = reactive({
-        name: '',
-        customerClass: '',
-        category: '',
-        contactName: '',
-        contactPhone: '',
-        position: '',
-        address: '',
-        remark: '',
-    });
-
-    // 编辑模式填充
-    if (route.query.id) {
-        const c = MOCK_CUSTOMERS.find((c) => c.id === Number(route.query.id));
-        if (c) {
-            form.name = c.name;
-            form.customerClass = c.customerClass;
-            form.category = c.category;
-            form.contactName = c.contactName;
-            form.contactPhone = c.contactPhone;
-            form.position = c.position;
-            form.address = c.address;
-            form.remark = c.remark;
-        }
-    }
-
-    // ── 分类选择 ──
-    const showClassPicker = ref(false);
-    const onClassConfirm = ({ selectedValues }: { selectedValues: string[] }) => {
-        form.customerClass = selectedValues[0];
-        showClassPicker.value = false;
-    };
-
-    const showCategoryPicker = ref(false);
-    const onCategoryConfirm = ({ selectedValues }: { selectedValues: string[] }) => {
-        form.category = selectedValues[0];
-        showCategoryPicker.value = false;
-    };
-
-    const categoryLabel = computed(() => {
-        const cat = CATEGORY_MAP[form.category];
-        return cat ? cat.text : '';
-    });
-
-    // ── 必填切换 ──
-    const onlyRequired = ref(false);
-
-    // ── 提交 ──
-    const formRef = ref();
-    const loading = ref(false);
-
-    const onSubmit = async () => {
-        try {
-            await formRef.value?.validate();
-        } catch {
-            return;
-        }
-        loading.value = true;
-        setTimeout(() => {
-            loading.value = false;
-            showToast(isEdit.value ? '保存成功' : '新增成功');
-            router.back();
-        }, 600);
-    };
-
-    const onCancel = () => {
-        showConfirmDialog({ title: '提示', message: '确定放弃当前编辑？' })
-            .then(() => router.back())
-            .catch(() => {});
-    };
-</script>
-
 <template>
     <div class="customer-form">
         <C_NavBar :title="pageTitle" />
@@ -222,3 +136,89 @@
         </VanPopup>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './form.scss';
+    import { showToast, showConfirmDialog } from 'vant';
+    import { MOCK_CUSTOMERS, CATEGORY_MAP, CLASS_OPTIONS, CATEGORY_OPTIONS } from './data';
+
+    defineOptions({ name: 'CustomerForm' });
+
+    const route = useRoute();
+    const router = useRouter();
+
+    const isEdit = computed(() => !!route.query.id);
+    const pageTitle = computed(() => (isEdit.value ? '编辑客户' : '新增客户'));
+
+    // ── 表单数据 ──
+    const form = reactive({
+        name: '',
+        customerClass: '',
+        category: '',
+        contactName: '',
+        contactPhone: '',
+        position: '',
+        address: '',
+        remark: '',
+    });
+
+    // 编辑模式填充
+    if (route.query.id) {
+        const c = MOCK_CUSTOMERS.find((c) => c.id === Number(route.query.id));
+        if (c) {
+            form.name = c.name;
+            form.customerClass = c.customerClass;
+            form.category = c.category;
+            form.contactName = c.contactName;
+            form.contactPhone = c.contactPhone;
+            form.position = c.position;
+            form.address = c.address;
+            form.remark = c.remark;
+        }
+    }
+
+    // ── 分类选择 ──
+    const showClassPicker = ref(false);
+    const onClassConfirm = ({ selectedValues }: { selectedValues: string[] }) => {
+        form.customerClass = selectedValues[0];
+        showClassPicker.value = false;
+    };
+
+    const showCategoryPicker = ref(false);
+    const onCategoryConfirm = ({ selectedValues }: { selectedValues: string[] }) => {
+        form.category = selectedValues[0];
+        showCategoryPicker.value = false;
+    };
+
+    const categoryLabel = computed(() => {
+        const cat = CATEGORY_MAP[form.category];
+        return cat ? cat.text : '';
+    });
+
+    // ── 必填切换 ──
+    const onlyRequired = ref(false);
+
+    // ── 提交 ──
+    const formRef = ref();
+    const loading = ref(false);
+
+    const onSubmit = async () => {
+        try {
+            await formRef.value?.validate();
+        } catch {
+            return;
+        }
+        loading.value = true;
+        setTimeout(() => {
+            loading.value = false;
+            showToast(isEdit.value ? '保存成功' : '新增成功');
+            router.back();
+        }, 600);
+    };
+
+    const onCancel = () => {
+        showConfirmDialog({ title: '提示', message: '确定放弃当前编辑？' })
+            .then(() => router.back())
+            .catch(() => {});
+    };
+</script>

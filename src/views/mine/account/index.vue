@@ -1,13 +1,3 @@
-<script setup lang="ts">
-    import './index.scss';
-    import { useUserStore } from '@/store/modules/user';
-
-    const userStore = useUserStore();
-    const { username, phone } = userStore.getUserInfo;
-
-    const afterPhone = computed(() => phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2'));
-</script>
-
 <template>
     <div class="form-page">
         <C_NavBar />
@@ -45,3 +35,13 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './index.scss';
+    import { useUserStore } from '@/store/modules/user';
+
+    const userStore = useUserStore();
+    const { username, phone } = userStore.getUserInfo;
+
+    const afterPhone = computed(() => phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2'));
+</script>

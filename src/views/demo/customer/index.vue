@@ -1,61 +1,3 @@
-<script setup lang="ts">
-    import './index.scss';
-    import { showToast } from 'vant';
-    import {
-        MOCK_CUSTOMERS,
-        TAB_LIST,
-        STATUS_MAP,
-        CATEGORY_MAP,
-        type Customer,
-    } from './data';
-
-    defineOptions({ name: 'CustomerArchive' });
-
-    const router = useRouter();
-
-    // ── 搜索 + Tab ─────────────────────────────────────────
-    const searchText = ref('');
-    const activeTab = ref('all');
-
-    const filteredList = computed(() => {
-        let list = MOCK_CUSTOMERS;
-        if (activeTab.value !== 'all') {
-            list = list.filter((c) => c.customerType === activeTab.value);
-        }
-        if (searchText.value.trim()) {
-            const kw = searchText.value.trim().toLowerCase();
-            list = list.filter(
-                (c) =>
-                    c.name.toLowerCase().includes(kw) ||
-                    c.code.toLowerCase().includes(kw) ||
-                    c.contactName.includes(kw),
-            );
-        }
-        return list;
-    });
-
-    // ── 操作 ────────────────────────────────────────────────
-    const onConvert = (row: Customer) => {
-        showToast(`转化：${row.name}`);
-    };
-
-    const onVoid = (row: Customer) => {
-        showToast(`作废：${row.code}`);
-    };
-
-    const onDetail = (row: Customer) => {
-        router.push({ path: '/customerDetail', query: { id: String(row.id) } });
-    };
-
-    const onAdd = () => {
-        router.push('/customerForm');
-    };
-
-    // 状态颜色
-    const statusInfo = (val: string) => STATUS_MAP[val as keyof typeof STATUS_MAP] ?? { text: val, type: 'default' as const };
-    const categoryInfo = (val: string) => CATEGORY_MAP[val] ?? { text: val, type: 'primary' as const };
-</script>
-
 <template>
     <div class="customer-list">
         <C_NavBar title="客户档案" />
@@ -158,3 +100,61 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './index.scss';
+    import { showToast } from 'vant';
+    import {
+        MOCK_CUSTOMERS,
+        TAB_LIST,
+        STATUS_MAP,
+        CATEGORY_MAP,
+        type Customer,
+    } from './data';
+
+    defineOptions({ name: 'CustomerArchive' });
+
+    const router = useRouter();
+
+    // ── 搜索 + Tab ─────────────────────────────────────────
+    const searchText = ref('');
+    const activeTab = ref('all');
+
+    const filteredList = computed(() => {
+        let list = MOCK_CUSTOMERS;
+        if (activeTab.value !== 'all') {
+            list = list.filter((c) => c.customerType === activeTab.value);
+        }
+        if (searchText.value.trim()) {
+            const kw = searchText.value.trim().toLowerCase();
+            list = list.filter(
+                (c) =>
+                    c.name.toLowerCase().includes(kw) ||
+                    c.code.toLowerCase().includes(kw) ||
+                    c.contactName.includes(kw),
+            );
+        }
+        return list;
+    });
+
+    // ── 操作 ────────────────────────────────────────────────
+    const onConvert = (row: Customer) => {
+        showToast(`转化：${row.name}`);
+    };
+
+    const onVoid = (row: Customer) => {
+        showToast(`作废：${row.code}`);
+    };
+
+    const onDetail = (row: Customer) => {
+        router.push({ path: '/customerDetail', query: { id: String(row.id) } });
+    };
+
+    const onAdd = () => {
+        router.push('/customerForm');
+    };
+
+    // 状态颜色
+    const statusInfo = (val: string) => STATUS_MAP[val as keyof typeof STATUS_MAP] ?? { text: val, type: 'default' as const };
+    const categoryInfo = (val: string) => CATEGORY_MAP[val] ?? { text: val, type: 'primary' as const };
+</script>

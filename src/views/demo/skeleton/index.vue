@@ -1,69 +1,3 @@
-<script setup lang="ts">
-import './index.scss';
-
-// ---- 基础骨架屏 ----
-const basicLoading = ref(true);
-
-// ---- 商品卡片骨架 ----
-const cardLoading = ref(true);
-const cardData = ref<{ title: string; price: string; img: string }[]>([]);
-
-const loadCards = () => {
-  cardLoading.value = true;
-  cardData.value = [];
-  setTimeout(() => {
-    cardData.value = [
-      {
-        title: 'AirPods Pro 2',
-        price: '¥1,799',
-        img: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
-      },
-      {
-        title: 'MacBook Air M3',
-        price: '¥8,999',
-        img: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
-      },
-      {
-        title: 'iPhone 15 Pro',
-        price: '¥7,999',
-        img: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-3.jpeg',
-      },
-      {
-        title: 'Apple Watch S9',
-        price: '¥2,999',
-        img: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-4.jpeg',
-      },
-    ];
-    cardLoading.value = false;
-  }, 2000);
-};
-
-// ---- 列表骨架 ----
-const listLoading = ref(true);
-const listData = ref<
-  { id: number; name: string; avatar: string; desc: string }[]
->([]);
-
-const loadList = () => {
-  listLoading.value = true;
-  listData.value = [];
-  setTimeout(() => {
-    listData.value = Array.from({ length: 5 }, (_, i) => ({
-      id: i + 1,
-      name: `用户 ${String.fromCharCode(65 + i)}`,
-      avatar: `https://i.pravatar.cc/80?img=${i + 10}`,
-      desc: '这是一段简介文字，描述用户的基本信息。',
-    }));
-    listLoading.value = false;
-  }, 1800);
-};
-
-onMounted(() => {
-  loadCards();
-  loadList();
-});
-</script>
-
 <template>
   <div class="skel-page">
     <C_NavBar />
@@ -211,3 +145,69 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import './index.scss';
+
+// ---- 基础骨架屏 ----
+const basicLoading = ref(true);
+
+// ---- 商品卡片骨架 ----
+const cardLoading = ref(true);
+const cardData = ref<{ title: string; price: string; img: string }[]>([]);
+
+const loadCards = () => {
+  cardLoading.value = true;
+  cardData.value = [];
+  setTimeout(() => {
+    cardData.value = [
+      {
+        title: 'AirPods Pro 2',
+        price: '¥1,799',
+        img: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
+      },
+      {
+        title: 'MacBook Air M3',
+        price: '¥8,999',
+        img: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
+      },
+      {
+        title: 'iPhone 15 Pro',
+        price: '¥7,999',
+        img: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-3.jpeg',
+      },
+      {
+        title: 'Apple Watch S9',
+        price: '¥2,999',
+        img: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-4.jpeg',
+      },
+    ];
+    cardLoading.value = false;
+  }, 2000);
+};
+
+// ---- 列表骨架 ----
+const listLoading = ref(true);
+const listData = ref<
+  { id: number; name: string; avatar: string; desc: string }[]
+>([]);
+
+const loadList = () => {
+  listLoading.value = true;
+  listData.value = [];
+  setTimeout(() => {
+    listData.value = Array.from({ length: 5 }, (_, i) => ({
+      id: i + 1,
+      name: `用户 ${String.fromCharCode(65 + i)}`,
+      avatar: `https://i.pravatar.cc/80?img=${i + 10}`,
+      desc: '这是一段简介文字，描述用户的基本信息。',
+    }));
+    listLoading.value = false;
+  }, 1800);
+};
+
+onMounted(() => {
+  loadCards();
+  loadList();
+});
+</script>

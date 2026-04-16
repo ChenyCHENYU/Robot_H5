@@ -1,19 +1,3 @@
-<script setup lang="ts">
-    import './index.scss';
-
-    const { pkg, lastBuildTime } = __APP_INFO__;
-    const { dependencies, devDependencies, name, version, description } = pkg;
-
-    const activeTab = ref('prod');
-
-    const envInfo = [
-        { label: 'Vue', value: `v${pkg.dependencies.vue}` },
-        { label: 'Vite', value: `v${pkg.devDependencies.vite}` },
-        { label: 'TypeScript', value: `v${pkg.devDependencies.typescript}` },
-        { label: 'Vant', value: `v${pkg.dependencies.vant}` },
-    ];
-</script>
-
 <template>
     <div class="about-page">
         <C_NavBar />
@@ -75,3 +59,19 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './index.scss';
+
+    const { pkg, lastBuildTime } = __APP_INFO__;
+    const { dependencies, devDependencies, name, version, description } = pkg;
+
+    const activeTab = ref('prod');
+
+    const envInfo = [
+        { label: 'Vue', value: `v${pkg.dependencies.vue}` },
+        { label: 'Vite', value: `v${pkg.devDependencies.vite}` },
+        { label: 'TypeScript', value: `v${pkg.devDependencies.typescript}` },
+        { label: 'Vant', value: `v${pkg.dependencies.vant}` },
+    ];
+</script>

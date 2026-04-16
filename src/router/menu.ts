@@ -11,7 +11,7 @@ const menuRouteList: Array<RouteRecordRaw> = [
         children: [
             {
                 path: '/dashboard',
-                name: 'Dashboard',
+                name: 'DashboardPage',
                 meta: {
                     title: '首页',
                     icon: 'ph:house-bold',

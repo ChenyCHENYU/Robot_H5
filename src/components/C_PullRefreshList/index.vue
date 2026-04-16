@@ -1,3 +1,84 @@
+<template>
+    <VanPullRefresh class="w-full h-full" v-model="isRefreshing" :disabled="disabled" @refresh="handleRefresh">
+        <!-- 自定义下拉刷新插槽 -->
+        <template #pulling="props">
+            <slot name="pulling" v-bind="props">
+                <div class="mi-default-pulling">
+                    {{ pullDownPullingText }}
+                </div>
+            </slot>
+        </template>
+
+        <template #loosing>
+            <slot name="loosing">
+                <div class="mi-default-loosing">{{ pullDownLoosingText }}</div>
+            </slot>
+        </template>
+
+        <template #loading>
+            <slot name="loading">
+                <div class="mi-default-loading">
+                    <VanLoading size="22px">{{ pullDownLoadingText }}</VanLoading>
+                </div>
+            </slot>
+        </template>
+
+        <template #success>
+            <slot name="loosing">
+                <div class="mi-default-success">{{ pullDownSuccessText }}</div>
+            </slot>
+        </template>
+
+        <VanList
+            v-model:loading="isLoading"
+            :finished="finished"
+            :error="error"
+            :immediate-check="immediateCheck"
+            :offset="offset"
+            @load="handleLoad"
+        >
+            <!-- 默认插槽用于列表内容 -->
+            <template #default>
+                <slot name="list" :list="list"></slot>
+            </template>
+
+            <!-- 自定义加载状态插槽 -->
+            <template #loading>
+                <slot name="load-loading">
+                    <div class="mi-default-loading">
+                        <VanLoading size="22px" v-if="!isRefreshing">
+                            {{ pullUpLoadingText }}
+                        </VanLoading>
+                    </div>
+                </slot>
+            </template>
+
+            <template #finished>
+                <slot name="load-finished">
+                    <div class="mi-default-finished">
+                        {{ list.length > showFinishedTextNumber ? pullUpFinishedText : '' }}
+                    </div>
+                </slot>
+            </template>
+
+            <template #error>
+                <slot name="load-error">
+                    <div class="mi-default-error" @click="handleErrorClick">
+                        {{ pullUpErrorText }}
+                    </div>
+                </slot>
+            </template>
+        </VanList>
+
+        <!-- 支持自定义空状态 -->
+        <div v-if="!list.length && !isLoading && !isRefreshing">
+            <slot name="empty">
+                <VanEmpty :description="emptyDataText"> </VanEmpty>
+            </slot>
+        </div>
+    </VanPullRefresh>
+</template>
+
 <script setup lang="ts" generic="T extends ListItem">
     import './index.scss';
 
@@ -164,84 +245,3 @@
         list: list.value as T[],
     });
 </script>
-
-<template>
-    <van-pull-refresh class="w-full h-full" v-model="isRefreshing" :disabled="disabled" @refresh="handleRefresh">
-        <!-- 自定义下拉刷新插槽 -->
-        <template #pulling="props">
-            <slot name="pulling" v-bind="props">
-                <div class="mi-default-pulling">
-                    {{ pullDownPullingText }}
-                </div>
-            </slot>
-        </template>
-
-        <template #loosing>
-            <slot name="loosing">
-                <div class="mi-default-loosing">{{ pullDownLoosingText }}</div>
-            </slot>
-        </template>
-
-        <template #loading>
-            <slot name="loading">
-                <div class="mi-default-loading">
-                    <van-loading size="22px">{{ pullDownLoadingText }}</van-loading>
-                </div>
-            </slot>
-        </template>
-
-        <template #success>
-            <slot name="loosing">
-                <div class="mi-default-success">{{ pullDownSuccessText }}</div>
-            </slot>
-        </template>
-
-        <van-list
-            v-model:loading="isLoading"
-            :finished="finished"
-            :error="error"
-            :immediate-check="immediateCheck"
-            :offset="offset"
-            @load="handleLoad"
-        >
-            <!-- 默认插槽用于列表内容 -->
-            <template #default>
-                <slot name="list" :list="list"></slot>
-            </template>
-
-            <!-- 自定义加载状态插槽 -->
-            <template #loading>
-                <slot name="load-loading">
-                    <div class="mi-default-loading">
-                        <van-loading size="22px" v-if="!isRefreshing">
-                            {{ pullUpLoadingText }}
-                        </van-loading>
-                    </div>
-                </slot>
-            </template>
-
-            <template #finished>
-                <slot name="load-finished">
-                    <div class="mi-default-finished">
-                        {{ list.length > showFinishedTextNumber ? pullUpFinishedText : '' }}
-                    </div>
-                </slot>
-            </template>
-
-            <template #error>
-                <slot name="load-error">
-                    <div class="mi-default-error" @click="handleErrorClick">
-                        {{ pullUpErrorText }}
-                    </div>
-                </slot>
-            </template>
-        </van-list>
-
-        <!-- 支持自定义空状态 -->
-        <div v-if="!list.length && !isLoading && !isRefreshing">
-            <slot name="empty">
-                <van-empty :description="emptyDataText"> </van-empty>
-            </slot>
-        </div>
-    </van-pull-refresh>
-</template>

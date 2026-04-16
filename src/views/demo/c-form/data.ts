@@ -40,15 +40,3 @@ export const PART_OPTIONS: PartOption[] = [
     { name: '润滑系统', value: 'lube' },
 ];
 
-// ── 表单分区配置 ─────────────────────────────────────────────
-export interface FormSection {
-    key: string;
-    icon: string;
-    label: string;
-}
-
-export const FORM_SECTIONS: FormSection[] = [
-    { key: 'device', icon: 'i-ph:gear-six-bold', label: '设备信息' },
-    { key: 'fault', icon: 'i-ph:warning-circle-bold', label: '故障信息' },
-    { key: 'reporter', icon: 'i-ph:user-circle-bold', label: '报修人信息' },
-];

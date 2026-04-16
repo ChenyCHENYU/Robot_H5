@@ -1,17 +1,3 @@
-<script setup lang="ts">
-    import './index.scss';
-    import { svgList, iconifyList } from './data';
-    import { showToast } from 'vant';
-
-    const activeTab = ref('iconify');
-
-    const handleCopyName = (name: string) => {
-        navigator.clipboard?.writeText(name).then(() => {
-            showToast({ message: `已复制：${name}`, position: 'top' });
-        });
-    };
-</script>
-
 <template>
     <div class="svg-page">
         <C_NavBar />
@@ -59,3 +45,17 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './index.scss';
+    import { svgList, iconifyList } from './data';
+    import { showToast } from 'vant';
+
+    const activeTab = ref('iconify');
+
+    const handleCopyName = (name: string) => {
+        navigator.clipboard?.writeText(name).then(() => {
+            showToast({ message: `已复制：${name}`, position: 'top' });
+        });
+    };
+</script>

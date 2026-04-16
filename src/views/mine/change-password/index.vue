@@ -1,22 +1,3 @@
-<script setup lang="ts">
-    import './index.scss';
-    import { showToast, type FormInstance } from 'vant';
-
-    const formRef = ref<FormInstance>();
-    const form = reactive({ oldPwd: '', newPwd: '', confirmPwd: '' });
-
-    const validateConfirm = (val: string) => {
-        if (val !== form.newPwd) return '两次密码不一致';
-        return true;
-    };
-
-    const onSubmit = () => {
-        formRef.value?.validate().then(() => {
-            showToast('密码修改成功');
-        }).catch(() => {});
-    };
-</script>
-
 <template>
     <div class="form-page">
         <C_NavBar>
@@ -50,3 +31,22 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+    import './index.scss';
+    import { showToast, type FormInstance } from 'vant';
+
+    const formRef = ref<FormInstance>();
+    const form = reactive({ oldPwd: '', newPwd: '', confirmPwd: '' });
+
+    const validateConfirm = (val: string) => {
+        if (val !== form.newPwd) return '两次密码不一致';
+        return true;
+    };
+
+    const onSubmit = () => {
+        formRef.value?.validate().then(() => {
+            showToast('密码修改成功');
+        }).catch(() => {});
+    };
+</script>

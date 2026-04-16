@@ -1,3 +1,24 @@
+<template>
+    <div class="h-screen flex flex-col">
+        <C_NavBar :title="title">
+            <template #right>
+                <i class="i-ic:sharp-refresh mr-2 text-xl" @click="onRefresh" />
+            </template>
+        </C_NavBar>
+        <iframe
+            class="w-full flex-1"
+            v-if="iframeUrl.length > 0"
+            :src="iframeUrl"
+            frameborder="0"
+            allowfullscreen="true"
+            referrerpolicy="no-referrer"
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+            @load="handleLoadFinish"
+            @error="handleError"
+        ></iframe>
+    </div>
+</template>
+
 <script setup lang="ts">
     import { getParamsToUrl } from '@miracle-web/utils';
     import { showLoadingToast, closeToast, showToast } from 'vant';
@@ -37,24 +58,3 @@
         showLoading();
     });
 </script>
-
-<template>
-    <div class="h-screen flex flex-col">
-        <C_NavBar :title="title">
-            <template #right>
-                <i class="i-ic:sharp-refresh mr-2 text-xl" @click="onRefresh" />
-            </template>
-        </C_NavBar>
-        <iframe
-            class="w-full flex-1"
-            v-if="iframeUrl.length > 0"
-            :src="iframeUrl"
-            frameborder="0"
-            allowfullscreen="true"
-            referrerpolicy="no-referrer"
-            sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-            @load="handleLoadFinish"
-            @error="handleError"
-        ></iframe>
-    </div>
-</template>

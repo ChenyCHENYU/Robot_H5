@@ -1,63 +1,3 @@
-<script setup lang="ts">
-    import { showToast, showConfirmDialog } from 'vant';
-    import { FAULT_OPTIONS, FAULT_LABEL_MAP, URGENCY_OPTIONS, PART_OPTIONS, FORM_SECTIONS } from './data';
-
-    defineOptions({ name: 'CFormDemo' });
-
-    const router = useRouter();
-
-    const form = reactive({
-        deviceName: '',
-        deviceCode: '',
-        location: '',
-        faultType: '',
-        urgency: 'normal',
-        faultParts: [] as string[],
-        faultDesc: '',
-        reporter: '',
-        phone: '',
-        notifyManager: true,
-    });
-
-    // ── 故障类型 ──
-    const showFaultPicker = ref(false);
-    const onFaultConfirm = ({ selectedValues }: { selectedValues: string[] }) => {
-        form.faultType = selectedValues[0] ?? '';
-        showFaultPicker.value = false;
-    };
-
-    // ── 故障部位 ──
-    const togglePart = (val: string) => {
-        const idx = form.faultParts.indexOf(val);
-        if (idx >= 0) form.faultParts.splice(idx, 1);
-        else form.faultParts.push(val);
-    };
-
-    const onlyRequired = ref(false);
-    const formRef = ref();
-    const loading = ref(false);
-
-    const onSubmit = async () => {
-        try {
-            await formRef.value?.validate();
-        } catch {
-            return;
-        }
-        loading.value = true;
-        setTimeout(() => {
-            loading.value = false;
-            showToast({ message: '提交成功', icon: 'success' });
-            router.back();
-        }, 800);
-    };
-
-    const onCancel = () => {
-        showConfirmDialog({ title: '提示', message: '确定放弃当前编辑？' })
-            .then(() => router.back())
-            .catch(() => {});
-    };
-</script>
-
 <template>
     <div class="repair-form">
         <div class="repair-form__hero">
@@ -81,8 +21,8 @@
         <VanForm ref="formRef" :show-error="false" scroll-to-error class="repair-form__body">
             <div class="repair-form__card">
                 <div class="repair-form__card-label">
-                    <i :class="FORM_SECTIONS[0].icon" />
-                    <span>{{ FORM_SECTIONS[0].label }}</span>
+                    <i class="i-ph:gear-six-bold" />
+                    <span>设备信息</span>
                 </div>
                 <VanField
                     v-model="form.deviceName"
@@ -115,8 +55,8 @@
 
             <div class="repair-form__card">
                 <div class="repair-form__card-label">
-                    <i :class="FORM_SECTIONS[1].icon" />
-                    <span>{{ FORM_SECTIONS[1].label }}</span>
+                    <i class="i-ph:warning-circle-bold" />
+                    <span>故障信息</span>
                 </div>
                 <VanField
                     :model-value="FAULT_LABEL_MAP[form.faultType] ?? ''"
@@ -178,8 +118,8 @@
 
             <div class="repair-form__card">
                 <div class="repair-form__card-label">
-                    <i :class="FORM_SECTIONS[2].icon" />
-                    <span>{{ FORM_SECTIONS[2].label }}</span>
+                    <i class="i-ph:user-circle-bold" />
+                    <span>报修人信息</span>
                 </div>
                 <VanField
                     v-model="form.reporter"
@@ -241,6 +181,66 @@
         </VanPopup>
     </div>
 </template>
+
+<script setup lang="ts">
+    import { showToast, showConfirmDialog } from 'vant';
+    import { FAULT_OPTIONS, FAULT_LABEL_MAP, URGENCY_OPTIONS, PART_OPTIONS } from './data';
+
+    defineOptions({ name: 'CFormDemo' });
+
+    const router = useRouter();
+
+    const form = reactive({
+        deviceName: '',
+        deviceCode: '',
+        location: '',
+        faultType: '',
+        urgency: 'normal',
+        faultParts: [] as string[],
+        faultDesc: '',
+        reporter: '',
+        phone: '',
+        notifyManager: true,
+    });
+
+    // ── 故障类型 ──
+    const showFaultPicker = ref(false);
+    const onFaultConfirm = ({ selectedValues }: { selectedValues: string[] }) => {
+        form.faultType = selectedValues[0] ?? '';
+        showFaultPicker.value = false;
+    };
+
+    // ── 故障部位 ──
+    const togglePart = (val: string) => {
+        const idx = form.faultParts.indexOf(val);
+        if (idx >= 0) form.faultParts.splice(idx, 1);
+        else form.faultParts.push(val);
+    };
+
+    const onlyRequired = ref(false);
+    const formRef = ref();
+    const loading = ref(false);
+
+    const onSubmit = async () => {
+        try {
+            await formRef.value?.validate();
+        } catch {
+            return;
+        }
+        loading.value = true;
+        setTimeout(() => {
+            loading.value = false;
+            showToast({ message: '提交成功', icon: 'success' });
+            router.back();
+        }, 800);
+    };
+
+    const onCancel = () => {
+        showConfirmDialog({ title: '提示', message: '确定放弃当前编辑？' })
+            .then(() => router.back())
+            .catch(() => {});
+    };
+</script>
 
 <style lang="scss" scoped>
 .repair-form {

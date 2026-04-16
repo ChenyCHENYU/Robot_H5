@@ -1,36 +1,3 @@
-<script setup lang="ts">
-import './index.scss';
-import { showToast } from 'vant';
-
-defineOptions({ name: 'KeepAliveDemo' });
-
-// 表单状态 — keep-alive 下离开再返回应保留
-const formData = reactive({
-  name: '',
-  remark: '',
-});
-
-// 计数器 — 验证组件未被销毁
-const counter = ref(0);
-
-// 生命周期追踪
-const logs = ref<string[]>([]);
-const addLog = (msg: string) => {
-  const time = new Date().toLocaleTimeString('zh-CN', { hour12: false });
-  logs.value.unshift(`[${time}] ${msg}`);
-  if (logs.value.length > 20) logs.value.pop();
-};
-
-onMounted(() => addLog('onMounted — 组件首次挂载'));
-onActivated(() => addLog('onActivated — 被激活（从缓存恢复）'));
-onDeactivated(() => addLog('onDeactivated — 被停用（进入缓存）'));
-
-const handleIncrement = () => {
-  counter.value++;
-  showToast({ message: `计数 +1 → ${counter.value}`, position: 'top' });
-};
-</script>
-
 <template>
   <div class="ka-page">
     <C_NavBar />
@@ -106,3 +73,36 @@ const handleIncrement = () => {
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import './index.scss';
+import { showToast } from 'vant';
+
+defineOptions({ name: 'KeepAliveDemo' });
+
+// 表单状态 — keep-alive 下离开再返回应保留
+const formData = reactive({
+  name: '',
+  remark: '',
+});
+
+// 计数器 — 验证组件未被销毁
+const counter = ref(0);
+
+// 生命周期追踪
+const logs = ref<string[]>([]);
+const addLog = (msg: string) => {
+  const time = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+  logs.value.unshift(`[${time}] ${msg}`);
+  if (logs.value.length > 20) logs.value.pop();
+};
+
+onMounted(() => addLog('onMounted — 组件首次挂载'));
+onActivated(() => addLog('onActivated — 被激活（从缓存恢复）'));
+onDeactivated(() => addLog('onDeactivated — 被停用（进入缓存）'));
+
+const handleIncrement = () => {
+  counter.value++;
+  showToast({ message: `计数 +1 → ${counter.value}`, position: 'top' });
+};
+</script>
