@@ -5,6 +5,7 @@ declare global {
         pkg: {
             name: string;
             version: string;
+            description: string;
             dependencies: Recordable<string>;
             devDependencies: Recordable<string>;
         };

@@ -10,9 +10,8 @@
         position: sticky;
         top: 46px; // CNavBar placeholder 高度
         z-index: 10;
-        background: var(--ds-glass-bg);
-        backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
-        -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        // 使用纯实色背景，防止列表内容在滚动时穿透吸顶头部
+        background: var(--ds-bg);
         border-bottom: 0.5px solid var(--ds-divider);
     }
 

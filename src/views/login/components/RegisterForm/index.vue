@@ -1,10 +1,10 @@
 <template>
-    <van-form v-if="getShow" ref="formRef" class="register-form" @submit="handleRegister">
+    <VanForm v-if="getShow" ref="formRef" class="register-form" @submit="handleRegister">
         <!-- 通用字段：由 data.ts 的 registerFields 驱动，新增/删除字段只改数据 -->
-        <van-field
+        <VanField
             v-for="field in registerFields"
             :key="field.key"
-            v-model="(formData as Record<string, string>)[field.key]"
+            v-model="(formData as Record<string, any>)[field.key]"
             class="register-form__field"
             :name="field.key"
             :placeholder="field.placeholder"
@@ -21,22 +21,22 @@
                 <i :class="[passTypeMap[field.key] ? 'i-mdi:eye-outline' : 'i-mdi:eye-off', 'register-form__icon']" />
             </template>
             <template v-if="field.hasButton" #button>
-                <van-button size="small" type="primary" style="border-radius: var(--ds-radius-sm)">
+                <VanButton size="small" type="primary" style="border-radius: var(--ds-radius-sm)">
                     {{ field.buttonText }}
-                </van-button>
+                </VanButton>
             </template>
-        </van-field>
+        </VanField>
 
         <!-- policy 复选框结构特殊，单独渲染 -->
-        <van-field name="policy" class="register-form__field" :rules="getFormRules.policy">
+        <VanField name="policy" class="register-form__field" :rules="getFormRules.policy">
             <template #input>
-                <van-checkbox v-model="formData.policy" icon-size="14px" shape="square">
+                <VanCheckbox v-model="formData.policy" icon-size="14px" shape="square">
                     我已阅读并同意用户协议与隐私政策
-                </van-checkbox>
+                </VanCheckbox>
             </template>
-        </van-field>
+        </VanField>
 
-        <van-button
+        <VanButton
             class="register-form__btn register-form__btn--primary"
             type="primary"
             block
@@ -44,12 +44,12 @@
             :loading="loading"
         >
             注册
-        </van-button>
+        </VanButton>
 
-        <van-button class="register-form__btn register-form__btn--secondary" block @click="handleBackLogin">
+        <VanButton class="register-form__btn register-form__btn--secondary" block @click="handleBackLogin">
             返回登录
-        </van-button>
-    </van-form>
+        </VanButton>
+    </VanForm>
 </template>
 
 <script setup lang="ts">

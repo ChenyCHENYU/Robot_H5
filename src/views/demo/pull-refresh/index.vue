@@ -130,7 +130,7 @@
                     >
                         <div class="prl-page__item-body">
                             <div class="prl-page__item-top">
-                                <VanTag :type="(item.categoryType as any)" size="small" round>
+                                <VanTag :type="(item.categoryType as any)" size="medium" round>
                                     {{ item.category }}
                                 </VanTag>
                                 <span v-if="item.isNew" class="prl-page__new-label">
