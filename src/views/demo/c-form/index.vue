@@ -1,222 +1,346 @@
 <script setup lang="ts">
-    import type { CFormInstance, FormField } from '@/components/C_Form/index.vue';
+    import { showToast, showConfirmDialog } from 'vant';
 
     defineOptions({ name: 'CFormDemo' });
 
-    const formRef = ref<CFormInstance>();
-    const submitting = ref(false);
+    const router = useRouter();
 
-    const formValues = ref<Record<string, any>>({
+    // ── 表单数据 ──
+    const form = reactive({
         deviceName: '',
         deviceCode: '',
-        faultType: '',
-        urgency: '',
         location: '',
+        faultType: '',
+        urgency: 'normal',
+        faultParts: [] as string[],
+        faultDesc: '',
         reporter: '',
         phone: '',
-        faultDesc: '',
         notifyManager: true,
-        faultParts: [],
     });
 
-    const fields: FormField[] = [
-        {
-            key: 'deviceName',
-            label: '设备名称',
-            placeholder: '请输入设备名称',
-            prefixIcon: 'i-ph:gear-bold',
-            required: true,
-            rules: [{ required: true, message: '请输入设备名称' }],
-        },
-        {
-            key: 'deviceCode',
-            label: '设备编号',
-            placeholder: '如 EQ-2024-001',
-            prefixIcon: 'i-ph:barcode-bold',
-            required: true,
-            rules: [{ required: true, message: '请输入设备编号' }],
-        },
-        {
-            key: 'faultType',
-            label: '故障类型',
-            type: 'select',
-            required: true,
-            options: [
-                { text: '机械故障', value: 'mechanical' },
-                { text: '电气故障', value: 'electrical' },
-                { text: '液压故障', value: 'hydraulic' },
-                { text: '仪表异常', value: 'instrument' },
-                { text: '其他', value: 'other' },
-            ],
-        },
-        {
-            key: 'urgency',
-            label: '紧急程度',
-            type: 'radio',
-            required: true,
-            options: [
-                { text: '一般', value: 'normal' },
-                { text: '紧急', value: 'urgent' },
-                { text: '特急', value: 'critical' },
-            ],
-        },
-        {
-            key: 'faultParts',
-            label: '故障部位',
-            type: 'checkbox',
-            options: [
-                { text: '主体', value: 'body' },
-                { text: '传动系统', value: 'drive' },
-                { text: '控制系统', value: 'control' },
-                { text: '润滑系统', value: 'lube' },
-            ],
-        },
-        {
-            key: 'location',
-            label: '所在车间',
-            placeholder: '请输入车间位置',
-            prefixIcon: 'i-ph:map-pin-bold',
-        },
-        {
-            key: 'reporter',
-            label: '报修人',
-            placeholder: '请输入姓名',
-            prefixIcon: 'i-ph:user-bold',
-            required: true,
-            rules: [{ required: true, message: '请输入报修人' }],
-        },
-        {
-            key: 'phone',
-            label: '联系电话',
-            type: 'digit',
-            placeholder: '请输入手机号',
-            prefixIcon: 'i-ph:phone-bold',
-            maxlength: 11,
-            required: true,
-            rules: [
-                { required: true, message: '请输入联系电话' },
-                { pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确' },
-            ],
-        },
-        {
-            key: 'faultDesc',
-            label: '故障描述',
-            type: 'textarea',
-            placeholder: '请描述故障现象、发生时间等',
-            maxlength: 300,
-            showWordLimit: true,
-            rows: 3,
-        },
-        {
-            key: 'notifyManager',
-            label: '通知主管',
-            type: 'switch',
-        },
-    ];
+    // ── 故障类型 Picker ──
+    const showFaultPicker = ref(false);
+    const faultTypeLabel = computed(() => {
+        const map: Record<string, string> = {
+            mechanical: '机械故障',
+            electrical: '电气故障',
+            hydraulic: '液压故障',
+            instrument: '仪表异常',
+            other: '其他',
+        };
+        return map[form.faultType] ?? '';
+    });
+    const faultColumns = ['机械故障', '电气故障', '液压故障', '仪表异常', '其他'];
+    const faultValueMap: Record<string, string> = {
+        机械故障: 'mechanical',
+        电气故障: 'electrical',
+        液压故障: 'hydraulic',
+        仪表异常: 'instrument',
+        其他: 'other',
+    };
+    const onFaultConfirm = ({ selectedValues }: { selectedValues: string[] }) => {
+        form.faultType = faultValueMap[selectedValues[0]] ?? selectedValues[0];
+        showFaultPicker.value = false;
+    };
 
-    const handleSubmit = async (values: Record<string, any>) => {
-        submitting.value = true;
-        await new Promise((r) => setTimeout(r, 1200));
-        submitting.value = false;
-        console.log('报修提交：', values);
+    // ── 故障部位 ──
+    const partOptions = [
+        { name: '主体', value: 'body' },
+        { name: '传动系统', value: 'drive' },
+        { name: '控制系统', value: 'control' },
+        { name: '润滑系统', value: 'lube' },
+    ];
+    const togglePart = (val: string) => {
+        const idx = form.faultParts.indexOf(val);
+        if (idx >= 0) form.faultParts.splice(idx, 1);
+        else form.faultParts.push(val);
+    };
+
+    // ── 仅必填 ──
+    const onlyRequired = ref(false);
+
+    // ── 提交 ──
+    const formRef = ref();
+    const loading = ref(false);
+
+    const onSubmit = async () => {
+        try {
+            await formRef.value?.validate();
+        } catch {
+            return;
+        }
+        loading.value = true;
+        setTimeout(() => {
+            loading.value = false;
+            showToast('提交成功');
+            router.back();
+        }, 800);
+    };
+
+    const onCancel = () => {
+        showConfirmDialog({ title: '提示', message: '确定放弃当前编辑？' })
+            .then(() => router.back())
+            .catch(() => {});
     };
 </script>
 
 <template>
-    <div class="c-form-demo">
-        <C_NavBar title="表单组件" />
+    <div class="repair-form">
+        <C_NavBar title="设备报修" />
 
-        <div class="c-form-demo__body">
-            <!-- Section header -->
-            <div class="c-form-demo__section-head">
-                <h2 class="c-form-demo__title">设备报修</h2>
-                <p class="c-form-demo__desc">配置驱动 · 内置验证 · 多类型字段</p>
+        <VanForm ref="formRef" :show-error="false" scroll-to-error>
+            <!-- ─── 设备信息 ─── -->
+            <div class="repair-form__section">
+                <div class="repair-form__section-head">
+                    <div class="repair-form__section-title">设备信息</div>
+                    <label class="repair-form__toggle">
+                        <span>仅显示必填</span>
+                        <VanSwitch v-model="onlyRequired" size="16px" />
+                    </label>
+                </div>
+                <VanCellGroup inset class="repair-form__cells">
+                    <VanField
+                        v-model="form.deviceName"
+                        name="deviceName"
+                        label="设备名称"
+                        placeholder="请输入设备名称"
+                        required
+                        :rules="[{ required: true, message: '请输入设备名称' }]"
+                    />
+                    <VanField
+                        v-model="form.deviceCode"
+                        name="deviceCode"
+                        label="设备编号"
+                        placeholder="如 EQ-2024-001"
+                        required
+                        :rules="[{ required: true, message: '请输入设备编号' }]"
+                    />
+                    <VanField
+                        v-if="!onlyRequired"
+                        v-model="form.location"
+                        name="location"
+                        label="所在车间"
+                        placeholder="请输入车间位置"
+                    />
+                </VanCellGroup>
             </div>
 
-            <!-- Form card -->
-            <div class="c-form-demo__card">
-                <C_Form
-                    ref="formRef"
-                    v-model:values="formValues"
-                    :fields="fields"
-                    :loading="submitting"
-                    submit-text="提交报修"
-                    reset-text="重置"
-                    label-width="5em"
-                    @submit="handleSubmit"
-                />
+            <!-- ─── 故障信息 ─── -->
+            <div class="repair-form__section">
+                <div class="repair-form__section-head">
+                    <div class="repair-form__section-title">故障信息</div>
+                </div>
+                <VanCellGroup inset class="repair-form__cells">
+                    <VanField
+                        v-model="faultTypeLabel"
+                        name="faultType"
+                        label="故障类型"
+                        placeholder="请选择"
+                        required
+                        readonly
+                        is-link
+                        :rules="[{ required: true, message: '请选择故障类型' }]"
+                        @click="showFaultPicker = true"
+                    />
+                    <VanField name="urgency" label="紧急程度" required>
+                        <template #input>
+                            <VanRadioGroup v-model="form.urgency" direction="horizontal">
+                                <VanRadio name="normal">一般</VanRadio>
+                                <VanRadio name="urgent">紧急</VanRadio>
+                                <VanRadio name="critical">特急</VanRadio>
+                            </VanRadioGroup>
+                        </template>
+                    </VanField>
+                    <VanField v-if="!onlyRequired" name="faultParts" label="故障部位">
+                        <template #input>
+                            <div class="repair-form__parts">
+                                <VanTag
+                                    v-for="p in partOptions"
+                                    :key="p.value"
+                                    :type="form.faultParts.includes(p.value) ? 'primary' : 'default'"
+                                    round
+                                    size="medium"
+                                    class="repair-form__part-tag"
+                                    @click="togglePart(p.value)"
+                                >
+                                    {{ p.name }}
+                                </VanTag>
+                            </div>
+                        </template>
+                    </VanField>
+                    <VanField
+                        v-model="form.faultDesc"
+                        name="faultDesc"
+                        label="故障描述"
+                        type="textarea"
+                        placeholder="请描述故障现象、发生时间等"
+                        rows="3"
+                        autosize
+                        maxlength="300"
+                        show-word-limit
+                    />
+                </VanCellGroup>
             </div>
 
-            <!-- Live data preview -->
-            <div class="c-form-demo__section-head">
-                <h2 class="c-form-demo__title c-form-demo__title--sm">实时数据</h2>
+            <!-- ─── 报修人信息 ─── -->
+            <div class="repair-form__section">
+                <div class="repair-form__section-head">
+                    <div class="repair-form__section-title">报修人信息</div>
+                </div>
+                <VanCellGroup inset class="repair-form__cells">
+                    <VanField
+                        v-model="form.reporter"
+                        name="reporter"
+                        label="报修人"
+                        placeholder="请输入姓名"
+                        required
+                        :rules="[{ required: true, message: '请输入报修人' }]"
+                    />
+                    <VanField
+                        v-model="form.phone"
+                        name="phone"
+                        label="联系电话"
+                        type="tel"
+                        placeholder="请输入手机号"
+                        required
+                        :rules="[
+                            { required: true, message: '请输入联系电话' },
+                            { pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确' },
+                        ]"
+                    />
+                    <VanCell center title="通知主管">
+                        <template #right-icon>
+                            <VanSwitch v-model="form.notifyManager" size="20px" />
+                        </template>
+                    </VanCell>
+                </VanCellGroup>
             </div>
-            <div class="c-form-demo__preview">
-                <pre>{{ JSON.stringify(formValues, null, 2) }}</pre>
-            </div>
+        </VanForm>
+
+        <!-- 底部按钮 -->
+        <div class="repair-form__footer">
+            <VanButton block round @click="onCancel">取 消</VanButton>
+            <VanButton block round type="primary" :loading="loading" @click="onSubmit">
+                提交报修
+            </VanButton>
         </div>
+
+        <!-- Picker -->
+        <VanPopup v-model:show="showFaultPicker" position="bottom" round>
+            <VanPicker
+                :columns="faultColumns"
+                @confirm="onFaultConfirm"
+                @cancel="showFaultPicker = false"
+            />
+        </VanPopup>
     </div>
 </template>
 
 <style lang="scss" scoped>
-.c-form-demo {
+.repair-form {
     min-height: 100dvh;
     background: var(--ds-bg);
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 72px;
 
-    &__body {
-        padding: 16px 16px 40px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
+    // ── 分区 ──
+    &__section {
+        margin-bottom: 4px;
 
-    // ── Section header ──
-    &__section-head {
-        padding: 4px 4px 0;
-    }
+        &-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px 4px;
+        }
 
-    &__title {
-        font-size: 20px;
-        font-weight: 700;
-        color: var(--ds-text-primary);
-        line-height: 1.3;
-        margin: 0;
-
-        &--sm {
-            font-size: 15px;
+        &-title {
+            font-size: 14px;
             font-weight: 600;
+            color: var(--ds-text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            &::before {
+                content: '';
+                width: 3px;
+                height: 14px;
+                border-radius: 2px;
+                background: var(--ds-accent);
+            }
         }
     }
 
-    &__desc {
-        font-size: 13px;
+    &__toggle {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
         color: var(--ds-text-tertiary);
-        margin: 4px 0 0;
-        line-height: 1.4;
     }
 
-    // ── Card ──
-    &__card {
-        background: var(--ds-bg-secondary);
-        border-radius: var(--ds-radius-md);
-        overflow: hidden;
-    }
+    &__cells {
+        :deep(.van-field) {
+            font-size: 13px;
+            padding: 10px 14px;
+        }
 
-    // ── Preview ──
-    &__preview {
-        background: var(--ds-bg-secondary);
-        border-radius: var(--ds-radius-md);
-        padding: 14px 16px;
-        overflow-x: auto;
-
-        pre {
-            font-size: 11px;
+        :deep(.van-field__label) {
+            width: 5em;
             color: var(--ds-text-secondary);
-            white-space: pre-wrap;
-            word-break: break-all;
-            font-family: 'SF Mono', 'Menlo', monospace;
-            line-height: 1.6;
-            margin: 0;
+        }
+
+        :deep(.van-field__control) {
+            color: var(--ds-text-primary);
+        }
+
+        :deep(.van-field__error-message) {
+            font-size: 11px;
+        }
+
+        :deep(.van-cell) {
+            font-size: 13px;
+            padding: 10px 14px;
+        }
+
+        :deep(.van-cell__title) {
+            color: var(--ds-text-secondary);
+        }
+
+        :deep(.van-radio__label) {
+            font-size: 13px;
+        }
+    }
+
+    &__parts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    &__part-tag {
+        cursor: pointer;
+    }
+
+    // ── 底部按钮 ──
+    &__footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        gap: 12px;
+        padding: 8px 16px;
+        padding-bottom: calc(8px + env(safe-area-inset-bottom));
+        background: var(--ds-bg);
+        border-top: 0.5px solid var(--ds-divider);
+
+        .van-button {
+            height: 40px;
+            font-size: 14px;
         }
     }
 }
