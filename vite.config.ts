@@ -100,18 +100,24 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
                 'vue',
                 'vue-router',
                 'pinia',
-                // Iconify 运行时 + 本地图标集（避免首屏 CDN 请求）
+                // ── 核心运行时依赖（不预声明会导致首次导航触发 reload）──
+                '@vueuse/core',
+                '@miracle-web/utils',
+                'pinia-plugin-persistedstate',
+                'nprogress',
+                'mitt',
+                'disable-devtool',
+                '@vant/touch-emulator',
+                // ── Iconify 运行时 + 实际使用的图标集 ──
                 '@iconify/vue',
                 '@iconify-json/ph/icons.json',
                 '@iconify-json/ic/icons.json',
-                '@iconify-json/mdi/icons.json',
-                '@iconify-json/bxs/icons.json',
-                '@iconify-json/carbon/icons.json',
-                '@iconify-json/iconamoon/icons.json',
-                '@iconify-json/mage/icons.json',
-                '@iconify-json/mingcute/icons.json',
-                '@iconify-json/tabler/icons.json',
-                // Vant 组件样式（按需引入时 Vite 首次遇到会重新优化，预先声明避免页面闪烁）
+                // ── ECharts（避免首次访问 chart 页 reload）──
+                'echarts/core',
+                'echarts/charts',
+                'echarts/components',
+                'echarts/renderers',
+                // ── Vant 组件样式 ──
                 'vant/es/config-provider/style/index',
                 'vant/es/tabbar/style/index',
                 'vant/es/tabbar-item/style/index',
@@ -153,6 +159,10 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
                 'vant/es/progress/style/index',
                 'vant/es/circle/style/index',
                 'vant/es/sticky/style/index',
+                'vant/es/swipe-cell/style/index',
+                'vant/es/image-preview/style/index',
+                'vant/es/tab/style/index',
+                'vant/es/tabs/style/index',
             ],
         },
     };

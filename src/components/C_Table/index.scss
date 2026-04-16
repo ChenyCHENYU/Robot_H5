@@ -5,7 +5,7 @@
         padding: 60px 0;
 
         &-icon {
-            font-size: 64px;
+            font-size: 48px;
             color: var(--ds-text-tertiary);
             display: block;
         }
@@ -14,30 +14,23 @@
     &__list {
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        padding: 12px 12px 16px;
+        gap: 8px;
+        padding: 12px 16px 16px;
     }
 
     // ── 卡片 ──────────────────────────────────────────────
     &__card {
-        background: var(--ds-card-bg);
-        border-radius: var(--ds-radius-lg);
-        padding: 14px 14px 10px;
-        box-shadow: var(--ds-shadow-sm);
-        border: 0.5px solid var(--ds-glass-border);
+        background: var(--ds-bg-secondary);
+        border-radius: var(--ds-radius-md);
+        padding: 12px 14px 10px;
         overflow: hidden;
-        transition: box-shadow 0.2s ease;
-
-        &:active {
-            box-shadow: var(--ds-shadow-xs);
-        }
 
         &-head {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
             gap: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         &-head-left {
@@ -45,7 +38,7 @@
             min-width: 0;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
         }
 
         &-head-right {
@@ -61,7 +54,7 @@
         font-size: 15px;
         font-weight: 600;
         color: var(--ds-text-primary);
-        line-height: 1.4;
+        line-height: 1.35;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -70,7 +63,7 @@
     &__secondary {
         font-size: 12px;
         color: var(--ds-text-tertiary);
-        line-height: 1.4;
+        line-height: 1.35;
     }
 
     &__right-val {
@@ -83,8 +76,8 @@
     &__card-meta {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 6px 8px;
-        padding-bottom: 10px;
+        gap: 4px 8px;
+        padding-bottom: 8px;
         border-bottom: 0.5px solid var(--ds-divider);
         margin-bottom: 8px;
     }
@@ -92,7 +85,7 @@
     &__meta-item {
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 3px;
         min-width: 0;
     }
 
@@ -119,19 +112,20 @@
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        gap: 8px;
+        gap: 6px;
         flex-wrap: wrap;
     }
 
     &__op-btn {
-        height: 28px !important;
-        padding: 0 12px !important;
+        height: 26px !important;
+        padding: 0 10px !important;
         font-size: 12px !important;
+        border-radius: var(--ds-radius-sm) !important;
     }
 
     &__op-icon {
-        font-size: 13px;
+        font-size: 12px;
         margin-right: 2px;
-        vertical-align: -2px;
+        vertical-align: -1px;
     }
 }

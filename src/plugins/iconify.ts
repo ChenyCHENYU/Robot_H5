@@ -11,20 +11,12 @@
  */
 import { addCollection } from '@iconify/vue';
 
-// ---- 按需引入各图标集 JSON ----
-import bxs from '@iconify-json/bxs/icons.json';
-import carbon from '@iconify-json/carbon/icons.json';
+// 只保留项目实际使用的图标集（ph = 核心, ic = NavBar/WebSite）
 import ic from '@iconify-json/ic/icons.json';
-import iconamoon from '@iconify-json/iconamoon/icons.json';
-import mage from '@iconify-json/mage/icons.json';
-import mdi from '@iconify-json/mdi/icons.json';
-import mingcute from '@iconify-json/mingcute/icons.json';
 import ph from '@iconify-json/ph/icons.json';
-import tabler from '@iconify-json/tabler/icons.json';
 
 export function setupIconify() {
-    // 注册全部图标集到运行时内存
-    [bxs, carbon, ic, iconamoon, mage, mdi, mingcute, ph, tabler].forEach((collection) => {
+    [ph, ic].forEach((collection) => {
         addCollection(collection as Parameters<typeof addCollection>[0]);
     });
 }

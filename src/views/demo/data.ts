@@ -99,14 +99,14 @@ export const menuItems: MenuItem[] = [
     color: '#30D158',
   },
   {
-    title: 'C_Form 组件',
+    title: '表单组件',
     desc: '配置驱动 · 内置验证 · 多类型字段',
     route: '/cFormDemo',
     icon: 'ph:note-pencil-bold',
     color: '#007AFF',
   },
   {
-    title: 'C_Table 组件',
+    title: '表格组件',
     desc: '卡片列表 · 上拉加载 · 操作按钮',
     route: '/cTableDemo',
     icon: 'ph:table-bold',

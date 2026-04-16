@@ -170,7 +170,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
     path: '/cFormDemo',
     name: 'CFormDemo',
     meta: {
-      title: 'C_Form 组件',
+      title: '表单组件',
     },
     component: () => import('@/views/demo/c-form/index.vue'),
   },
@@ -178,7 +178,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
     path: '/cTableDemo',
     name: 'CTableDemo',
     meta: {
-      title: 'C_Table 组件',
+      title: '表格组件',
     },
     component: () => import('@/views/demo/c-table/index.vue'),
   },

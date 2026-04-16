@@ -1,6 +1,6 @@
 <template>
-    <van-form v-if="getShow" ref="formRef" class="login-form" @submit="handleSubmit">
-        <van-field
+    <VanForm v-if="getShow" ref="formRef" class="login-form" @submit="handleSubmit">
+        <VanField
             v-model="formData.username"
             class="login-form__field"
             name="username"
@@ -10,8 +10,8 @@
             <template #left-icon>
                 <i class="i-ph:user-bold login-form__icon" />
             </template>
-        </van-field>
-        <van-field
+        </VanField>
+        <VanField
             v-model="formData.password"
             class="login-form__field"
             :type="switchPassType ? 'password' : 'text'"
@@ -21,23 +21,23 @@
             @click-right-icon="switchPassType = !switchPassType"
         >
             <template #left-icon>
-                <i class="i-iconamoon:lock-bold login-form__icon" />
+                <i class="i-ph:lock-bold login-form__icon" />
             </template>
             <template #right-icon>
-                <i v-if="switchPassType" class="i-mdi:eye-outline login-form__icon" />
-                <i v-else class="i-mdi:eye-off login-form__icon" />
+                <i v-if="switchPassType" class="i-ph:eye-bold login-form__icon" />
+                <i v-else class="i-ph:eye-slash-bold login-form__icon" />
             </template>
-        </van-field>
+        </VanField>
 
         <div class="login-form__options">
             <div class="flex items-center gap-2">
-                <van-switch v-model="rememberMe" size="16px" />
+                <VanSwitch v-model="rememberMe" size="16px" />
                 <span class="text-xs" style="color: var(--ds-text-secondary); opacity: 0.8">记住我</span>
             </div>
             <a class="login-form__link" @click="setLoginState(LoginStateEnum.RESET_PASSWORD)">忘记密码?</a>
         </div>
 
-        <van-button
+        <VanButton
             class="login-form__btn login-form__btn--primary"
             type="primary"
             block
@@ -45,15 +45,15 @@
             :loading="loading"
         >
             登录
-        </van-button>
-        <van-button
+        </VanButton>
+        <VanButton
             class="login-form__btn login-form__btn--secondary"
             block
             @click="setLoginState(LoginStateEnum.REGISTER)"
         >
             创建账号
-        </van-button>
-    </van-form>
+        </VanButton>
+    </VanForm>
 </template>
 
 <script setup lang="ts">

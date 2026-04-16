@@ -26,8 +26,8 @@ export const registerFields: FieldConfig[] = [
         hasButton: true,
         buttonText: '发送验证码',
     },
-    { key: 'password', placeholder: '密码', icon: 'i-iconamoon:lock-bold', isPassword: true },
-    { key: 'confirmPassword', placeholder: '确认密码', icon: 'i-iconamoon:lock-bold', isPassword: true },
+    { key: 'password', placeholder: '密码', icon: 'i-ph:lock-bold', isPassword: true },
+    { key: 'confirmPassword', placeholder: '确认密码', icon: 'i-ph:lock-bold', isPassword: true },
 ]
 
 /** 找回密码表单字段 */

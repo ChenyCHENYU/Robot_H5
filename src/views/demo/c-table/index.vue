@@ -120,7 +120,7 @@
 
 <template>
     <div class="c-table-demo">
-        <C_NavBar title="C_Table 演示" />
+        <C_NavBar title="表格组件" />
         <C_Table
             :columns="columns"
             :data="tableData"

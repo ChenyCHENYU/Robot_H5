@@ -18,7 +18,7 @@
                 <i :class="[field.icon, 'register-form__icon']" />
             </template>
             <template v-if="field.isPassword" #right-icon>
-                <i :class="[passTypeMap[field.key] ? 'i-mdi:eye-outline' : 'i-mdi:eye-off', 'register-form__icon']" />
+                <i :class="[passTypeMap[field.key] ? 'i-ph:eye-bold' : 'i-ph:eye-slash-bold', 'register-form__icon']" />
             </template>
             <template v-if="field.hasButton" #button>
                 <VanButton size="small" type="primary" style="border-radius: var(--ds-radius-sm)">

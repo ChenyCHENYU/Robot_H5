@@ -1,63 +1,92 @@
 .c-form {
+    // ── 字段通用 ─────────────────────────────────────────
     &__field {
-        // 继承项目 glass-morphism 卡片风格
         background: transparent !important;
-        padding: 0 16px;
+        padding: 2px 16px;
 
-        // 分隔线
         &::after {
             border-bottom-color: var(--ds-divider) !important;
             left: 16px !important;
+            right: 16px !important;
+        }
+
+        // label 样式
+        :deep(.van-field__label) {
+            color: var(--ds-text-secondary);
+            font-size: 14px;
+        }
+
+        // 输入框样式
+        :deep(.van-field__control) {
+            font-size: 14px;
+            color: var(--ds-text-primary);
+
+            &::placeholder {
+                color: var(--ds-text-tertiary);
+                font-size: 13px;
+            }
+        }
+
+        // 错误信息
+        :deep(.van-field__error-message) {
+            font-size: 11px;
+            padding-top: 2px;
         }
 
         &--textarea {
             align-items: flex-start;
 
             :deep(.van-field__label) {
-                padding-top: 12px;
+                padding-top: 10px;
             }
         }
     }
 
+    // ── 图标 ─────────────────────────────────────────────
     &__prefix-icon {
-        font-size: 18px;
-        color: var(--ds-accent);
-        margin-right: 4px;
+        font-size: 16px;
+        color: var(--ds-text-tertiary);
+        margin-right: 2px;
     }
 
     &__extra {
-        font-size: 12px;
+        font-size: 11px;
         color: var(--ds-text-tertiary);
         margin-left: 4px;
     }
 
+    // ── 选项组 ───────────────────────────────────────────
     &__checkbox,
     &__radio {
         margin-right: 12px;
-        font-size: 14px;
+        font-size: 13px;
     }
 
+    // ── 操作按钮 ─────────────────────────────────────────
     &__actions {
         display: flex;
         gap: 10px;
-        padding: 20px 16px 16px;
+        padding: 24px 16px 16px;
     }
 
     &__btn {
         flex: 1;
-        border-radius: var(--ds-radius-md) !important;
-        height: 44px !important;
-        font-size: 15px !important;
-        font-weight: 600 !important;
+        border-radius: var(--ds-radius-sm) !important;
+        height: 40px !important;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.02em;
 
         &--submit {
-            background: linear-gradient(135deg, var(--ds-accent), color-mix(in srgb, var(--ds-accent) 70%, #5856d6)) !important;
+            background: var(--ds-accent) !important;
             border: none !important;
+            color: #fff !important;
         }
 
         &--reset {
             color: var(--ds-text-secondary) !important;
-            border-color: var(--ds-divider) !important;
+            border-color: var(--ds-border) !important;
+            background: transparent !important;
         }
     }
 }
