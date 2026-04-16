@@ -1,17 +1,19 @@
 <template>
-    <van-nav-bar @click-left="onBack()" placeholder fixed>
+    <VanNavBar @click-left="onBack()" placeholder fixed>
         <template #title>
             {{ getTitle }}
         </template>
 
         <template #left>
-            <i class="i-ic:sharp-arrow-back-ios" text-xl />
+            <span class="c-navbar__back">
+                <i class="i-ph:caret-left-bold c-navbar__back-icon" />
+            </span>
         </template>
 
         <template #right>
             <slot name="right" />
         </template>
-    </van-nav-bar>
+    </VanNavBar>
 </template>
 
 <script setup lang="ts">

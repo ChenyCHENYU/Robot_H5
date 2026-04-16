@@ -166,6 +166,22 @@ const routeModuleList: Array<RouteRecordRaw> = [
     },
     component: () => import('@/views/demo/form/index.vue'),
   },
+  {
+    path: '/cFormDemo',
+    name: 'CFormDemo',
+    meta: {
+      title: 'C_Form 组件',
+    },
+    component: () => import('@/views/demo/c-form/index.vue'),
+  },
+  {
+    path: '/cTableDemo',
+    name: 'CTableDemo',
+    meta: {
+      title: 'C_Table 组件',
+    },
+    component: () => import('@/views/demo/c-table/index.vue'),
+  },
 ];
 
 export default routeModuleList;

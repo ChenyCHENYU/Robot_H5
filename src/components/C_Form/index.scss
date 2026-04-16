@@ -1,0 +1,63 @@
+.c-form {
+    &__field {
+        // 继承项目 glass-morphism 卡片风格
+        background: transparent !important;
+        padding: 0 16px;
+
+        // 分隔线
+        &::after {
+            border-bottom-color: var(--ds-divider) !important;
+            left: 16px !important;
+        }
+
+        &--textarea {
+            align-items: flex-start;
+
+            :deep(.van-field__label) {
+                padding-top: 12px;
+            }
+        }
+    }
+
+    &__prefix-icon {
+        font-size: 18px;
+        color: var(--ds-accent);
+        margin-right: 4px;
+    }
+
+    &__extra {
+        font-size: 12px;
+        color: var(--ds-text-tertiary);
+        margin-left: 4px;
+    }
+
+    &__checkbox,
+    &__radio {
+        margin-right: 12px;
+        font-size: 14px;
+    }
+
+    &__actions {
+        display: flex;
+        gap: 10px;
+        padding: 20px 16px 16px;
+    }
+
+    &__btn {
+        flex: 1;
+        border-radius: var(--ds-radius-md) !important;
+        height: 44px !important;
+        font-size: 15px !important;
+        font-weight: 600 !important;
+
+        &--submit {
+            background: linear-gradient(135deg, var(--ds-accent), color-mix(in srgb, var(--ds-accent) 70%, #5856d6)) !important;
+            border: none !important;
+        }
+
+        &--reset {
+            color: var(--ds-text-secondary) !important;
+            border-color: var(--ds-divider) !important;
+        }
+    }
+}

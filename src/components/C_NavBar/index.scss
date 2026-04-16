@@ -8,6 +8,33 @@ html.dark :deep(.van-nav-bar) {
   background: rgba(28, 28, 30, 0.72) !important;
 }
 
+// 返回按钮 —— 小巧的圆形毛玻璃胶囊，符合项目 glass-morphism 设计语言
+.c-navbar__back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--ds-glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 0.5px solid var(--ds-glass-border);
+  transition: background 0.15s, transform 0.1s;
+
+  &:active {
+    transform: scale(0.88);
+    background: var(--ds-accent-light);
+  }
+}
+
+.c-navbar__back-icon {
+  font-size: 16px;
+  color: var(--ds-accent);
+  // caret-left 本身有细微左偏，视觉居中微调
+  margin-left: -1px;
+}
+
 @media screen and (min-width: 576px) {
   :deep(.van-nav-bar--fixed) {
     top: var(--vbar-h) !important;

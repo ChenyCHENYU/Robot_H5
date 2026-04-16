@@ -1,0 +1,137 @@
+.c-table {
+    min-height: 100%;
+
+    &__empty {
+        padding: 60px 0;
+
+        &-icon {
+            font-size: 64px;
+            color: var(--ds-text-tertiary);
+            display: block;
+        }
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px 12px 16px;
+    }
+
+    // ── 卡片 ──────────────────────────────────────────────
+    &__card {
+        background: var(--ds-card-bg);
+        border-radius: var(--ds-radius-lg);
+        padding: 14px 14px 10px;
+        box-shadow: var(--ds-shadow-sm);
+        border: 0.5px solid var(--ds-glass-border);
+        overflow: hidden;
+        transition: box-shadow 0.2s ease;
+
+        &:active {
+            box-shadow: var(--ds-shadow-xs);
+        }
+
+        &-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        &-head-left {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        &-head-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+    }
+
+    // ── 主 / 副标题 ───────────────────────────────────────
+    &__primary {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ds-text-primary);
+        line-height: 1.4;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__secondary {
+        font-size: 12px;
+        color: var(--ds-text-tertiary);
+        line-height: 1.4;
+    }
+
+    &__right-val {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ds-text-primary);
+    }
+
+    // ── meta 信息网格 ─────────────────────────────────────
+    &__card-meta {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px 8px;
+        padding-bottom: 10px;
+        border-bottom: 0.5px solid var(--ds-divider);
+        margin-bottom: 8px;
+    }
+
+    &__meta-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        min-width: 0;
+    }
+
+    &__meta-label {
+        font-size: 11px;
+        color: var(--ds-text-tertiary);
+        flex-shrink: 0;
+
+        &::after {
+            content: ':';
+        }
+    }
+
+    &__meta-val {
+        font-size: 12px;
+        color: var(--ds-text-secondary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    // ── 操作按钮行 ────────────────────────────────────────
+    &__card-ops {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    &__op-btn {
+        height: 28px !important;
+        padding: 0 12px !important;
+        font-size: 12px !important;
+    }
+
+    &__op-icon {
+        font-size: 13px;
+        margin-right: 2px;
+        vertical-align: -2px;
+    }
+}
