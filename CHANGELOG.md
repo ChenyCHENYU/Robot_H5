@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://git.yourcompany.com/robot/robot-h5/compare/v1.1.0...v1.1.1) (2026-04-16)
+
+
+### ♻️ 重构
+
+* **core:** 全面清理工程配置与类型安全 ([66221c4](https://git.yourcompany.com/robot/robot-h5/commit/66221c4e085531a90eec997a9ad8e78e45430a3e))
+
 ## 1.1.0 (2026-04-16)
 
 
