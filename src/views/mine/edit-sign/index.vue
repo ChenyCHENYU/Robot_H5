@@ -1,7 +1,6 @@
 <script setup lang="ts">
     import './index.scss';
-    import type { FormInstance } from 'vant';
-    import { showToast } from 'vant';
+    import { showToast, type FormInstance } from 'vant';
     import { useUserStore } from '@/store/modules/user';
 
     const userStore = useUserStore();
@@ -20,17 +19,17 @@
 
 <template>
     <div class="form-page">
-        <CNavBar>
+        <C_NavBar>
             <template #right>
                 <span class="form-page__save" @click="handleSave">保存</span>
             </template>
-        </CNavBar>
+        </C_NavBar>
         <div class="form-page__body">
             <div class="form-page__section">
                 <h3 class="form-page__section-title">个性签名</h3>
-                <van-form ref="formRef">
+                <VanForm ref="formRef">
                     <div class="form-page__group">
-                        <van-field
+                        <VanField
                             v-model="formValue.sign"
                             class="form-page__cell"
                             name="sign"
@@ -43,7 +42,7 @@
                             show-word-limit
                         />
                     </div>
-                </van-form>
+                </VanForm>
             </div>
         </div>
     </div>

@@ -62,7 +62,7 @@ const handleRoundDialog = () => {
 
 <template>
   <div class="popup-page">
-    <CNavBar />
+    <C_NavBar />
     <div class="popup-page__body">
       <!-- ActionSheet -->
       <div class="popup-page__section">

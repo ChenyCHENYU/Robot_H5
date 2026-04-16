@@ -40,11 +40,11 @@
 
 <template>
     <div class="h-screen flex flex-col">
-        <CNavBar :title="title">
+        <C_NavBar :title="title">
             <template #right>
                 <i class="i-ic:sharp-refresh mr-2 text-xl" @click="onRefresh" />
             </template>
-        </CNavBar>
+        </C_NavBar>
         <iframe
             class="w-full flex-1"
             v-if="iframeUrl.length > 0"

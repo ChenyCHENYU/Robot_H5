@@ -14,7 +14,7 @@
 
 <template>
     <div class="svg-page">
-        <CNavBar />
+        <C_NavBar />
         <div class="svg-page__body">
             <VanTabs v-model:active="activeTab" shrink line-width="20" class="svg-page__tabs">
                 <!-- Iconify 图标 -->
@@ -49,7 +49,7 @@
                         <div v-for="name in svgList" :key="name" class="svg-page__item">
                             <div class="svg-page__card">
                                 <div class="svg-page__card-shine" />
-                                <CSvgIcon class="svg-page__icon" :name="name" />
+                                <C_SvgIcon class="svg-page__icon" :name="name" />
                             </div>
                             <span class="svg-page__label">{{ name }}</span>
                         </div>

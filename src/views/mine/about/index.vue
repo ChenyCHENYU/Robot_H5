@@ -16,7 +16,7 @@
 
 <template>
     <div class="about-page">
-        <CNavBar />
+        <C_NavBar />
 
         <div class="about-page__body">
             <!-- 项目信息卡片 -->

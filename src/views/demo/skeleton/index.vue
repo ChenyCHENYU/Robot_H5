@@ -66,7 +66,7 @@ onMounted(() => {
 
 <template>
   <div class="skel-page">
-    <CNavBar />
+    <C_NavBar />
     <div class="skel-page__body">
       <!-- 基础骨架屏 -->
       <div class="skel-page__section">

@@ -1,7 +1,6 @@
 <script setup lang="ts">
     import './index.scss';
-    import type { FormInstance } from 'vant';
-    import { showToast } from 'vant';
+    import { showToast, type FormInstance } from 'vant';
     import { useUserStore } from '@/store/modules/user';
 
     defineOptions({ name: 'EditNickname' });
@@ -29,17 +28,17 @@
 
 <template>
     <div class="form-page">
-        <CNavBar>
+        <C_NavBar>
             <template #right>
                 <span class="form-page__save" @click="handleSave">保存</span>
             </template>
-        </CNavBar>
+        </C_NavBar>
         <div class="form-page__body">
             <div class="form-page__section">
                 <h3 class="form-page__section-title">修改昵称</h3>
-                <van-form ref="formRef">
+                <VanForm ref="formRef">
                     <div class="form-page__group">
-                        <van-field
+                        <VanField
                             v-model="formValue.nickname"
                             class="form-page__cell"
                             placeholder="请输入昵称（2-12字）"
@@ -47,7 +46,7 @@
                             :rules="[{ validator: validateNickname, trigger: 'onChange' }]"
                         />
                     </div>
-                </van-form>
+                </VanForm>
             </div>
             <p class="form-page__note">
                 支持 2-12 个中文字符或 3-24 个英文字符，符号仅支持 - _ . ·

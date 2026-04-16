@@ -1,10 +1,10 @@
 <template>
     <div class="edit-info-page">
-        <CNavBar />
+        <C_NavBar />
 
         <h3 class="edit-info-page__heading">基本信息</h3>
         <div class="edit-info-page__group">
-            <van-field
+            <VanField
                 label="头像"
                 class="edit-info-page__cell"
                 label-class="font-bold"
@@ -16,12 +16,12 @@
             >
                 <template #input>
                     <UploaderImage>
-                        <van-image class="h-16 w-16" round fit="cover" :src="avatar" />
+                        <VanImage class="h-16 w-16" round fit="cover" :src="avatar" />
                     </UploaderImage>
                 </template>
-            </van-field>
+            </VanField>
 
-            <van-field
+            <VanField
                 v-model="state.nickname"
                 label="昵称"
                 readonly
@@ -34,7 +34,7 @@
                 to="/editNickname"
             />
 
-            <van-field
+            <VanField
                 v-model="state.genderText"
                 label="性别"
                 readonly
@@ -47,7 +47,7 @@
                 @click="showGenderPicker = true"
             />
 
-            <van-field
+            <VanField
                 v-model="state.sign"
                 label="签名"
                 readonly
@@ -60,7 +60,7 @@
                 to="/editSign"
             />
 
-            <van-field
+            <VanField
                 label="主页封面"
                 class="edit-info-page__cell"
                 label-class="font-bold"
@@ -72,12 +72,12 @@
             >
                 <template #input>
                     <UploaderImage>
-                        <van-image class="bg-cover h-15 w-25" fit="cover" :src="cover ? cover : avatar" />
+                        <VanImage class="bg-cover h-15 w-25" fit="cover" :src="cover ? cover : avatar" />
                     </UploaderImage>
                 </template>
-            </van-field>
+            </VanField>
 
-            <van-field
+            <VanField
                 v-model="state.industryText"
                 label="行业"
                 readonly
@@ -91,24 +91,24 @@
             />
         </div>
 
-        <van-popup v-model:show="showGenderPicker" position="bottom" round>
-            <van-picker
+        <VanPopup v-model:show="showGenderPicker" position="bottom" round>
+            <VanPicker
                 v-model="state.genderValues"
                 visible-option-num="3"
                 :columns="genderColumns"
                 @confirm="handleGender"
                 @cancel="showGenderPicker = false"
             />
-        </van-popup>
+        </VanPopup>
 
-        <van-popup v-model:show="showIndustryPicker" position="bottom" round>
-            <van-picker
+        <VanPopup v-model:show="showIndustryPicker" position="bottom" round>
+            <VanPicker
                 v-model="state.industryValues"
                 :columns="industryColumns"
                 @confirm="handleIndustry"
                 @cancel="showIndustryPicker = false"
             />
-        </van-popup>
+        </VanPopup>
     </div>
 </template>
 
@@ -116,8 +116,7 @@
     import './index.scss';
     import { showToast } from 'vant';
     import UploaderImage from '../components/UploaderImage.vue';
-    import type { FormColumns } from '../pickColumns';
-    import { genderColumns, industryColumns } from '../pickColumns';
+    import { genderColumns, industryColumns, type FormColumns } from '../pickColumns';
     import { useUserStore } from '@/store/modules/user';
 
     const userStore = useUserStore();

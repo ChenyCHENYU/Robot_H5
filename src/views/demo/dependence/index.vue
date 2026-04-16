@@ -10,11 +10,11 @@
 
 <template>
     <div class="dep-page">
-        <CNavBar />
+        <C_NavBar />
         <div class="dep-page__body">
             <div class="dep-page__hero">
                 <div class="dep-page__hero-shine" />
-                <van-image class="dep-page__avatar" round fit="cover" :src="avatar" />
+                <VanImage class="dep-page__avatar" round fit="cover" :src="avatar" />
                 <div class="dep-page__meta">
                     <h2 class="dep-page__name">{{ name }}</h2>
                     <span class="dep-page__version">v{{ version }}</span>

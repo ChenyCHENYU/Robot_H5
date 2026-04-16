@@ -8,7 +8,7 @@
 
 <template>
     <div class="dir-page">
-        <CNavBar />
+        <C_NavBar />
         <div class="dir-page__body">
 
             <div class="dir-page__section">
@@ -21,11 +21,11 @@
                 </div>
                 <div class="dir-page__card">
                     <div class="dir-page__card-shine" />
-                    <van-field v-model="copyText" class="dir-page__field" placeholder="输入文本，点击复制">
+                    <VanField v-model="copyText" class="dir-page__field" placeholder="输入文本，点击复制">
                         <template #button>
-                            <van-button size="small" type="primary" v-copy="copyText">复制</van-button>
+                            <VanButton size="small" type="primary" v-copy="copyText">复制</VanButton>
                         </template>
-                    </van-field>
+                    </VanField>
                 </div>
             </div>
 
@@ -102,12 +102,12 @@
                 <div class="dir-page__card">
                     <div class="dir-page__card-shine" />
                     <div class="dir-page__btn-row">
-                        <van-button
+                        <VanButton
                             size="small" type="primary" plain
-                            v-debounce="() => showToast('防抖执行')">防抖提交</van-button>
-                        <van-button
+                            v-debounce="() => showToast('防抖执行')">防抖提交</VanButton>
+                        <VanButton
                             size="small" type="warning" plain
-                            v-throttle="() => showToast('节流执行')">节流提交</van-button>
+                            v-throttle="() => showToast('节流执行')">节流提交</VanButton>
                     </div>
                     <p class="dir-page__hint">快速点击，体验两者差异</p>
                 </div>

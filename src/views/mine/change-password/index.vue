@@ -1,7 +1,6 @@
 <script setup lang="ts">
     import './index.scss';
-    import type { FormInstance } from 'vant';
-    import { showToast } from 'vant';
+    import { showToast, type FormInstance } from 'vant';
 
     const formRef = ref<FormInstance>();
     const form = reactive({ oldPwd: '', newPwd: '', confirmPwd: '' });
@@ -20,34 +19,34 @@
 
 <template>
     <div class="form-page">
-        <CNavBar>
+        <C_NavBar>
             <template #right>
                 <span class="form-page__save" @click="onSubmit">保存</span>
             </template>
-        </CNavBar>
+        </C_NavBar>
         <div class="form-page__body">
-            <van-form ref="formRef">
+            <VanForm ref="formRef">
                 <div class="form-page__section">
                     <h3 class="form-page__section-title">修改密码</h3>
                     <div class="form-page__group">
-                        <van-field
+                        <VanField
                             v-model="form.oldPwd" class="form-page__cell"
                             label="当前密码" type="password" placeholder="请输入当前密码"
                             :rules="[{ required: true, message: '请输入当前密码' }]"
                         />
-                        <van-field
+                        <VanField
                             v-model="form.newPwd" class="form-page__cell"
                             label="新密码" type="password" placeholder="请输入新密码（8位以上）"
                             :rules="[{ required: true, message: '请输入新密码' }]"
                         />
-                        <van-field
+                        <VanField
                             v-model="form.confirmPwd" class="form-page__cell"
                             label="确认密码" type="password" placeholder="再次输入新密码"
                             :rules="[{ validator: validateConfirm }]"
                         />
                     </div>
                 </div>
-            </van-form>
+            </VanForm>
         </div>
     </div>
 </template>

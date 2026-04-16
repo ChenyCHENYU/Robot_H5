@@ -9,7 +9,7 @@
 
 <template>
     <div class="raf-page">
-        <CNavBar />
+        <C_NavBar />
         <div class="raf-page__body">
             <div class="raf-page__hero">
                 <div class="raf-page__hero-shine" />

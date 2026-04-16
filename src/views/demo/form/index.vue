@@ -106,7 +106,7 @@ const handleSubmit = async () => {
 
 <template>
   <div class="form-demo">
-    <CNavBar />
+    <C_NavBar />
 
     <!-- 步骤指示器 -->
     <div class="form-demo__steps">

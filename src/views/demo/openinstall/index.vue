@@ -17,7 +17,7 @@
 
 <template>
     <div class="oi-page">
-        <CNavBar />
+        <C_NavBar />
         <div class="oi-page__body">
             <div class="oi-page__hero">
                 <div class="oi-page__hero-shine" />

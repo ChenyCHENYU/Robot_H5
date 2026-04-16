@@ -33,7 +33,7 @@ const handleIncrement = () => {
 
 <template>
   <div class="ka-page">
-    <CNavBar />
+    <C_NavBar />
 
     <div class="ka-page__tip">
       <i class="i-ph:info-bold" />

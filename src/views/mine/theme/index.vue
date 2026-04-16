@@ -1,6 +1,6 @@
 <template>
     <div class="theme-page">
-        <CNavBar />
+        <C_NavBar />
 
         <div class="theme-page__body">
             <!-- 外观模式 -->

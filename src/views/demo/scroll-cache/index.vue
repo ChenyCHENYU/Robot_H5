@@ -25,11 +25,11 @@
 
 <template>
     <div class="sc-page">
-        <CNavBar>
+        <C_NavBar>
             <template #right>
                 <VanButton size="small" type="primary" to="/about">子页面</VanButton>
             </template>
-        </CNavBar>
+        </C_NavBar>
 
         <div class="sc-page__tip">
             <i class="i-ph:info-bold" />

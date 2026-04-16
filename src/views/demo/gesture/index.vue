@@ -65,7 +65,7 @@ const handleArchive = (id: number) => {
 
 <template>
   <div class="ges-page">
-    <CNavBar />
+    <C_NavBar />
     <div class="ges-page__body">
       <!-- SwipeCell 滑动删除 -->
       <div class="ges-page__section">

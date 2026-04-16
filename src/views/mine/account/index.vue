@@ -10,18 +10,18 @@
 
 <template>
     <div class="form-page">
-        <CNavBar />
+        <C_NavBar />
         <div class="form-page__body">
             <div class="form-page__section">
                 <h3 class="form-page__section-title">账号信息</h3>
                 <div class="form-page__group">
-                    <van-cell
+                    <VanCell
                         class="form-page__cell"
                         title="用户名"
                         :value="username"
                         center
                     />
-                    <van-cell
+                    <VanCell
                         class="form-page__cell"
                         title="手机号"
                         :value="afterPhone"
@@ -33,7 +33,7 @@
             <div class="form-page__section">
                 <h3 class="form-page__section-title">安全设置</h3>
                 <div class="form-page__group">
-                    <van-cell
+                    <VanCell
                         class="form-page__cell"
                         title="修改登录密码"
                         is-link

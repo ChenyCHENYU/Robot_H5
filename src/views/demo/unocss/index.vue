@@ -18,7 +18,7 @@
 
 <template>
     <div class="unocss-page">
-        <CNavBar />
+        <C_NavBar />
         <div class="unocss-page__body">
 
             <div class="unocss-page__section">
@@ -27,10 +27,10 @@
                     <div class="unocss-page__card-shine" />
                     <span class="unocss-demo__text">即时按需的原子 CSS 引擎</span>
                     <div class="unocss-page__btn-row">
-                        <van-button size="small" type="primary" @click="addAnimation">添加动画</van-button>
-                        <van-button size="small" type="default" @click="removeAnimation">移除动画</van-button>
-                        <van-button size="small" type="warning" @click="changeFont">切换字体</van-button>
-                        <van-button size="small" type="default" @click="resetFont">重置字体</van-button>
+                        <VanButton size="small" type="primary" @click="addAnimation">添加动画</VanButton>
+                        <VanButton size="small" type="default" @click="removeAnimation">移除动画</VanButton>
+                        <VanButton size="small" type="warning" @click="changeFont">切换字体</VanButton>
+                        <VanButton size="small" type="default" @click="resetFont">重置字体</VanButton>
                     </div>
                 </div>
             </div>
