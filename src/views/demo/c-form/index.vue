@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { showToast, showConfirmDialog } from 'vant';
-    import { FAULT_OPTIONS, FAULT_LABEL_MAP, URGENCY_OPTIONS, PART_OPTIONS } from './data';
+    import { FAULT_OPTIONS, FAULT_LABEL_MAP, URGENCY_OPTIONS, PART_OPTIONS, FORM_SECTIONS } from './data';
 
     defineOptions({ name: 'CFormDemo' });
 
@@ -81,8 +81,8 @@
         <VanForm ref="formRef" :show-error="false" scroll-to-error class="repair-form__body">
             <div class="repair-form__card">
                 <div class="repair-form__card-label">
-                    <i class="i-ph:gear-six-bold" />
-                    <span>设备信息</span>
+                    <i :class="FORM_SECTIONS[0].icon" />
+                    <span>{{ FORM_SECTIONS[0].label }}</span>
                 </div>
                 <VanField
                     v-model="form.deviceName"
@@ -115,8 +115,8 @@
 
             <div class="repair-form__card">
                 <div class="repair-form__card-label">
-                    <i class="i-ph:warning-circle-bold" />
-                    <span>故障信息</span>
+                    <i :class="FORM_SECTIONS[1].icon" />
+                    <span>{{ FORM_SECTIONS[1].label }}</span>
                 </div>
                 <VanField
                     :model-value="FAULT_LABEL_MAP[form.faultType] ?? ''"
@@ -178,8 +178,8 @@
 
             <div class="repair-form__card">
                 <div class="repair-form__card-label">
-                    <i class="i-ph:user-circle-bold" />
-                    <span>报修人信息</span>
+                    <i :class="FORM_SECTIONS[2].icon" />
+                    <span>{{ FORM_SECTIONS[2].label }}</span>
                 </div>
                 <VanField
                     v-model="form.reporter"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import type { TableColumn, TableOperation } from '@/components/C_Table/types';
+    import type { TableColumn, TableOperation } from '#/Table/type';
 
     defineOptions({ name: 'CTableDemo' });
 

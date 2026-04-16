@@ -25,11 +25,11 @@
      *  </C_Table>
      */
     import './index.scss';
-    import type { TagType, TableOperation, TableColumn, CTableInstance } from './types';
+    import type { TagType, TableOperation, TableColumn, CTableInstance } from '#/Table/type';
 
     defineOptions({ name: 'C_Table' });
 
-    // 类型已展到 ./types.ts，使用方请从 @/components/C_Table/types 导入
+    // 类型定义：#/Table/type.ts
     // 下方不再内联 export，避免 script setup 限制
 
     // ── Props / Emits ─────────────────────────────────────────

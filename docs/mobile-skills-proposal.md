@@ -1,6 +1,6 @@
 # 移动端 AI Skills 工作流方案
 
-> 状态：**草案 v0.1** · 2026-04-16 · 待讨论确认
+> 状态：**v1.0** · 2026-04-16 · 已落地第一版
 
 ---
 
@@ -141,8 +141,8 @@ src/views/{domain}/{module}/
 | 模板 ID | 适用场景 | 参考样例 |
 |---------|---------|---------|
 | **TPL-LIST** | 搜索 + Tab 过滤 + 卡片列表 + 操作 + 底部新增 | `demo/customer/index.vue` |
-| **TPL-DETAIL** | 顶部信息卡 + 分区信息展示 | `demo/customer/detail.vue` |
-| **TPL-FORM** | 分区表单 + 必填切换 + 固定底栏 | `demo/customer/form.vue` + `demo/c-form/index.vue` |
+| **TPL-DETAIL** | 顶部信息卡 + 分区 VanCellGroup 信息展示 | `demo/customer/detail.vue` |
+| **TPL-FORM** | Liquid Glass 分区表单 + 必填切换 + pill/chip 选择器 + 固定底栏 | `demo/c-form/index.vue` |
 | **TPL-TABS** | 顶部 Tab + 每 Tab 不同内容 | 待建设 |
 | **TPL-DASHBOARD** | 数据看板 + 图表 | `views/chart/` |
 

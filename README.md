@@ -115,6 +115,11 @@ pnpm build:prod
 │   └── views/                  # 页面视图（每页一个目录）
 │
 ├── types/                      # 全局类型声明
+│   ├── Form/type.ts           #   C_Form 组件类型
+│   ├── Table/type.ts          #   C_Table 组件类型
+│   ├── index.d.ts             #   通用工具类型
+│   ├── global.d.ts            #   全局声明
+│   └── ...                    #   config / modules / auto-import
 ├── .env.development            # 开发环境变量
 ├── .env.test                   # 测试环境变量
 ├── .env.production             # 生产环境变量
@@ -654,6 +659,27 @@ pnpm cz   # 交互式规范提交（推荐）
 
 **Git Hooks**：`pre-commit` 运行 lint-staged，`commit-msg` 校验提交格式。
 
+### 自动发版
+
+推送到 `main` 分支后，GitHub Actions 自动根据提交类型升级版本号并更新 CHANGELOG：
+
+| commit type | 版本变更 | 示例 |
+|-------------|----------|------|
+| `fix` | patch（0.0.x） | `1.0.0` → `1.0.1` |
+| `feat` | minor（0.x.0） | `1.0.0` → `1.1.0` |
+| `feat` + `BREAKING CHANGE` | major（x.0.0） | `1.0.0` → `2.0.0` |
+
+> 基于 `standard-version` + `.versionrc.cjs`，CI 配置见 `.github/workflows/release.yml`。
+> 手动发版备选：`pnpm release`（自动识别 type），`pnpm release:patch` / `release:minor` / `release:major`。
+
+### 类型检查
+
+```bash
+pnpm type-check        # 运行 vue-tsc --noEmit，必须零错误
+```
+
+> 每次提交前必须通过类型检查。组件类型放 `types/{Name}/type.ts`，使用 `#/` 别名导入。
+
 ### 常用命令
 
 | 命令 | 说明 |
@@ -677,6 +703,8 @@ pnpm cz   # 交互式规范提交（推荐）
 | 规则 | 说明 |
 |------|------|
 | 三文件结构 | `index.vue` + `index.scss` + `data.ts`（可选） |
+| 类型外置 | 组件类型放 `types/{Name}/type.ts`（路径别名 `#/`），不在 `.vue` 中 export |
+| data.ts 职责 | 类型定义 + 常量映射 + 静态数据 + mock 数据，用 v-for 消除硬编码 |
 | 样式外置 | `.vue` 不写 `<style>`，样式放 `index.scss`，通过 `import './index.scss'` 引入 |
 | 最小高度 | 页面根类用 `min-height: 100%`，不用 `height: 100%`（避免内容截断） |
 | BEM 隔离 | 页面使用唯一根类名（如 `.order-page`），不使用 `scoped` |

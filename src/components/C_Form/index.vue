@@ -20,83 +20,14 @@
      */
     import './index.scss';
     import { type FormInstance, showToast } from 'vant';
+    import type {
+        FormField,
+        FormValues,
+        CFormInstance,
+        SelectOption,
+    } from '#/Form/type';
 
     defineOptions({ name: 'C_Form' });
-
-    // ── 类型定义 ────────────────────────────────────────────
-
-    export type FormFieldType =
-        | 'text'
-        | 'password'
-        | 'number'
-        | 'digit'
-        | 'textarea'
-        | 'select' // 弹出 Picker 选择
-        | 'switch'
-        | 'checkbox'
-        | 'radio';
-
-    export interface SelectOption {
-        text: string;
-        value: string | number;
-    }
-
-    export type FieldValidator = (value: any, rule: FormFieldRule) => boolean | string | Promise<boolean | string>;
-
-    export interface FormFieldRule {
-        required?: boolean;
-        message?: string;
-        pattern?: RegExp;
-        min?: number;
-        max?: number;
-        validator?: FieldValidator;
-        trigger?: 'onChange' | 'onBlur';
-    }
-
-    export interface FormField {
-        /** 字段 key，对应 values 对象中的属性名 */
-        key: string;
-        /** 表单标签 */
-        label: string;
-        /** 字段类型，默认 text */
-        type?: FormFieldType;
-        /** 占位符 */
-        placeholder?: string;
-        /** 是否必填（会自动添加 required rule） */
-        required?: boolean;
-        /** 验证规则 */
-        rules?: FormFieldRule[];
-        /** 选项列表（type=select / radio / checkbox 时使用） */
-        options?: SelectOption[];
-        /** 是否禁用 */
-        disabled?: boolean;
-        /** 是否只读 */
-        readonly?: boolean;
-        /** 最大输入长度（text/textarea） */
-        maxlength?: number;
-        /** 是否显示字数统计（textarea） */
-        showWordLimit?: boolean;
-        /** 输入框行数（textarea） */
-        rows?: number;
-        /** 右侧额外文案 */
-        extra?: string;
-        /** 左侧图标（UnoCSS 类名，如 "i-ph:user-bold"） */
-        prefixIcon?: string;
-        /** 字段级自定义 class */
-        fieldClass?: string;
-        /** 是否显示该字段（支持动态隐藏） */
-        visible?: boolean | ((values: Record<string, any>) => boolean);
-    }
-
-    export type FormValues = Record<string, any>;
-
-    // 暴露给父组件的实例类型
-    export interface CFormInstance {
-        validate: () => Promise<void>;
-        resetValidation: () => void;
-        resetFields: () => void;
-        getValues: () => FormValues;
-    }
 
     // ── Props / Emits ────────────────────────────────────────
 
