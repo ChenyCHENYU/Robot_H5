@@ -1,6 +1,6 @@
 # 移动端 AI Skills 工作流方案
 
-> 状态：**v1.0** · 2026-04-16 · 已落地第一版
+> 状态：**v1.1** · 2026-04-19 · 补充 api-spec 技能 + SFC 顺序修正 + Mock 规则完善
 
 ---
 
@@ -33,7 +33,7 @@
 
 ---
 
-## 三、Skill 定义（5 + 1）
+## 三、Skill 定义（6 + 1）
 
 ### Skill 1：prototype-scan — 原型扫描
 
@@ -150,13 +150,14 @@ src/views/{domain}/{module}/
 
 **文件结构**：
 ```
-<script setup lang="ts">  ← 顶部，必须有 defineOptions({ name })
+<template>               ← 顶部
+</template>
+
+<script setup lang="ts">  ← 底部，必须有 defineOptions({ name })
 import './index.scss';
 import { ... } from 'vant';
 import { ... } from './data';
 </script>
-<template>               ← 中部
-</template>
 <!-- 样式写在独立 .scss 文件，不用 <style> 内联 -->
 ```
 
@@ -271,21 +272,24 @@ import { ... } from './data';
   ① prototype-scan ──── 扫描 → page-spec.json
          │
          ▼
-  ② api-contract ────── 生成 → api.md（接口约定）
+  ② api-spec ────────── 生成 → docs/api-spec/{module}.md（数据契约）
          │
          ▼
-  ③ page-codegen ────── 生成 → index.vue + index.scss + data.ts
+  ③ api-contract ────── 生成 → src/api/{module}.ts（前端 API 代码）
+         │
+         ▼
+  ④ page-codegen ────── 生成 → index.vue + index.scss + data.ts
          │                      detail.vue + detail.scss（如有）
          │                      form.vue + form.scss（如有）
          │
          ▼
-  ④ route-register ──── 注册路由 + 菜单入口
+  ⑤ route-register ──── 注册路由 + 菜单入口
          │
          ▼
-  ⑤ mock-gen ────────── 补充 Mock 数据（如 data.ts 中未生成）
+  ⑥ mock-gen ────────── 补充 Mock 数据（如 data.ts 中未生成）
          │
          ▼
-  ⑥ convention-audit ── 审计所有生成的代码 → 偏差报告 → 自动修复
+  ⑦ convention-audit ── 审计所有生成的代码 → 偏差报告 → 自动修复
          │
          ▼
   ✅ 可运行的完整页面
@@ -299,14 +303,15 @@ import { ... } from './data';
 |--------|------|------|
 | AI 编码规范指令 | `.github/copilot-instructions.md` | 项目总纲（设计令牌、组件用法、命名规范） |
 | Skill 1 | `.github/skills/prototype-scan/SKILL.md` | 原型扫描规则 |
-| Skill 2 | `.github/skills/api-contract/SKILL.md` | 接口约定生成规则 |
-| Skill 3 | `.github/skills/page-codegen/SKILL.md` | 页面代码生成规则 |
-| Skill 3 模板 | `.github/skills/page-codegen/TPL-LIST.md` | 列表页模板 |
-| Skill 3 模板 | `.github/skills/page-codegen/TPL-DETAIL.md` | 详情页模板 |
-| Skill 3 模板 | `.github/skills/page-codegen/TPL-FORM.md` | 表单页模板 |
-| Skill 4 | `.github/skills/route-register/SKILL.md` | 路由注册规则 |
-| Skill 5 | `.github/skills/convention-audit/SKILL.md` | 规范审计规则 |
-| Skill 6 | `.github/skills/mock-gen/SKILL.md` | Mock 生成规则 |
+| Skill 2 | `.github/skills/api-spec/SKILL.md` | 接口规格说明生成规则 |
+| Skill 3 | `.github/skills/api-contract/SKILL.md` | 接口约定生成规则 |
+| Skill 4 | `.github/skills/page-codegen/SKILL.md` | 页面代码生成规则 |
+| Skill 4 模板 | `.github/skills/page-codegen/TPL-LIST.md` | 列表页模板 |
+| Skill 4 模板 | `.github/skills/page-codegen/TPL-DETAIL.md` | 详情页模板 |
+| Skill 4 模板 | `.github/skills/page-codegen/TPL-FORM.md` | 表单页模板 |
+| Skill 5 | `.github/skills/route-register/SKILL.md` | 路由注册规则 |
+| Skill 6 | `.github/skills/convention-audit/SKILL.md` | 规范审计规则 |
+| Skill 7 | `.github/skills/mock-gen/SKILL.md` | Mock 生成规则 |
 | 组件文档 | `docs/c-navbar.md` | C_NavBar API 文档 |
 | 组件文档 | `docs/c-form.md` | C_Form API 文档（配置驱动场景） |
 | 组件文档 | `docs/c-table.md` | C_Table API 文档 |

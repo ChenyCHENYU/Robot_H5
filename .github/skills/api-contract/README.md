@@ -3,7 +3,7 @@
 ## 工作流位置
 
 ```
-page-spec.json → [api-contract] → src/api/system/{module}.ts + Mock 端点
+page-spec.json → [api-contract] → src/api/{module}.ts + Mock 端点
                                          ↓
                                [page-codegen] 引用 API 方法
 ```
@@ -16,7 +16,7 @@ page-spec.json → [api-contract] → src/api/system/{module}.ts + Mock 端点
 
 | 文件 | 说明 |
 |------|------|
-| `src/api/system/{module}.ts` | 前端 API 方法（使用 `@/utils/http` 快捷方法） |
+| `src/api/{module}.ts` | 前端 API 方法（使用 `@/utils/http` 快捷方法） |
 | `mock/{module}/{module}.ts` | MSW Mock 端点（与 API 一一对应） |
 
 ## HTTP 工具说明
@@ -39,4 +39,4 @@ import { get, post, put, del, toast } from '@/utils/http';
 
 - 当 `@/utils/http` 封装方式变化时，更新 `skills.md` 中的"HTTP 工具"部分
 - 如果项目统一响应格式 `{ code, data, msg }` 发生变化，同步更新模板
-- 新增业务模块后，在 `src/api/system/` 下建立独立文件，不要合并到通用文件
+- 新增业务模块后，在 `src/api/` 下建立独立文件，不要合并到通用文件

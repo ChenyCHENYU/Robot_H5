@@ -8,12 +8,12 @@ page-spec.json 或页面需求描述
 
 ## 输出
 
-`src/api/system/{module}.ts` 接口文件 + 接口文档
+`src/api/{module}.ts` 接口文件 + 接口文档
 
 ## 规范约束
 
 - HTTP 工具：`import { get, post, put, del, toast } from '@/utils/http'`
-- 文件位置：`src/api/system/{module}.ts`
+- 文件位置：`src/api/{module}.ts`
 - 命名规则：
   - `get{Module}List` — 查询列表
   - `get{Module}Detail` — 查看详情
