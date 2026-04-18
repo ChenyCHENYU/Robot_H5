@@ -173,7 +173,7 @@ src/views/order/
 
 <script setup lang="ts">
 import './index.scss';
-import { getOrderList } from '@/api/system/order';
+import { getOrderList } from '@/api/order';
 
 // ⚠️ name 必须与路由 name 完全一致（KeepAlive 依赖此值）
 defineOptions({ name: 'Order' });
@@ -283,7 +283,7 @@ export const menuItems: MenuItem[] = [
 
 ### Step 3：定义接口
 
-`src/api/system/order.ts`：
+`src/api/order.ts`：
 
 ```ts
 import { get, post, del, toast } from '@/utils/http';
@@ -735,7 +735,7 @@ pnpm type-check        # 运行 vue-tsc --noEmit，必须零错误
 
 | 规则 | 说明 |
 |------|------|
-| 一个模块一个文件 | `src/api/system/xxx.ts`，按业务模块组织 |
+| 一个模块一个文件 | `src/api/{module}.ts`，扁平化按业务模块组织 |
 | 快捷方法优先 | `import { get, post, toast } from '@/utils/http'` |
 | 类型按需 | 不关心返回类型就不写泛型，需要时 `get<UserInfo>(...)` |
 | 成功提示 | 用 `toast('消息')` 替代手写 `{ isShowSuccessMessage: true, ... }` |

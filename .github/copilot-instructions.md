@@ -76,7 +76,7 @@ export const MOCK_CUSTOMERS: Customer[] = [ ... ];
 
 ### 8. 接口规范
 
-- 一个业务模块一个文件：`src/api/system/{module}.ts`
+- 一个业务模块一个文件：`src/api/{module}.ts`（扁平化，详见 `src/api/README.md`）
 - 使用快捷方法：`import { get, post, put, del, toast } from '@/utils/http'`
 - 命名规则：`get{Module}List` / `get{Module}Detail` / `add{Module}` / `update{Module}` / `delete{Module}`
 - 每个 API 必须有对应 Mock

@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore, type StateTree } from 'pinia';
 import { store } from '@/store';
-import { doLogout, getUserInfo, login } from '@/api/system/user';
+import { doLogout, getUserInfo, login } from '@/api/user';
 import { PageEnum } from '@/enums/pageEnum';
 import router from '@/router';
 import { encryptAES, decryptAES } from '@miracle-web/utils';
