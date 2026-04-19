@@ -1,7 +1,6 @@
-# Robot H5 — AI 编码规范（Cursor / Windsurf / Cline 通用）
+# Robot H5 — AI 编码规范
 
 > 本文件与 `.github/copilot-instructions.md` 内容同源，确保所有 AI 编辑器遵循同一规范。
-> 规范变更时两处必须同步更新。
 
 ## 项目概述
 
@@ -115,6 +114,26 @@ UI 库 Vant 4（自动导入），原子 CSS 为 UnoCSS，状态管理 Pinia。
 **间距（4px 网格）：** 4 / 8 / 12 / 16 / 20 / 24 / 32 / 40 / 48 / 64
 
 **字号：** 11 / 12 / 13 / 14 / 15 / 16 / 17 / 20 / 22 / 28 / 34
+
+---
+
+## Skills 自动调度
+
+当用户提到以下关键词时，**必须先读取对应 Skill 文件再执行**：
+
+| 触发词 | Skill | 文件路径 |
+|--------|-------|---------|
+| `扫描原型` / `分析原型` | prototype-scan | `.github/skills/prototype-scan/skills.md` |
+| `生成接口规格` / `接口字段说明` | api-spec | `.github/skills/api-spec/skills.md` |
+| `生成接口` / `接口约定` | api-contract | `.github/skills/api-contract/skills.md` |
+| `生成页面` / `生成代码` | page-codegen | `.github/skills/page-codegen/skills.md` |
+| `注册路由` / `添加菜单` | route-register | `.github/skills/route-register/skills.md` |
+| `生成 Mock` / `补充模拟数据` | mock-gen | `.github/skills/mock-gen/skills.md` |
+| `审计规范` / `代码检查` | convention-audit | `.github/skills/convention-audit/skills.md` |
+
+**完整流水线**：用户提供原型并要求批量生成时，按 ①→⑦ 顺序依次执行。
+**单独使用**：用户只请求特定操作时，只读取对应 Skill。
+**convention-audit 自动执行**：每次代码变更后自动运行，无需触发。
 
 ---
 

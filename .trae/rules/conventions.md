@@ -101,22 +101,6 @@ UI 库 Vant 4（自动导入），原子 CSS 为 UnoCSS，状态管理 Pinia。
 
 ---
 
-## 设计令牌速查
-
-**颜色：** `--ds-bg` `--ds-bg-secondary` `--ds-bg-tertiary` `--ds-surface` `--ds-text-primary` `--ds-text-secondary` `--ds-text-tertiary` `--ds-accent` `--ds-success` `--ds-warning` `--ds-danger` `--ds-border` `--ds-divider`
-
-**圆角：** `--ds-radius-sm(8)` `--ds-radius-md(12)` `--ds-radius-lg(16)` `--ds-radius-xl(20)` `--ds-radius-full(9999)`
-
-**阴影：** `--ds-shadow-1` `--ds-shadow-2` `--ds-shadow-3`
-
-**毛玻璃：** `--ds-glass-bg` `--ds-glass-border` `--ds-glass-blur` `--ds-glass-saturate`
-
-**间距（4px 网格）：** 4 / 8 / 12 / 16 / 20 / 24 / 32 / 40 / 48 / 64
-
-**字号：** 11 / 12 / 13 / 14 / 15 / 16 / 17 / 20 / 22 / 28 / 34
-
----
-
 ## Skills 自动调度
 
 当用户提到以下关键词时，**必须先读取对应 Skill 文件再执行**：
@@ -134,6 +118,22 @@ UI 库 Vant 4（自动导入），原子 CSS 为 UnoCSS，状态管理 Pinia。
 **完整流水线**：用户提供原型并要求批量生成时，按 ①→⑦ 顺序依次执行。
 **单独使用**：用户只请求特定操作时，只读取对应 Skill。
 **convention-audit 自动执行**：每次代码变更后自动运行，无需触发。
+
+---
+
+## 设计令牌速查
+
+**颜色：** `--ds-bg` `--ds-bg-secondary` `--ds-bg-tertiary` `--ds-surface` `--ds-text-primary` `--ds-text-secondary` `--ds-text-tertiary` `--ds-accent` `--ds-success` `--ds-warning` `--ds-danger` `--ds-border` `--ds-divider`
+
+**圆角：** `--ds-radius-sm(8)` `--ds-radius-md(12)` `--ds-radius-lg(16)` `--ds-radius-xl(20)` `--ds-radius-full(9999)`
+
+**阴影：** `--ds-shadow-1` `--ds-shadow-2` `--ds-shadow-3`
+
+**毛玻璃：** `--ds-glass-bg` `--ds-glass-border` `--ds-glass-blur` `--ds-glass-saturate`
+
+**间距（4px 网格）：** 4 / 8 / 12 / 16 / 20 / 24 / 32 / 40 / 48 / 64
+
+**字号：** 11 / 12 / 13 / 14 / 15 / 16 / 17 / 20 / 22 / 28 / 34
 
 ---
 

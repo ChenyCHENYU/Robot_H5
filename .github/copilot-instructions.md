@@ -1,7 +1,7 @@
 # Robot H5 — Copilot 项目指令
 
 > 本文件由 GitHub Copilot 自动加载，作为所有 AI 辅助开发的上下文基线。
-> 同源规则同步至 `.cursorrules`（Cursor）/ `.windsurfrules`（Windsurf）/ `.clinerules`（Cline），变更时须同步更新。
+> 同源规则同步至 `.cursorrules`（Cursor）/ `.windsurfrules`（Windsurf）/ `.clinerules`（Cline）/ `.kiro/steering/conventions.md`（Kiro）/ `.trae/rules/conventions.md`（Trae）/ `CLAUDE.md`（Claude Code）/ `AGENTS.md`（通用标准），变更时须同步更新。
 
 ## 项目概述
 
@@ -155,3 +155,22 @@ export const MOCK_CUSTOMERS: Customer[] = [ ... ];
 - 最后运行 `pnpm type-check` 确保零错误
 - 审计规则详见 `.github/skills/convention-audit/skills.md`
 - 令牌速查见 `.github/prompts/convention-audit.prompt.md`
+
+### 11. Skills 自动调度注册表
+
+以下注册表确保所有 AI 编辑器（含 Cursor、Windsurf、Kiro、Trae、Claude Code、Cline）能自动识别并调度 Skill。
+当用户提到触发关键词时，AI 必须先 `read_file` 读取对应 `skills.md` 再执行。
+
+| 触发词 | Skill | 文件路径 |
+|--------|-------|--------|
+| `扫描原型` / `分析原型` / `解析设计稿` | prototype-scan | `.github/skills/prototype-scan/skills.md` |
+| `生成接口规格` / `接口字段说明` / `生成 api-spec` | api-spec | `.github/skills/api-spec/skills.md` |
+| `生成接口` / `接口约定` / `生成 api.md` | api-contract | `.github/skills/api-contract/skills.md` |
+| `生成页面` / `生成代码` / `帮我写页面` | page-codegen | `.github/skills/page-codegen/skills.md` |
+| `注册路由` / `添加菜单` / `注册页面` | route-register | `.github/skills/route-register/skills.md` |
+| `生成 Mock` / `补充模拟数据` / `生成测试数据` | mock-gen | `.github/skills/mock-gen/skills.md` |
+| `审计规范` / `代码检查` / `规范检查` | convention-audit | `.github/skills/convention-audit/skills.md` |
+
+**完整流水线**：用户提供原型/详设并要求批量生成时，按 ①→⑦ 顺序依次执行全部 Skill。
+**单独使用**：用户只请求特定操作时，只读取对应 Skill 的 skills.md。
+**convention-audit 自动执行**：每次代码变更后自动运行，无需用户触发。

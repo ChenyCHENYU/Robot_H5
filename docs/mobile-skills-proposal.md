@@ -1,6 +1,6 @@
 # 移动端 AI Skills 工作流方案
 
-> 状态：**v1.1** · 2026-04-19 · 补充 api-spec 技能 + SFC 顺序修正 + Mock 规则完善
+> 状态：**v1.2** · 2026-04-19 · 全部 7 个 Skill 已实现，8 种 AI 编辑器同源配置，待讨论项已确认
 
 ---
 
@@ -337,17 +337,19 @@ import { ... } from './data';
 | 详情形态 | DETAIL_TABS 上表单下Tab子表 | 信息卡 + CellGroup 分区展示 |
 | 模板数 | 9 种 | 5 种（LIST / DETAIL / FORM / TABS / DASHBOARD） |
 | 复杂度 | 上下分栏/左树右列表/变更历史 | 不适用（移动端不做复杂布局） |
-| 分发方式 | npx CLI 注入 | 直接项目内维护（不需要 npm 包） |
+| 分发方式 | npx CLI 注入 | 项目内维护（成熟后提取为独立 npm 包） |
 | 菜单同步 | API 同步到后端菜单表 | 仅路由注册 + 首页菜单数组 |
+| AI 编辑器 | 8 种（npx 自动生成） | 8 种（Copilot / Cursor / Windsurf / Kiro / Trae / Claude / Cline / AGENTS） |
 
 ---
 
-## 七、待讨论确认项
+## 七、已确认决策
 
-- [ ] **Skill 优先级**：建议先做 Skill 3（page-codegen）+ Skill 5（convention-audit），其余按需补充
-- [ ] **模板扩展**：是否需要 TPL-TABS（Tab 分内容页）和 TPL-DASHBOARD（图表看板）？
-- [ ] **API 层级**：当前 `src/api/` 只有 `system/user.ts`，新业务 API 文件的目录规范是什么？建议 `src/api/{domain}/{module}.ts`
-- [ ] **Mock 方案**：当前用 `vite-plugin-mock-dev-server`，生成的 Mock 放 `data.ts` 静态数据还是 `mock/` 目录？
-- [ ] **C_Form 组件定位**：C_Form 是配置驱动方案，但真实业务表单（如客户新增）需要更灵活的分区布局。建议 C_Form 定位为"简单/快速表单"场景，复杂表单直接用 VanForm + VanCellGroup 手写
-- [ ] **分发方式**：Skills 直接维护在项目内（推荐），还是抽成独立 npm 包？
-- [ ] **copilot-instructions.md**：确认后我会生成，作为 AI 自动加载的编码规范总纲
+- [x] **Skill 优先级**：全部 7 个 Skill 已实现（prototype-scan → api-spec → api-contract → page-codegen → route-register → mock-gen → convention-audit）
+- [x] **模板体系**：TPL-LIST / TPL-DETAIL / TPL-FORM 三种核心模板，TPL-TABS / TPL-DASHBOARD 后续按需补充
+- [x] **API 层级**：已扁平化为 `src/api/{module}.ts`（详见 `src/api/README.md`）
+- [x] **Mock 方案**：双产物 — `data.ts` 静态常量（页面预览）+ `mock/{module}.ts` 端点（vite-plugin-mock HTTP 拦截）
+- [x] **C_Form 组件定位**：简单/快速表单用 C_Form 配置驱动，复杂表单直接 VanForm + VanCellGroup 手写
+- [x] **分发方式**：当前项目内维护，后续场景补齐、提练成熟后再抽取为 `@agile-team/wl-skills-kit-mobile` 独立包
+- [x] **copilot-instructions.md**：已生成，含 11 条核心规范 + 自动审计 + Skills 自动调度注册表
+- [x] **多编辑器支持**：8 种 AI 编辑器配置同源（Copilot / Cursor / Windsurf / Kiro / Trae / Claude Code / Cline / AGENTS.md）
