@@ -31,15 +31,19 @@
 
 ## 执行方式
 
-本技能通过 **Copilot Prompt 文件** 落地，非阻断式 lint，不影响提交流程。
+convention-audit 是 Skills 工作流的**自动终结步骤**，不需要手动触发。
 
-| 方式 | 说明 |
-|------|------|
-| Copilot Chat 输入 `审计规范 src/views/xxx/` | 触发针对指定模块的审计 |
-| Copilot Chat 输入 `审计规范` | 全量审计 |
-| Prompt 文件 | `.github/prompts/convention-audit.prompt.md` |
+### 自动执行（主要方式）
 
-执行流程：扫描文件 → 输出结构化报告（P0/P1/P2 三级） → 询问后自动修复。
+在 `copilot-instructions.md` 第 10 条中定义为强制后置步骤：
+- AI 每次生成/修改 `.vue` / `.scss` / `data.ts` / `api/*.ts` 后自动运行
+- P0 规则静默修复，P1 修复后简报，P2 仅报告
+- 最后 `pnpm type-check` 确认零错误后才交付
+
+### 手动触发（补充方式）
+
+在 Copilot Chat 中输入 `审计规范 src/views/xxx/` 可对指定模块做全量审计。
+规则详见 `.github/prompts/convention-audit.prompt.md`。
 
 ## 与其他工具的分工
 

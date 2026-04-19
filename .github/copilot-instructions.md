@@ -89,11 +89,40 @@ export const MOCK_CUSTOMERS: Customer[] = [ ... ];
 - 基于 standard-version + `.versionrc.cjs`
 - commitlint 允许的所有 type（`wip` / `deps` / `test` 等）必须在 `.versionrc.cjs` 的 `types` 中同步声明（可 `hidden: true`）
 
-### 10. 页面生成后检查清单
+### 10. 代码交付前自动审计（convention-audit）
 
-- [ ] **原型对比**：字段是否完整、按钮文案是否一致、状态标签是否齐全
-- [ ] **类型检查**：`pnpm type-check` 零错误
-- [ ] **字段完整性**：data.ts 的 interface 字段 ≥ 原型字段
-- [ ] **接口无报错**：Mock 端点与 API 配置一一对应
-- [ ] **暗黑模式**：切换后样式正常
-- [ ] **安全区**：底部固定栏有 `env(safe-area-inset-bottom)`
+**每次生成或修改 `.vue` / `.scss` / `data.ts` / `api/*.ts` 后，必须在交付给用户前自动执行以下审计并直接修复，无需用户触发。**
+
+#### 🔴 P0 — 自动修复（静默执行，不问用户）
+
+| 规则 | 扫描 | 修复 |
+|------|------|------|
+| 硬编码颜色 | `.scss` 中 `#xxx` / `rgb()` / `rgba()` | → `var(--ds-*)` |
+| 硬编码圆角 | `border-radius: Npx` | → `var(--ds-radius-*)` |
+| 硬编码阴影 | `box-shadow` 字面量 | → `var(--ds-shadow-*)` |
+| 禁止 `<style>` | `.vue` 中有 `<style` 标签 | → 提取到 `.scss` |
+| 缺少 defineOptions | `<script setup>` 无 `defineOptions` | → 添加，name 与路由一致 |
+| 类型导出 | `<script setup>` 中 `export type/interface` | → 移到 `types/` |
+
+#### 🟡 P1 — 自动修复 + 报告
+
+| 规则 | 扫描 | 修复 |
+|------|------|------|
+| 缺少 C_NavBar | 页面 `<template>` 首元素非 `<C_NavBar` | → 添加 |
+| 安全区缺失 | `position: fixed; bottom: 0` 无安全区 | → 加 `env(safe-area-inset-bottom)` |
+| 间距不合规 | `margin/padding/gap` 非 4px 网格 | → 调整为最近合规值 |
+| 字号不合规 | `font-size` 不在梯度范围 | → 调整为最近合规值 |
+| 状态映射缺失 | 状态字段无 `xxxMap` 常量 | → 生成映射 + VanTag 渲染 |
+| API 命名 | 不符合 `get/add/update/delete + Module` | → 重命名 |
+
+#### 执行时机
+
+```
+生成/修改代码 → 自动审计（P0 静默修复 + P1 修复并报告） → pnpm type-check → 交付
+```
+
+- **不要等用户说"审计规范"**，每次代码变更后自动执行
+- P0 项直接改，不打断用户；P1 项改完后在回复末尾简要列出修复内容
+- 最后运行 `pnpm type-check` 确保零错误
+- 审计规则详见 `.github/skills/convention-audit/skills.md`
+- 令牌速查见 `.github/prompts/convention-audit.prompt.md`

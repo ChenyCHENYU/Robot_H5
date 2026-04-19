@@ -1,6 +1,20 @@
 # Skill：规范审计 convention-audit
 
-> 触发词：`审计规范` / `代码检查` / `规范检查`
+> **自动执行**：每次生成或修改代码后，在交付前自动运行，无需用户触发。
+> 也可手动触发：`审计规范` / `代码检查` / `规范检查`
+
+## 执行时机
+
+本技能是 Skills 工作流的**终结步骤**，在以下场景自动执行：
+
+1. `page-codegen` 生成页面代码后
+2. `mock-gen` 生成 Mock 数据后
+3. 任何涉及 `.vue` / `.scss` / `data.ts` / `api/*.ts` 的修改后
+
+```
+① prototype-scan → ② api-spec → ③ api-contract → ④ page-codegen
+    → ⑤ route-register → ⑥ mock-gen → ⑦ convention-audit（自动）→ ✅ 交付
+```
 
 ## 检查维度
 
@@ -48,7 +62,14 @@
 
 ## 执行步骤
 
-1. 扫描目标文件
-2. 逐项匹配规则
-3. 输出偏差报告（分 Error / Warning / Info 三级）
-4. 提供自动修复建议
+1. 扫描本次变更涉及的 `.vue` / `.scss` / `data.ts` / `api/*.ts` 文件
+2. 逐项匹配 P0 + P1 规则
+3. **P0（Error）→ 静默修复**，不打断用户
+4. **P1（Warning）→ 自动修复 + 在回复末尾简报**
+5. **P2（Info）→ 仅报告**，不自动修改
+6. 运行 `pnpm type-check` 确认零错误
+7. 交付代码
+
+### 令牌速查
+
+修复时参考 `.github/prompts/convention-audit.prompt.md` 中的映射表。
