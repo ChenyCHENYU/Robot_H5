@@ -8,11 +8,7 @@
 src/api/
 ├── README.md          ← 本文件
 ├── user.ts            ← 用户/鉴权（登录、登出、用户信息）
-├── customer.ts        ← 客户档案
-├── order.ts           ← 订单管理
-├── product.ts         ← 产品管理
-├── equipment.ts       ← 设备管理
-└── ...
+└── {module}.ts        ← 后续业务模块按需新增（如 customer.ts / order.ts）
 ```
 
 **规则**：每个业务模块对应一个文件，文件名使用 kebab-case（如 `customer-follow.ts`）。

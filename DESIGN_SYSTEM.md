@@ -66,9 +66,9 @@
 | `--ds-glass-border` | rgba(255,255,255,0.82) | rgba(255,255,255,0.13) | 毛玻璃边框 |
 | `--ds-glass-blur` | 40px | 40px | 模糊半径 |
 | `--ds-glass-saturate` | 210% | — | 饱和度 |
-| `--ds-glass-shine` | (高光渐变) | (弱高光) | 顶部/侧面高光 |
-| `--ds-glass-shadow` | (柔和阴影) | (深色阴影) | 外阴影 |
-| `--ds-glass-gradient` | (白色渐变) | (微弱渐变) | 液态渐变叠层 |
+| `--ds-glass-shine` | `inset 0 1px 0 rgba(255,255,255,0.95), ...` | `inset 0 1px 0 rgba(255,255,255,0.18), ...` | 顶部/侧面高光 |
+| `--ds-glass-shadow` | `0 8px 32px rgba(0,0,0,0.07), 0 2px 8px rgba(0,0,0,0.04)` | `0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2)` | 外阴影 |
+| `--ds-glass-gradient` | `linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.1) 60%)` | `linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 60%)` | 液态渐变叠层 |
 
 ### 毛玻璃卡片用法
 
