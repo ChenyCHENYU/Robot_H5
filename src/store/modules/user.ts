@@ -5,6 +5,7 @@ import { PageEnum } from '@/enums/pageEnum';
 import router from '@/router';
 import { encryptAES, decryptAES } from '@miracle-web/utils';
 import { useEnv } from '@/hooks/useEnv';
+import { usePermissionStoreWidthOut } from './permission';
 
 interface UserInfo {
     userId: string | number;
@@ -61,6 +62,9 @@ export const useUserStore = defineStore('app-user-store', {
                 if (data.token) {
                     this.setToken(data.token);
                     await this.GetUserInfo();
+                    // 登录后加载菜单权限
+                    const permissionStore = usePermissionStoreWidthOut();
+                    await permissionStore.loadPermissions();
                     return Promise.resolve(data.token);
                 }
             } catch (error) {
@@ -88,6 +92,9 @@ export const useUserStore = defineStore('app-user-store', {
             }
             this.setToken('');
             this.setUserInfo({} as UserInfo);
+            // 重置权限数据
+            const permissionStore = usePermissionStoreWidthOut();
+            permissionStore.resetPermissions();
             router.push(PageEnum.BASE_LOGIN);
             location.reload();
         },

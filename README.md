@@ -11,6 +11,8 @@
 - [快速开始](#快速开始)
 - [内置 Demo](#内置-demo)
 - [技术栈](#技术栈)
+- [服务架构](#服务架构)
+- [权限体系](#权限体系)
 - [目录结构](#目录结构)
 - [开发全流程](#开发全流程从-0-到-1-完整闭环)
 - [样式系统](#样式系统)
@@ -87,6 +89,220 @@ pnpm build:prod
 
 ---
 
+## 服务架构
+
+### 整体拓扑
+
+```
+                                  ┌─────────────────────────────────────┐
+                                  │         Nginx / 外网网关            │
+                                  └──────────┬──────────────┬───────────┘
+                                             │              │
+                          ┌──────────────────▼───┐    ┌─────▼──────────────────┐
+                          │  PC 端前端网关         │    │  业务后端网关           │
+                          │  172.18.248.205:80    │    │  172.28.99.172:9000    │
+                          │                      │    │                        │
+                          │  · 登录鉴权           │    │  · 客户管理            │
+                          │  · 发放 Token         │    │  · 订单管理            │
+                          │  · 菜单权限           │    │  · 工单管理            │
+                          │  · 用户信息           │    │  · 文件上传            │
+                          │  · 应用管理           │    │  · 其他业务 CRUD        │
+                          └──────────────────────┘    └────────────────────────┘
+                                    ▲                           ▲
+                                    │ /pcApi/*                  │ /api/*
+                                    │                           │
+                          ┌─────────┴───────────────────────────┴──────────┐
+                          │              Robot H5 移动端                    │
+                          │                                                │
+                          │  登录 → PC网关验证 → 获取Token → 获取菜单权限    │
+                          │  业务操作 → 后端网关 → 复用PC端微服务            │
+                          └────────────────────────────────────────────────┘
+```
+
+### 核心设计原则
+
+| 原则 | 说明 |
+|------|------|
+| **服务隔离** | 鉴权服务（PC 网关）与业务服务（后端网关）分离，各自独立部署 |
+| **Token 统一** | 移动端通过 PC 网关登录获取 Token，所有后续请求携带同一 Token |
+| **服务复用** | 业务接口直接复用 PC 端已有微服务，不重复开发后端 |
+| **无模块联邦** | 移动端**不依赖**微前端 / 远程模块加载，所有页面组件本地打包 |
+| **本地路由** | 路由在前端完整定义，后端仅返回权限菜单树用于过滤可见性 |
+
+> **为什么不用模块联邦？** PC 端（172.18.248.205:80）采用 module federation 加载远程模块，但移动端 H5 体量小、部署独立、网络环境不稳定，本地打包更可靠。移动端只复用 PC 端的**后端服务**，不复用前端组件。
+
+### 双网关调用链路
+
+**认证链路**（PC 端网关）：
+
+```
+H5 登录页 → pcPost('/login') → PC 网关校验 → 返回 Token
+         → pcGet('/getUserInfo') → 返回用户信息
+         → pcGet('/system/menu/getRouters') → 返回菜单树
+         → pcGet('/system/menu/getPermissions') → 返回按钮权限码
+```
+
+**业务链路**（后端网关）：
+
+```
+H5 业务页 → get('/customer/list') → 后端网关 → 微服务 → 返回数据
+          → post('/order/create')  → 后端网关 → 微服务 → 返回结果
+```
+
+### HTTP 实例
+
+项目提供两个 HTTP 工具，共享同一底层实例（Token 注入、401 跳转、重试策略均复用）：
+
+| 工具 | 文件 | 用途 | 示例 |
+|------|------|------|------|
+| `get / post / put / del` | `src/utils/http/index.ts` | 业务后端接口 | `get('/order/list')` |
+| `pcGet / pcPost` | `src/utils/http/pcHttp.ts` | PC 端网关接口 | `pcPost('/login', data)` |
+
+```ts
+// 业务接口 — 走后端网关
+import { get, post, toast } from '@/utils/http';
+export const getOrderList = (params?: object) => get('/order/list', params);
+
+// 认证接口 — 走 PC 端网关
+import { pcGet, pcPost } from '@/utils/http/pcHttp';
+export const login = (data: object) => pcPost('/login', data);
+export const getAppMenus = (appId: string) => pcGet('/system/menu/getRouters', { appId });
+```
+
+---
+
+## 权限体系
+
+### 权限模型
+
+```
+┌──────────────────────────────────────────────────────┐
+│                     PC 端管理系统                      │
+│                                                      │
+│  应用管理 → 创建应用「robot-h5」→ 绑定菜单和权限       │
+│                                                      │
+│  菜单树（menuType）：                                  │
+│  ├── D（目录）— TabBar 容器                           │
+│  │   ├── M（菜单）— 首页 /dashboard                   │
+│  │   ├── M（菜单）— 订单 /order                       │
+│  │   │   ├── B（按钮）— order:add                    │
+│  │   │   ├── B（按钮）— order:edit                   │
+│  │   │   └── B（按钮）— order:delete                 │
+│  │   └── M（菜单）— 我的 /mine                        │
+│  └── ...                                             │
+└──────────────────────────────────────────────────────┘
+          │
+          │ API：/system/menu/getRouters?appId=robot-h5
+          ▼
+┌──────────────────────────────────────────────────────┐
+│                   Robot H5 移动端                      │
+│                                                      │
+│  permissionStore.loadPermissions()                    │
+│  ├── 解析菜单树 → allowedPaths = ['/dashboard', ...]  │
+│  ├── 提取按钮码 → buttonPermissions = ['order:add',..]│
+│  └── 提取 TabBar → tabBarMenus (visible + M 类型)    │
+│                                                      │
+│  路由守卫：to.path ∈ allowedPaths ? next() : → 首页   │
+│  TabBar：动态渲染 tabBarMenus（替代硬编码菜单）         │
+│  按钮：v-permission="'order:add'" 控制显隐            │
+└──────────────────────────────────────────────────────┘
+```
+
+### 权限流程（时序）
+
+```
+用户打开 H5
+    │
+    ├── 无 Token → 重定向登录页
+    │       │
+    │       └── 输入账号密码 → pcPost('/login') → 获取 Token
+    │               │
+    │               ├── userStore.GetUserInfo()
+    │               └── permissionStore.loadPermissions()
+    │                       │
+    │                       ├── getAppMenus('robot-h5')  → 菜单树
+    │                       └── getUserPermissions('robot-h5') → 按钮权限码
+    │
+    ├── 有 Token + 权限未加载 → 路由守卫自动触发 loadPermissions()
+    │
+    └── 有 Token + 权限已加载 → 校验 to.path → 放行 / 拦截
+```
+
+### 菜单级权限（路由过滤）
+
+路由守卫 `router-guards.ts` 在每次导航时检查目标路径是否在用户权限范围内：
+
+```ts
+// 白名单页面直接放行（登录页）
+// 系统页面无需权限（个人设置、主题、关于）
+// 业务页面校验 permissionStore.isRouteAllowed(to.path)
+```
+
+**降级策略**：权限数据为空时（Mock 模式、权限接口未对接），所有路由**默认放行**，不会白屏。
+
+### 按钮级权限
+
+#### 方式一：`v-permission` 指令（推荐）
+
+无权限时**移除 DOM 元素**，适合简单显隐场景：
+
+```html
+<!-- 单个权限码 -->
+<van-button v-permission="'order:add'">新增订单</van-button>
+
+<!-- 任一权限满足即显示 -->
+<van-button v-permission="['order:edit', 'order:admin']">编辑</van-button>
+```
+
+#### 方式二：`usePermission()` Hook
+
+适合需要在逻辑中判断权限的复杂场景：
+
+```ts
+import { usePermission } from '@/hooks/usePermission';
+
+const { hasPermission, hasAnyPermission } = usePermission();
+
+// 条件渲染
+const canAdd = hasPermission('order:add');
+
+// data.ts 中的操作按钮条件显示
+export const OPERATIONS = [
+    { text: '编辑', show: () => hasPermission('order:edit') },
+    { text: '删除', type: 'danger', show: () => hasPermission('order:delete') },
+];
+```
+
+### 权限相关文件
+
+| 文件 | 职责 |
+|------|------|
+| `types/Permission/type.ts` | `ApiMenuItem` 菜单节点类型、`PermissionInfo` 权限信息类型 |
+| `src/api/permission.ts` | `getAppMenus()` / `getUserPermissions()` — PC 网关接口 |
+| `src/store/modules/permission.ts` | 权限状态管理（菜单树、按钮码、路径过滤） |
+| `src/hooks/usePermission/index.ts` | `usePermission()` Hook + `v-permission` 指令 |
+| `src/router/router-guards.ts` | 路由守卫（登录校验 + 权限校验） |
+| `src/layout/index.vue` | TabBar 动态菜单渲染（权限优先、本地兜底） |
+| `mock/permission.ts` | Mock 菜单树和权限码 |
+
+### TabBar 动态渲染
+
+Layout 组件 TabBar 的数据来源有**两个层级**：
+
+```ts
+// 优先使用权限接口返回的菜单（对接真实后端时生效）
+const apiMenus = permissionStore.getTabBarMenus;
+
+// 兜底：使用本地路由定义（Mock 模式 / 权限接口未对接时）
+const localMenus = routeStore.menus[0]?.children || [];
+
+const tabBarMenus = apiMenus.length > 0 ? apiMenus : localMenus;
+```
+
+> 这种**双层兜底设计**确保了：开发期间用 Mock 数据时 TabBar 正常显示，对接真实后端后自动切换为动态菜单，**零改动过渡**。
+
+---
+
 ## 目录结构
 
 ```
@@ -97,11 +313,17 @@ pnpm build:prod
 │       └── plugin/             #   Vite 插件（按需启用）
 │
 ├── mock/                       # Mock 数据（按模块分目录）
+│   ├── permission.ts          #   权限菜单 Mock
+│   └── user/                  #   用户登录 Mock
 │
 ├── src/
 │   ├── api/                    # 接口层（按模块分目录）
+│   │   ├── permission.ts     #   权限菜单接口（→ PC 网关）
+│   │   └── user.ts           #   用户登录接口（→ PC 网关）
 │   ├── components/             # 全局组件（C_ 前缀，自动注册）
 │   ├── hooks/                  # 组合式函数
+│   │   ├── useEnv/            #   环境配置
+│   │   └── usePermission/     #   权限校验 Hook + v-permission 指令
 │   ├── layout/                 # 布局容器（TabBar）
 │   ├── plugins/                # 插件注册入口
 │   ├── router/                 # 路由（守卫 + 菜单 + 子页面）
@@ -109,12 +331,20 @@ pnpm build:prod
 │   │   └── modules.ts         #   子页面路由
 │   ├── services/               # 原生桥接（JSBridge）
 │   ├── store/                  # Pinia 状态管理
+│   │   └── modules/
+│   │       ├── permission.ts  #   权限状态（菜单树 + 按钮码）
+│   │       ├── route.ts       #   路由状态（菜单 + keepAlive）
+│   │       └── user.ts        #   用户状态（Token + 登录）
 │   ├── styles/                 # 全局样式（Token + 动画）
 │   │   └── variables.scss     #   设计令牌（--ds-xxx）
 │   ├── utils/                  # 工具函数（http / directives / const）
+│   │   └── http/
+│   │       ├── index.ts       #   业务 HTTP 封装（get/post/put/del）
+│   │       └── pcHttp.ts      #   PC 网关 HTTP 封装（pcGet/pcPost）
 │   └── views/                  # 页面视图（每页一个目录）
 │
 ├── types/                      # 全局类型声明
+│   ├── Permission/type.ts     #   权限菜单类型（ApiMenuItem）
 │   ├── Form/type.ts           #   C_Form 组件类型
 │   ├── Table/type.ts          #   C_Table 组件类型
 │   ├── index.d.ts             #   通用工具类型
@@ -579,11 +809,36 @@ if (import.meta.hot)
 | `VITE_PORT` | 开发端口 | `8888` |
 | `VITE_PUBLIC_PATH` | 部署路径 | `/robot-h5/` |
 | `VITE_USE_MOCK` | Mock 开关 | `true` / `false` |
-| `VITE_PROXY` | 开发代理 | `[["/appApi","http://host"]]` |
-| `VITE_GLOB_API_URL` | 接口 Base URL | 生产环境填写真实地址 |
-| `VITE_GLOB_API_URL_PREFIX` | 接口前缀 | `/api` |
+| `VITE_PROXY` | 开发代理 | `[["/api","http://host"]]` |
+| `VITE_GLOB_API_URL` | 业务后端 Base URL | 生产：`http://172.28.99.172:9000` |
+| `VITE_GLOB_API_URL_PREFIX` | 业务接口前缀 | `/api` |
+| `VITE_GLOB_PC_API_URL` | PC 端网关 Base URL | 生产：`http://172.18.248.205` |
+| `VITE_GLOB_PC_API_PREFIX` | PC 端网关前缀 | 开发：`/pcApi`（代理用） |
+| `VITE_GLOB_APP_ID` | 移动端应用标识 | `robot-h5`（用于获取菜单权限） |
 | `VITE_HASH_ROUTE` | Hash 路由模式 | `false` |
 | `VITE_BUILD_COMPRESS` | 构建压缩 | `gzip` / `brotli` / `none` |
+
+### 双网关代理配置
+
+开发环境通过 Vite Proxy 代理两个后端网关：
+
+```jsonc
+// .env.development 中的 VITE_PROXY
+[
+    ["/api",    "http://172.28.99.172:9000/api"],   // 业务后端（path 保留 /api 前缀）
+    ["/pcApi",  "http://172.18.248.205"],            // PC 端网关（去除 /pcApi 前缀）
+    ["/upload", "http://172.28.99.172:9000/upload"]  // 文件上传
+]
+```
+
+**代理流程**：
+
+| 环境 | 业务请求 | 认证请求 |
+|------|----------|----------|
+| 开发 | `/api/order/list` → proxy → `172.28.99.172:9000/order/list` | `/pcApi/login` → proxy → `172.18.248.205/login` |
+| 测试/生产 | `http://172.28.99.172:9000/api/order/list` | `http://172.18.248.205/login` |
+
+> **Mock 匹配**：开发环境 Mock URL 使用 `/api/*`（业务）和 `/pcApi/*`（认证）前缀，与代理前缀一致，Mock 中间件优先于 Proxy 拦截。
 
 ### 环境安全规则
 
@@ -736,10 +991,11 @@ pnpm type-check        # 运行 vue-tsc --noEmit，必须零错误
 | 规则 | 说明 |
 |------|------|
 | 一个模块一个文件 | `src/api/{module}.ts`，扁平化按业务模块组织 |
-| 快捷方法优先 | `import { get, post, toast } from '@/utils/http'` |
+| 快捷方法优先 | 业务接口：`import { get, post, toast } from '@/utils/http'` |
+| PC 网关接口 | 认证/权限接口：`import { pcGet, pcPost } from '@/utils/http/pcHttp'` |
 | 类型按需 | 不关心返回类型就不写泛型，需要时 `get<UserInfo>(...)` |
 | 成功提示 | 用 `toast('消息')` 替代手写 `{ isShowSuccessMessage: true, ... }` |
-| Mock 对应 | 每个 API 必须有对应 Mock 文件，接口 URL 一致（含 `/api` 前缀） |
+| Mock 前缀 | 业务 Mock URL 用 `/api/*`，认证 Mock URL 用 `/pcApi/*` |
 
 ### 自动导入
 

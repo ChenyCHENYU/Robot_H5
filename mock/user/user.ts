@@ -34,7 +34,7 @@ const fakeUserList = [
 
 export default [
     {
-        url: '/api/login',
+        url: '/pcApi/login',
         timeout: 1000,
         method: 'post',
         response: ({ body }) => {
@@ -48,7 +48,7 @@ export default [
         },
     },
     {
-        url: '/api/getUserInfo',
+        url: '/pcApi/getUserInfo',
         timeout: 1000,
         method: 'get',
         response: (request: requestParams) => {
@@ -66,7 +66,7 @@ export default [
         },
     },
     {
-        url: '/api/logout',
+        url: '/pcApi/logout',
         timeout: 1000,
         method: 'post',
         response: (request: requestParams) => {

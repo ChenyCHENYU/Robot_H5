@@ -9,6 +9,9 @@ export function useEnv() {
             apiUrl: env.VITE_GLOB_API_URL,
             shortName: env.VITE_GLOB_APP_SHORT_NAME,
             urlPrefix: env.VITE_GLOB_API_URL_PREFIX,
+            pcApiUrl: env.VITE_GLOB_PC_API_URL,
+            pcUrlPrefix: env.VITE_GLOB_PC_API_PREFIX,
+            appId: env.VITE_GLOB_APP_ID,
             uploadUrl: env.VITE_GLOB_UPLOAD_URL,
             imgUrl: env.VITE_GLOB_IMG_URL,
         };

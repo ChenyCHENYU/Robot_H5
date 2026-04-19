@@ -70,6 +70,9 @@ declare global {
         VITE_OUTPUT_DIR: string;
         VITE_GLOB_API_URL: string;
         VITE_GLOB_API_URL_PREFIX: string;
+        VITE_GLOB_PC_API_URL: string;
+        VITE_GLOB_PC_API_PREFIX: string;
+        VITE_GLOB_APP_ID: string;
         VITE_GLOB_UPLOAD_URL: string;
         VITE_GLOB_IMG_URL_PREFIX: string;
         VITE_PROXY: [string, string][];

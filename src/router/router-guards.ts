@@ -2,28 +2,62 @@ import { type Router, isNavigationFailure } from 'vue-router';
 import NProgress from 'nprogress';
 import { useRouteStoreWidthOut } from '@/store/modules/route';
 import { useUserStore } from '@/store/modules/user';
+import { usePermissionStoreWidthOut } from '@/store/modules/permission';
 import { PageEnum } from '@/enums/pageEnum';
 
 NProgress.configure({ parent: '#app', showSpinner: false, minimum: 0.3, speed: 200 });
 
 let npTimer: ReturnType<typeof setTimeout>;
 
-// 路由白名单
+// 路由白名单（无需登录即可访问）
 const whitePathList = [PageEnum.BASE_LOGIN];
+
+// 系统页面（已登录但不需要权限校验的页面）
+const systemPaths = [
+    '/themeSetting', '/editUserInfo', '/editNickname', '/editSign',
+    '/accountSetting', '/changePassword', '/about',
+];
+
 export function createRouterGuards(router: Router) {
     router.beforeEach(async (to, _from, next) => {
         // 延迟显示 NProgress，快速导航（tab切换）不会出现进度条闪烁
         clearTimeout(npTimer);
         npTimer = setTimeout(() => NProgress.start(), 80);
 
+        // 白名单页面直接放行
         if (whitePathList.includes(to.path as PageEnum)) {
             next();
             return;
         }
+
         const userStore = useUserStore();
 
+        // 未登录 → 重定向到登录页
         if (!userStore.getToken) {
             next(PageEnum.BASE_LOGIN);
+            return;
+        }
+
+        // 已登录 → 检查权限是否已加载
+        const permissionStore = usePermissionStoreWidthOut();
+        if (!permissionStore.isLoaded) {
+            try {
+                await permissionStore.loadPermissions();
+            } catch {
+                // 权限加载失败，继续放行（降级为无权限控制）
+            }
+        }
+
+        // 系统页面（个人设置等）不需要权限校验
+        if (systemPaths.includes(to.path)) {
+            next();
+            return;
+        }
+
+        // 权限路由校验
+        if (!permissionStore.isRouteAllowed(to.path)) {
+            // 无权访问 → 跳转首页
+            next(PageEnum.BASE_HOME);
             return;
         }
 
