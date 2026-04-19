@@ -8,7 +8,6 @@ import { configAutoComponentsPlugin } from './autocomponents';
 import { configCompressPlugin } from './compress';
 import { configVisualizerConfig } from './visualizer';
 import { configProgressPlugin } from './progress';
-import { configLegacyPlugin } from './legacy';
 import { configSvgIconsPlugin } from './svgSprite';
 import { configMockPlugin } from './mock';
 import { configHtmlPlugin } from './injectHtml';
@@ -61,6 +60,8 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
             workbox: {
                 // 缓存所有静态资源
                 globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+                // 大文件阈值（echarts 等大依赖可能超过默认 2MB）
+                maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
                 // 运行时缓存 API 请求
                 runtimeCaching: [
                     {
@@ -74,8 +75,6 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
     );
 
     if (isBuild) {
-        // es兼容性支持 (仅构建时需要)
-        vitePlugins.push(configLegacyPlugin());
         // 构建时显示进度条
         vitePlugins.push(configProgressPlugin());
         // 打包分析 rollup-plugin-visualizer

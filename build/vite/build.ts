@@ -12,8 +12,8 @@ export function createBuild(viteEnv: ViteEnv): BuildOptions {
         sourcemap: false,
         // 指定输出路径，从环境变量中获取
         outDir: VITE_OUTPUT_DIR,
-        // 启用/禁用 CSS 代码拆分，禁用时整个项目的所有 CSS 将被内联到一个文件中
-        cssCodeSplit: false,
+        // 启用 CSS 代码拆分，每个异步 chunk 独立 CSS 文件，减少首屏关键 CSS 体积
+        cssCodeSplit: true,
         // 移除或修改 target 配置
         target: 'esnext',
         // 指定使用的压缩器，'esbuild' 比 'terser' 构建速度更快但打包体积略大
@@ -28,6 +28,20 @@ export function createBuild(viteEnv: ViteEnv): BuildOptions {
         // Rollup 打包相关配置
         rollupOptions: {
             output: {
+                // 供应商分包策略：框架核心/UI库/工具库分别独立 chunk，利用浏览器长缓存
+                manualChunks: (id: string) => {
+                    if (id.includes('node_modules')) {
+                        if (id.includes('vue') || id.includes('vue-router') || id.includes('pinia')) {
+                            return 'vendor-vue';
+                        }
+                        if (id.includes('vant')) {
+                            return 'vendor-vant';
+                        }
+                        if (id.includes('echarts') || id.includes('zrender')) {
+                            return 'vendor-echarts';
+                        }
+                    }
+                },
                 // 指定非入口 chunk 文件的名称，用于代码分割
                 chunkFileNames: 'static/js/[name]-[hash].js',
                 // 指定入口文件的名称

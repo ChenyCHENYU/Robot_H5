@@ -52,8 +52,12 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
                     // UnoCSS 工具类在 @layer utilities（后声明 = 高优先级）
                     // 这样工具类能覆盖组件 SCSS，彻底修复级联冲突
                     additionalData: (content: string, id: string) => {
+                        // src/styles/ 本身就是样式模块树，不注入 @use 以避免循环依赖
+                        if (id.includes('/src/styles/')) {
+                            return content;
+                        }
                         const use = `@use "@/styles/index.scss" as *;\n`;
-                        if (id.includes('/src/') && id.endsWith('.scss') && !id.includes('/src/styles/')) {
+                        if (id.includes('/src/') && id.endsWith('.scss')) {
                             return `${use}@layer components {\n${content}\n}`;
                         }
                         return `${use}${content}`;
