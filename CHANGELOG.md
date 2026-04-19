@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://git.yourcompany.com/robot/robot-h5/compare/v1.1.1...v1.2.0) (2026-04-19)
+
+
+### ♻️ 重构
+
+* **api:** 扁平化 API 目录结构，补充接口规范文档 ([d94dd74](https://git.yourcompany.com/robot/robot-h5/commit/d94dd74cbbf3ae9f5bd6d5bf2739e5d486669eb0))
+
+
+### ✨ 新功能
+
+* **convention-audit:** 改为工作流自动终结步骤，代码变更后自动审计修复 ([e812f7c](https://git.yourcompany.com/robot/robot-h5/commit/e812f7cb1ebe570494cc4f08996294240d212ff2))
+* **convention-audit:** 新增 AI 可执行审计 prompt，补充 radius-full 令牌 ([206aaa2](https://git.yourcompany.com/robot/robot-h5/commit/206aaa27794594bb7f3e09920018ebada397f157))
+* **convention-audit:** 补充运行时安全+原型精细度审计，同步多 AI 编辑器规则 ([c8010a8](https://git.yourcompany.com/robot/robot-h5/commit/c8010a862492d9ec508a1479350d0d536aec693b))
+* **skills:** 新增 api-spec 技能，增强 mock-gen 端点模板，更新工作流 ([021f522](https://git.yourcompany.com/robot/robot-h5/commit/021f522424fd5f833e19650323a970c1cb273b33))
+* **skills:** 新增 Kiro/Trae/Claude/AGENTS 编辑器支持，同步 Skills 调度注册表 ([c967d47](https://git.yourcompany.com/robot/robot-h5/commit/c967d47e62a0d6719315d2f6ee7171193aff9997))
+
 ### [1.1.1](https://git.yourcompany.com/robot/robot-h5/compare/v1.1.0...v1.1.1) (2026-04-16)
 
 
