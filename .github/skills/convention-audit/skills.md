@@ -18,19 +18,35 @@
 
 ## 检查维度
 
-### 🔴 Error（必须修复）
+### 🔴 Error（必须修复 — P0）
+
+**样式令牌合规：**
 
 | 检查项 | 规则 |
 |--------|------|
 | 硬编码颜色 | 不允许 `#xxx` / `rgb()` / `rgba()`，必须用 `var(--ds-xxx)` |
 | 硬编码圆角 | 不允许 `border-radius: Npx`，必须用 `var(--ds-radius-*)` |
+| 硬编码阴影 | 不允许 `box-shadow` 字面量，必须用 `var(--ds-shadow-*)` |
 | 缺少 defineOptions | `<script setup>` 必须有 `defineOptions({ name: 'PageName' })` |
 | 内联 style 块 | 禁止 `<style>` 块，样式必须外置 `.scss` 文件 |
-| 类型错误 | `pnpm type-check` 必须零错误 |
 | script setup 导出类型 | 禁止在 `<script setup>` 中 `export` 类型，放 `types/{Name}/type.ts` |
 | import 未使用 | 不允许未使用的导入 |
 
-### 🟡 Warning（建议修复）
+**运行时安全（页面不可报错/白屏）：**
+
+| 检查项 | 规则 |
+|--------|------|
+| 类型检查 | `pnpm type-check`（vue-tsc --noEmit）必须零错误 |
+| 导入有效性 | 导入的组件/模块/函数必须存在且路径正确，不可导入不存在的文件 |
+| 未定义变量 | 模板 `<template>` 中引用的变量/方法必须在 `<script setup>` 中定义 |
+| 必填 Props | 组件必填 props 必须传值，不可遗漏（如 C_NavBar 的 title） |
+| 响应式正确 | `ref()` / `reactive()` 使用正确，模板中不出现 `.value` |
+| 路由存在 | `router.push` / `<router-link :to>` 的目标路由必须已在 `modules.ts` 或 `menu.ts` 注册 |
+| API 端点一致 | `src/api/*.ts` 中请求路径必须与 `mock/*.ts` 端点 url 一致 |
+
+### 🟡 Warning（建议修复 — P1）
+
+**样式规范：**
 
 | 检查项 | 规则 |
 |--------|------|
@@ -41,7 +57,20 @@
 | 状态映射缺失 | 状态字段必须有 `xxxMap` 常量 + `<VanTag>` 渲染 |
 | Vant 类型约束 | VanTag size 只接受 `'large' \| 'medium'`，Picker columns 必须 `PickerOption[]` |
 
-### 🟢 Info（建议优化）
+**原型/详设精细度对比（有原型或详设输入时执行）：**
+
+| 检查项 | 规则 |
+|--------|------|
+| 字段完整性 | data.ts 的 interface 字段 ≥ 原型/详设字段，不可遗漏 |
+| 按钮文案一致 | 操作按钮标签必须与原型一字不差（"修改"不可改"编辑"） |
+| 按钮完整性 | 原型有的按钮不可少，原型没有的不可自编 |
+| 页面结构一致 | 列表/详情/表单的区块顺序与原型布局一致 |
+| 状态枚举覆盖 | 原型中所有状态值都有 Map 映射和 VanTag 渲染 |
+| 条件显示 | 不同状态显示不同按钮时，用 `show: (row) => boolean` 控制 |
+| 页面流程 | 列表→详情→表单的跳转路径与原型一致 |
+| Mock 端点对应 | 每个 API 函数都有对应 Mock 端点，字段名一致 |
+
+### 🟢 Info（建议优化 — P2）
 
 | 检查项 | 规则 |
 |--------|------|

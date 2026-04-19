@@ -66,48 +66,108 @@
 - **扫描**：`<script setup>` 中出现 `export type` 或 `export interface`
 - **修复**：移动到 `types/{Name}/type.ts`，用 `#/{Name}/type` 别名导入
 
+#### R07 类型检查
+- **扫描**：运行 `pnpm type-check`（vue-tsc --noEmit）
+- **修复**：修复所有 TypeScript 类型错误，确保零错误
+
+#### R08 导入有效性
+- **扫描**：`import` 的组件/模块/函数的文件路径必须存在
+- **修复**：修正路径或补充缺失文件
+
+#### R09 未定义变量
+- **扫描**：`<template>` 中引用的变量/方法必须在 `<script setup>` 中定义或导入
+- **修复**：补充定义或删除无效引用
+
+#### R10 必填 Props
+- **扫描**：组件必填 props 未传值（如 `C_NavBar` 的 `title`、`C_Table` 的 `columns`）
+- **修复**：补充缺失的 prop
+
+#### R11 响应式正确
+- **扫描**：模板中出现 `xxx.value`（应由 Vue 自动解包）、`reactive()` 被解构丢失响应式
+- **修复**：模板中去掉 `.value`，解构改用 `toRefs()`
+
+#### R12 路由存在
+- **扫描**：`router.push({ name: 'xxx' })` 中的 name 必须在 `src/router/modules.ts` 或 `menu.ts` 中注册
+- **修复**：补充路由注册或修正 name
+
 ### 🟡 P1 — 建议修复
 
-#### R07 缺少 C_NavBar
+**样式规范：**
+
+#### R13 缺少 C_NavBar
 - **扫描**：`src/views/` 下的 `index.vue`，`<template>` 首个子元素不是 `<C_NavBar`
 - **修复**：在 `<template>` 顶部添加 `<C_NavBar title="页面标题" />`
 
-#### R08 底部安全区缺失
+#### R14 底部安全区缺失
 - **扫描**：有 `position: fixed` + `bottom: 0` 但无 `env(safe-area-inset-bottom)`
 - **修复**：添加 `padding-bottom: calc(Xpx + env(safe-area-inset-bottom))`
 
-#### R09 图标不合规
+#### R15 图标不合规
 - **扫描**：class 中有 `el-icon-`、`van-icon-`、CDN 图标链接
 - **修复**：替换为 `i-ph:{name}-bold` 或 `i-ic:{name}` 格式
 
-#### R10 API 命名不规范
+#### R16 API 命名不规范
 - **扫描**：`src/api/*.ts` 中函数名不符合 `get/add/update/delete + Module + List/Detail` 模式
 - **修复**：重命名函数并更新所有引用
 
-#### R11 状态映射缺失
+#### R17 状态映射缺失
 - **扫描**：`data.ts` 中有状态类型字段（名含 `status`/`state`/`type`）但无对应 `xxxMap` 常量
 - **修复**：生成 `Record<string, { text: string; type: string }>` 映射常量
 
-#### R12 Vant 类型约束
+#### R18 Vant 类型约束
 - **扫描**：`VanTag` 的 `size` 属性值不在 `'large' | 'medium'` 范围内
 - **扫描**：`Picker` 的 `columns` 类型不是 `PickerOption[]`
 - **修复**：修正属性值/类型
 
+**原型/详设精细度对比（有原型或详设文档输入时必须执行）：**
+
+#### R19 字段完整性
+- **扫描**：`data.ts` 的 interface 字段数量和名称 ≥ 原型/详设文档中的字段
+- **修复**：补充遗漏字段，字段名与后端约定一致
+
+#### R20 按钮文案一致
+- **扫描**：操作按钮的文本必须与原型/详设完全一致（"修改"不可改"编辑"，"作废"不可改"删除"）
+- **修复**：改为原型文案
+
+#### R21 按钮完整性
+- **扫描**：原型中有的按钮不可遗漏，原型中没有的不可自编
+- **修复**：增删按钮使其与原型一一对应
+
+#### R22 页面结构一致
+- **扫描**：列表/详情/表单的区块顺序（搜索→Tab→列表→底部操作）与原型布局一致
+- **修复**：调整区块顺序
+
+#### R23 状态枚举覆盖
+- **扫描**：原型中出现的所有状态值都有 `xxxMap` 映射和 `VanTag` 渲染
+- **修复**：补充遗漏的状态枚举
+
+#### R24 条件显示
+- **扫描**：不同状态下应显示不同按钮时，必须有 `show: (row) => boolean` 条件控制
+- **修复**：添加条件逻辑
+
+#### R25 页面流程
+- **扫描**：列表→详情→表单的跳转路径与原型流程一致
+- **修复**：修正路由跳转的 name 和 params
+
+#### R26 Mock 端点对应
+- **扫描**：`src/api/*.ts` 每个 API 函数都有 `mock/*.ts` 中的对应端点，字段名一致
+- **修复**：补充缺失的 Mock 端点
+
 ### 🟢 P2 — 优化建议
 
-#### R13 间距不合规
+#### R27 间距不合规
 - **扫描**：`margin`/`padding`/`gap` 的 `px` 值不在 `4 8 12 16 20 24 32 40 48 64` 中
 - **修复**：调整为最近的合规值
 
-#### R14 字号不合规
+#### R28 字号不合规
 - **扫描**：`font-size` 的 `px` 值不在 `11 12 13 14 15 16 17 20 22 28 34` 中
 - **修复**：调整为最近的合规值
 
-#### R15 data.ts 缺失
+#### R29 data.ts 缺失
 - **扫描**：`.vue` 中有 3 个以上硬编码对象/数组（应提取到 data.ts）
 - **修复**：提取常量到 `data.ts`，用 `v-for` 驱动渲染
 
-#### R16 Mock 不完整
+#### R30 Mock 不完整
 - **扫描**：`data.ts` 有 interface 但无 `MOCK_` 常量，或 Mock 条数 < 6
 - **修复**：按 mock-gen skill 规则补充
 

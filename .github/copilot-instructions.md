@@ -1,6 +1,7 @@
 # Robot H5 — Copilot 项目指令
 
 > 本文件由 GitHub Copilot 自动加载，作为所有 AI 辅助开发的上下文基线。
+> 同源规则同步至 `.cursorrules`（Cursor）/ `.windsurfrules`（Windsurf）/ `.clinerules`（Cline），变更时须同步更新。
 
 ## 项目概述
 
@@ -95,6 +96,8 @@ export const MOCK_CUSTOMERS: Customer[] = [ ... ];
 
 #### 🔴 P0 — 自动修复（静默执行，不问用户）
 
+**样式令牌合规：**
+
 | 规则 | 扫描 | 修复 |
 |------|------|------|
 | 硬编码颜色 | `.scss` 中 `#xxx` / `rgb()` / `rgba()` | → `var(--ds-*)` |
@@ -104,7 +107,20 @@ export const MOCK_CUSTOMERS: Customer[] = [ ... ];
 | 缺少 defineOptions | `<script setup>` 无 `defineOptions` | → 添加，name 与路由一致 |
 | 类型导出 | `<script setup>` 中 `export type/interface` | → 移到 `types/` |
 
+**运行时安全（页面不可报错/白屏）：**
+
+| 规则 | 扫描 | 修复 |
+|------|------|------|
+| 类型检查 | `pnpm type-check`（vue-tsc --noEmit）必须零错误 | → 修复类型错误 |
+| 导入有效性 | 导入的组件/模块/函数必须存在且路径正确 | → 修正路径或补充缺失文件 |
+| 未定义变量 | 模板中引用的变量/方法必须在 `<script setup>` 中定义 | → 补充定义或删除引用 |
+| 必填 Props | 组件必填 props 必须传值，不可遗漏 | → 补充 prop |
+| 响应式正确 | `ref()` / `reactive()` 使用正确，模板中不出现 `.value` | → 修正响应式写法 |
+| 路由存在 | `router.push` 的目标路由必须已在 `modules.ts` 或 `menu.ts` 注册 | → 补充路由注册 |
+
 #### 🟡 P1 — 自动修复 + 报告
+
+**样式规范：**
 
 | 规则 | 扫描 | 修复 |
 |------|------|------|
@@ -114,6 +130,19 @@ export const MOCK_CUSTOMERS: Customer[] = [ ... ];
 | 字号不合规 | `font-size` 不在梯度范围 | → 调整为最近合规值 |
 | 状态映射缺失 | 状态字段无 `xxxMap` 常量 | → 生成映射 + VanTag 渲染 |
 | API 命名 | 不符合 `get/add/update/delete + Module` | → 重命名 |
+
+**原型/详设精细度对比（有原型或详设文档输入时必须执行）：**
+
+| 规则 | 扫描 | 修复 |
+|------|------|------|
+| 字段完整性 | data.ts 的 interface 字段 ≥ 原型/详设字段，不可遗漏 | → 补充缺失字段 |
+| 按钮文案一致 | 操作按钮标签必须与原型一字不差（"修改"不可改"编辑"） | → 改为原型文案 |
+| 按钮完整性 | 原型有的按钮不可少，原型没有的不可自编 | → 增删按钮 |
+| 页面结构一致 | 列表/详情/表单的区块顺序与原型布局一致 | → 调整区块顺序 |
+| 状态枚举覆盖 | 原型中所有状态值都有 Map 映射和 VanTag 渲染 | → 补充遗漏状态 |
+| 条件显示 | 不同状态显示不同按钮时，用 `show: (row) => boolean` 控制 | → 添加条件逻辑 |
+| 页面流程 | 列表→详情→表单的跳转路径与原型一致 | → 修正路由跳转 |
+| Mock 端点对应 | 每个 API 函数都有对应 Mock 端点，字段名一致 | → 补充 Mock |
 
 #### 执行时机
 
