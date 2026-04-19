@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://git.yourcompany.com/robot/robot-h5/compare/v1.2.0...v1.3.0) (2026-04-19)
+
+
+### ✨ 新功能
+
+* **auth:** 集成双网关服务隔离与权限体系 ([934ca28](https://git.yourcompany.com/robot/robot-h5/commit/934ca28a2938f43ad38b529e5a203466014bd939))
+
 ## [1.2.0](https://git.yourcompany.com/robot/robot-h5/compare/v1.1.1...v1.2.0) (2026-04-19)
 
 
