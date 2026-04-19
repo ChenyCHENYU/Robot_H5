@@ -28,7 +28,7 @@
         &--2 {
             width: 160px;
             height: 160px;
-            background: #ff9500;
+            background: var(--ds-warning);
             bottom: 20%;
             right: -30px;
             animation: error-float 8s ease-in-out 2s infinite reverse;
@@ -74,7 +74,7 @@
         font-size: 72px;
         font-weight: 900;
         letter-spacing: -2px;
-        background: linear-gradient(135deg, var(--ds-accent), #ff9500);
+        background: linear-gradient(135deg, var(--ds-accent), var(--ds-warning));
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;

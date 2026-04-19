@@ -38,7 +38,7 @@
         pointer-events: none;
 
         &--1 { width: 100px; height: 100px; background: var(--ds-accent); top: -20px; right: -10px; }
-        &--2 { width: 80px; height: 80px; background: #ff9500; bottom: -10px; left: -10px; }
+        &--2 { width: 80px; height: 80px; background: var(--ds-warning); bottom: -10px; left: -10px; }
     }
 
     &__logo {

@@ -4,10 +4,10 @@
 .van-default-finished,
 .van-default-error {
     text-align: center;
-    color: #969799;
+    color: var(--ds-text-tertiary);
     font-size: 14px;
 }
 
 .van-default-error {
-    color: #ee0a24;
+    color: var(--ds-danger);
 }

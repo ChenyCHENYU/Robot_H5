@@ -80,7 +80,7 @@ body {
         box-sizing: content-box;
         // padding-top 已移除：状态栏改为 flex 布局流子节点，由 App.vue 的 flex-col 自然保留空间
         overflow: hidden !important;
-        border: 5px solid #000;
+        border: 5px solid var(--ds-text-primary);
         border-radius: 30px;
         transform: scale(0.86);
         transform-origin: top center;

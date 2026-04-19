@@ -33,7 +33,7 @@
             height: 280px;
             top: -10%;
             right: -15%;
-            background: #0071e3;
+            background: var(--ds-accent);
             opacity: 0.28;
         }
 
@@ -52,7 +52,7 @@
             height: 150px;
                 top: 38%;
                 right: 18%;
-            background: #ff2d55;
+            background: var(--ds-danger);
             opacity: 0.13;
             animation-delay: -7s;
         }
@@ -62,7 +62,7 @@
                     height: 130px;
                     top: 12%;
                     left: 8%;
-                    background: #30d158;
+                    background: var(--ds-success);
                     opacity: 0.09;
                     filter: blur(50px);
                     animation-delay: -2s;
@@ -73,7 +73,7 @@
                     height: 170px;
                     bottom: 0;
                     right: 0;
-                    background: #ff9f0a;
+                    background: var(--ds-warning);
                     opacity: 0.09;
                     filter: blur(70px);
                     animation-delay: -5s;
