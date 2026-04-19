@@ -4,8 +4,6 @@ export interface GlobConfig {
     apiUrl: string;
     shortName: string;
     urlPrefix?: string;
-    pcApiUrl?: string;
-    pcUrlPrefix?: string;
     appId?: string;
     uploadUrl?: string;
     imgUrl?: string;
@@ -20,11 +18,7 @@ export interface GlobEnvConfig {
     VITE_GLOB_API_URL: string;
     // 接口前缀
     VITE_GLOB_API_URL_PREFIX?: string;
-    // PC 端网关地址（菜单/登录/权限）
-    VITE_GLOB_PC_API_URL?: string;
-    // PC 端网关接口前缀
-    VITE_GLOB_PC_API_PREFIX?: string;
-    // 移动端应用 ID（PC 系统中注册的应用标识）
+    // 移动端应用 ID
     VITE_GLOB_APP_ID?: string;
     // Project abbreviation
     VITE_GLOB_APP_SHORT_NAME: string;

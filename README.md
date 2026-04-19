@@ -23,7 +23,7 @@
 - [构建与部署](#构建与部署)
 - [工程规范](#工程规范)
 - [最佳实践](#最佳实践)
-- [@robot/h5-core 通用能力包](#roboth5-core-通用能力包)
+- [@robot-h5/core 通用能力包](#robot-h5core-通用能力包)
 
 ---
 
@@ -94,79 +94,53 @@ pnpm build:prod
 ### 整体拓扑
 
 ```
-                                  ┌─────────────────────────────────────┐
-                                  │         Nginx / 外网网关            │
-                                  └──────────┬──────────────┬───────────┘
-                                             │              │
-                          ┌──────────────────▼───┐    ┌─────▼──────────────────┐
-                          │  PC 端前端网关         │    │  业务后端网关           │
-                          │  172.18.248.205:80    │    │  172.28.99.172:9000    │
-                          │                      │    │                        │
-                          │  · 登录鉴权           │    │  · 客户管理            │
-                          │  · 发放 Token         │    │  · 订单管理            │
-                          │  · 菜单权限           │    │  · 工单管理            │
-                          │  · 用户信息           │    │  · 文件上传            │
-                          │  · 应用管理           │    │  · 其他业务 CRUD        │
-                          └──────────────────────┘    └────────────────────────┘
-                                    ▲                           ▲
-                                    │ /pcApi/*                  │ /api/*
-                                    │                           │
-                          ┌─────────┴───────────────────────────┴──────────┐
-                          │              Robot H5 移动端                    │
-                          │                                                │
-                          │  登录 → PC网关验证 → 获取Token → 获取菜单权限    │
-                          │  业务操作 → 后端网关 → 复用PC端微服务            │
-                          └────────────────────────────────────────────────┘
+    ┌──────────────────────┐
+    │   Nginx / 外网网关    │
+    └──────────┬───────────┘
+               │
+    ┌──────────▼───────────┐
+    │   后端网关             │
+    │   172.28.99.172:9000  │
+    │                       │
+    │  · 登录鉴权            │
+    │  · 菜单权限            │
+    │  · 客户/订单/工单 CRUD │
+    │  · 文件上传            │
+    └───────────────────────┘
+               ▲
+               │  /api/*
+    ┌──────────┴───────────┐
+    │   Robot H5 移动端     │
+    │                       │
+    │  所有请求统一走网关    │
+    │  前端只配一个地址      │
+    └───────────────────────┘
 ```
 
 ### 核心设计原则
 
 | 原则 | 说明 |
 |------|------|
-| **服务隔离** | 鉴权服务（PC 网关）与业务服务（后端网关）分离，各自独立部署 |
-| **Token 统一** | 移动端通过 PC 网关登录获取 Token，所有后续请求携带同一 Token |
-| **服务复用** | 业务接口直接复用 PC 端已有微服务，不重复开发后端 |
-| **无模块联邦** | 移动端**不依赖**微前端 / 远程模块加载，所有页面组件本地打包 |
-| **本地路由** | 路由在前端完整定义，后端仅返回权限菜单树用于过滤可见性 |
+| **单一网关** | 前端只对接一个后端地址，网关内部路由到各微服务 |
+| **Token 统一** | 登录后获取 Token，所有后续请求自动携带 |
+| **服务复用** | 后端网关复用 PC 端已有微服务，不重复开发 |
+| **本地路由** | 所有页面组件本地打包，后端仅返回权限菜单树用于过滤可见性 |
 
-> **为什么不用模块联邦？** PC 端（172.18.248.205:80）采用 module federation 加载远程模块，但移动端 H5 体量小、部署独立、网络环境不稳定，本地打包更可靠。移动端只复用 PC 端的**后端服务**，不复用前端组件。
+### HTTP 调用
 
-### 双网关调用链路
-
-**认证链路**（PC 端网关）：
-
-```
-H5 登录页 → pcPost('/login') → PC 网关校验 → 返回 Token
-         → pcGet('/getUserInfo') → 返回用户信息
-         → pcGet('/system/menu/getRouters') → 返回菜单树
-         → pcGet('/system/menu/getPermissions') → 返回按钮权限码
-```
-
-**业务链路**（后端网关）：
-
-```
-H5 业务页 → get('/customer/list') → 后端网关 → 微服务 → 返回数据
-          → post('/order/create')  → 后端网关 → 微服务 → 返回结果
-```
-
-### HTTP 实例
-
-项目提供两个 HTTP 工具，共享同一底层实例（Token 注入、401 跳转、重试策略均复用）：
-
-| 工具 | 文件 | 用途 | 示例 |
-|------|------|------|------|
-| `get / post / put / del` | `src/utils/http/index.ts` | 业务后端接口 | `get('/order/list')` |
-| `pcGet / pcPost` | `src/utils/http/pcHttp.ts` | PC 端网关接口 | `pcPost('/login', data)` |
+统一使用 `get / post / put / del` 快捷方法，所有请求走同一个网关：
 
 ```ts
-// 业务接口 — 走后端网关
 import { get, post, toast } from '@/utils/http';
+
+// 登录
+export const login = (data: object) => post('/login', data, toast('登录成功'));
+
+// 业务接口
 export const getOrderList = (params?: object) => get('/order/list', params);
 
-// 认证接口 — 走 PC 端网关
-import { pcGet, pcPost } from '@/utils/http/pcHttp';
-export const login = (data: object) => pcPost('/login', data);
-export const getAppMenus = (appId: string) => pcGet('/system/menu/getRouters', { appId });
+// 权限接口
+export const getAppMenus = (appId: string) => get('/system/menu/getRouters', { appId });
 ```
 
 ---
@@ -215,7 +189,7 @@ export const getAppMenus = (appId: string) => pcGet('/system/menu/getRouters', {
     │
     ├── 无 Token → 重定向登录页
     │       │
-    │       └── 输入账号密码 → pcPost('/login') → 获取 Token
+    │       └── 输入账号密码 → post('/login') → 获取 Token
     │               │
     │               ├── userStore.GetUserInfo()
     │               └── permissionStore.loadPermissions()
@@ -277,8 +251,8 @@ export const OPERATIONS = [
 
 | 文件 | 职责 |
 |------|------|
-| `types/Permission/type.ts` | `ApiMenuItem` 菜单节点类型、`PermissionInfo` 权限信息类型 |
-| `src/api/permission.ts` | `getAppMenus()` / `getUserPermissions()` — PC 网关接口 |
+| `types/Permission/type.ts` | `ApiMenuItem` 菜单节点类型 |
+| `src/api/permission.ts` | `getAppMenus()` / `getUserPermissions()` 接口 |
 | `src/store/modules/permission.ts` | 权限状态管理（菜单树、按钮码、路径过滤） |
 | `src/hooks/usePermission/index.ts` | `usePermission()` Hook + `v-permission` 指令 |
 | `src/router/router-guards.ts` | 路由守卫（登录校验 + 权限校验） |
@@ -318,8 +292,8 @@ const tabBarMenus = apiMenus.length > 0 ? apiMenus : localMenus;
 │
 ├── src/
 │   ├── api/                    # 接口层（按模块分目录）
-│   │   ├── permission.ts     #   权限菜单接口（→ PC 网关）
-│   │   └── user.ts           #   用户登录接口（→ PC 网关）
+│   │   ├── permission.ts     #   权限菜单接口
+│   │   └── user.ts           #   用户登录接口
 │   ├── components/             # 全局组件（C_ 前缀，自动注册）
 │   ├── hooks/                  # 组合式函数
 │   │   ├── useEnv/            #   环境配置
@@ -339,8 +313,8 @@ const tabBarMenus = apiMenus.length > 0 ? apiMenus : localMenus;
 │   │   └── variables.scss     #   设计令牌（--ds-xxx）
 │   ├── utils/                  # 工具函数（http / directives / const）
 │   │   └── http/
-│   │       ├── index.ts       #   业务 HTTP 封装（get/post/put/del）
-│   │       └── pcHttp.ts      #   PC 网关 HTTP 封装（pcGet/pcPost）
+│   │       └── index.ts       #   HTTP 封装（get/post/put/del）
+│   ├── h5.config.ts            # @robot-h5/core 配置文件
 │   └── views/                  # 页面视图（每页一个目录）
 │
 ├── types/                      # 全局类型声明
@@ -810,35 +784,25 @@ if (import.meta.hot)
 | `VITE_PUBLIC_PATH` | 部署路径 | `/robot-h5/` |
 | `VITE_USE_MOCK` | Mock 开关 | `true` / `false` |
 | `VITE_PROXY` | 开发代理 | `[["/api","http://host"]]` |
-| `VITE_GLOB_API_URL` | 业务后端 Base URL | 生产：`http://172.28.99.172:9000` |
-| `VITE_GLOB_API_URL_PREFIX` | 业务接口前缀 | `/api` |
-| `VITE_GLOB_PC_API_URL` | PC 端网关 Base URL | 生产：`http://172.18.248.205` |
-| `VITE_GLOB_PC_API_PREFIX` | PC 端网关前缀 | 开发：`/pcApi`（代理用） |
+| `VITE_GLOB_API_URL` | 后端网关 Base URL | 生产：`http://172.28.99.172:9000` |
+| `VITE_GLOB_API_URL_PREFIX` | 接口前缀 | `/api` |
 | `VITE_GLOB_APP_ID` | 移动端应用标识 | `robot-h5`（用于获取菜单权限） |
 | `VITE_HASH_ROUTE` | Hash 路由模式 | `false` |
 | `VITE_BUILD_COMPRESS` | 构建压缩 | `gzip` / `brotli` / `none` |
 
-### 双网关代理配置
+### 代理配置
 
-开发环境通过 Vite Proxy 代理两个后端网关：
+开发环境通过 Vite Proxy 代理后端网关：
 
 ```jsonc
 // .env.development 中的 VITE_PROXY
 [
-    ["/api",    "http://172.28.99.172:9000/api"],   // 业务后端（path 保留 /api 前缀）
-    ["/pcApi",  "http://172.18.248.205"],            // PC 端网关（去除 /pcApi 前缀）
+    ["/api",    "http://172.28.99.172:9000/api"],   // 后端网关
     ["/upload", "http://172.28.99.172:9000/upload"]  // 文件上传
 ]
 ```
 
-**代理流程**：
-
-| 环境 | 业务请求 | 认证请求 |
-|------|----------|----------|
-| 开发 | `/api/order/list` → proxy → `172.28.99.172:9000/order/list` | `/pcApi/login` → proxy → `172.18.248.205/login` |
-| 测试/生产 | `http://172.28.99.172:9000/api/order/list` | `http://172.18.248.205/login` |
-
-> **Mock 匹配**：开发环境 Mock URL 使用 `/api/*`（业务）和 `/pcApi/*`（认证）前缀，与代理前缀一致，Mock 中间件优先于 Proxy 拦截。
+> Mock URL 使用 `/api/*` 前缀，与代理前缀一致。开发环境 Mock 中间件优先于 Proxy 拦截。
 
 ### 环境安全规则
 
@@ -991,11 +955,10 @@ pnpm type-check        # 运行 vue-tsc --noEmit，必须零错误
 | 规则 | 说明 |
 |------|------|
 | 一个模块一个文件 | `src/api/{module}.ts`，扁平化按业务模块组织 |
-| 快捷方法优先 | 业务接口：`import { get, post, toast } from '@/utils/http'` |
-| PC 网关接口 | 认证/权限接口：`import { pcGet, pcPost } from '@/utils/http/pcHttp'` |
+| 快捷方法优先 | `import { get, post, toast } from '@/utils/http'` |
 | 类型按需 | 不关心返回类型就不写泛型，需要时 `get<UserInfo>(...)` |
 | 成功提示 | 用 `toast('消息')` 替代手写 `{ isShowSuccessMessage: true, ... }` |
-| Mock 前缀 | 业务 Mock URL 用 `/api/*`，认证 Mock URL 用 `/pcApi/*` |
+| Mock 前缀 | Mock URL 统一用 `/api/*` 前缀 |
 
 ### 自动导入
 
@@ -1009,77 +972,198 @@ pnpm type-check        # 运行 vue-tsc --noEmit，必须零错误
 
 ---
 
-## @robot/h5-core 通用能力包
+## @robot-h5/core 通用能力包
 
-> 本项目配套的**企业级移动端通用能力包**，详细架构设计见 [robot-h5-core/DESIGN.md](../robot-h5-core/DESIGN.md)。
+> **企业级移动端 H5 通用能力包** — 包做厚、项目做薄。业务项目只需「配置 + 引用」，即获完整能力。
+>
+> NPM 地址：[@robot-h5/core](https://www.npmjs.com/package/@robot-h5/core)
 
-### 核心理念：包做厚、项目做薄
+### 已集成
 
-`@robot/h5-core` 封装了移动端所有复杂的原生能力接入逻辑。业务项目只需**配置 + 引用**，即可开箱获得完整能力，大幅提升交付效率。
+本项目已安装并配置好 `@robot-h5/core`：
 
-### 能力清单
+- 安装：`pnpm add @robot-h5/core@^1.0.0`（已在 `package.json` 中）
+- 配置文件：`src/h5.config.ts`
+- 注册方式：`main.ts` 中 `app.use(h5Core, h5Config)` 一行完成
 
-| 类别 | 能力 | 说明 |
-|------|------|------|
-| **Hooks** | `useCamera` | 拍照/选图 → File/Base64 + 自动压缩 |
-| | `useLocation` | GPS 定位，自动坐标系转换（GCJ-02/WGS-84） |
-| | `useQrScanner` | 二维码/条形码扫描 |
-| | `useFileUpload` | 分片上传 + 进度条 + 自动压缩 |
-| | `useSignature` | Canvas 手写签名板 |
-| | `useWatermark` | 拍照水印（时间 + 地点 + 人员） |
-| | `usePermission` | 系统权限请求/检查 |
-| | ...共 14 个 | 覆盖主流移动端场景 |
-| **Bridge** | `NativeBridge` | APP WebView 适配 |
-| | `DingtalkBridge` | 钉钉适配 |
-| | `WechatBridge` | 微信/企微适配 |
-| | `BrowserBridge` | 浏览器降级 |
-| **Utils** | `image` | 压缩/Base64/Blob 互转 |
-| | `coord` | GCJ-02 ↔ WGS-84 坐标转换 |
-| | `validate` | 手机号/身份证/邮箱/统一社会信用代码 |
-| | `format` | 日期/金额格式化 |
-| | ...共 6 个模块 | 纯函数，零依赖，tree-shaking 友好 |
-
-### 快速上手
-
-```bash
-pnpm add @robot/h5-core
-```
+### 配置文件
 
 ```ts
-// main.ts — 一次配置，全局生效
-import { defineAppConfig } from '@robot/h5-core';
+// src/h5.config.ts
+import { defineH5Config } from '@robot-h5/core';
+import { useUserStoreWidthOut } from '@/store/modules/user';
 
-defineAppConfig(app, {
-  bridge: { platform: 'auto', nativeUA: 'robot-app' },
-  upload: { action: '/api/file/upload', chunkSize: 2 * 1024 * 1024 },
-  image:  { maxSize: 1024, quality: 0.8 },
+export default defineH5Config({
+    upload: {
+        action: '/api/file/upload',
+        headers: (): Record<string, string> => {
+            const userStore = useUserStoreWidthOut();
+            const token = userStore.getToken;
+            return token ? { Authorization: `Bearer ${token}` } : {};
+        },
+    },
+    image: { maxSize: 1024, quality: 0.8 },
+    location: { coordType: 'gcj02', timeout: 10000 },
 });
 ```
 
+### 功能清单
+
+**15 个 Hooks（组合函数）：**
+
+| Hook | 用途 |
+|------|------|
+| `useCamera` | 拍照/相册 + 自动压缩 |
+| `useLocation` | GPS 单次/持续定位 |
+| `useQrScanner` | 二维码/条形码扫描 |
+| `useNfc` | NFC 读写 |
+| `useFileUpload` | 分片上传 + 进度条 + 自动重试 |
+| `useFileDownload` | 文件下载 + 流式进度 |
+| `useFilePreview` | PDF/Office/图片预览 |
+| `useSignature` | Canvas 手写签名 |
+| `useAudioRecorder` | 录音 + 暂停恢复 |
+| `useVideoRecorder` | 视频录制 + 实时预览 |
+| `useBluetooth` | 蓝牙设备连接 |
+| `useOfflineStorage` | IndexedDB 离线存储 |
+| `usePushNotification` | 推送通知 |
+| `useWatermark` | 图片水印（时间 + 地点 + 人员） |
+| `usePermission` | 系统权限查询/请求/监听 |
+
+**Utils 工具函数（纯函数，零依赖，tree-shaking 友好）：**
+
+| 模块 | 函数 |
+|------|------|
+| `image` | `compressImage` · `fileToBase64` · `base64ToBlob` |
+| `coord` | `gcj02ToWgs84` · `wgs84ToGcj02` |
+| `device` | `getDeviceInfo` · `isAndroid` · `isIOS` |
+| `file` | `getFileType` · `formatFileSize` |
+| `validate` | `isPhone` · `isIdCard` · `isEmail` · `isCreditCode` |
+| `format` | `formatDate` · `formatMoney` |
+
+**Bridge 适配器（多平台适配）：**
+
+| 适配器 | 平台 | 说明 |
+|--------|------|------|
+| `BrowserBridge` | 浏览器 | 完整实现，Web 标准 API 降级 |
+| `NativeBridge` | APP WebView | 通过 overrides 注入原生 SDK |
+| `DingtalkBridge` | 钉钉 | 通过 overrides 注入 dingtalk-jsapi |
+| `WechatBridge` | 微信/企微 | 通过 overrides 注入 weixin-js-sdk |
+
+### 使用示例
+
+#### 拍照上传
+
 ```vue
+<template>
+    <van-button @click="capture">拍照</van-button>
+    <img v-if="photo" :src="photo" />
+</template>
+
 <script setup lang="ts">
-// 页面中使用 — 2 行代码，压缩/Bridge/错误处理全在包里
-import { useCamera } from '@robot/h5-core/hooks';
+import { useCamera } from '@robot-h5/core';
 
 const { photo, loading, capture } = useCamera();
 </script>
 ```
 
-### 扩展机制
+#### GPS 定位
 
-项目可注册自定义 Bridge 适配器或覆盖 Hook 行为，包本体代码永远不变：
+```vue
+<script setup lang="ts">
+import { useLocation } from '@robot-h5/core';
+
+const { position, getCurrentPosition } = useLocation();
+
+onMounted(() => {
+    getCurrentPosition();
+});
+</script>
+```
+
+#### 文件上传（自动分片 + 进度）
+
+```vue
+<script setup lang="ts">
+import { useFileUpload } from '@robot-h5/core';
+
+const { upload, progress, uploading } = useFileUpload();
+
+async function handleUpload(file: File) {
+    const result = await upload(file);
+    console.log('上传完成', result);
+}
+</script>
+```
+
+#### 手写签名
+
+```vue
+<script setup lang="ts">
+import { useSignature } from '@robot-h5/core';
+
+const { canvasRef, save, clear } = useSignature();
+</script>
+
+<template>
+    <canvas ref="canvasRef" />
+    <van-button @click="clear">清除</van-button>
+    <van-button @click="save">保存</van-button>
+</template>
+```
+
+#### 工具函数
 
 ```ts
-import { registerAdapter } from '@robot/h5-core/bridge';
+import {
+    compressImage,
+    fileToBase64,
+    isPhone,
+    isIdCard,
+    formatDate,
+    formatMoney,
+    isAndroid,
+    isIOS,
+    gcj02ToWgs84,
+} from '@robot-h5/core';
 
-// 接入自研 APP 私有协议
-registerAdapter('my-native', {
-  camera: { async capture(opts) { return window.MyBridge.invokeCamera(opts); } },
-  // 未实现的能力自动 fallback 到 BrowserBridge
+// 图片压缩
+const compressed = await compressImage(file, { maxSize: 500, quality: 0.7 });
+
+// 验证手机号
+if (!isPhone('13800138000')) { /* ... */ }
+
+// 格式化
+formatDate(new Date());          // '2024-01-15'
+formatMoney(12345.6);            // '12,345.60'
+
+// 坐标转换
+const wgs = gcj02ToWgs84(116.397, 39.908);
+```
+
+#### 钉钉平台适配
+
+```ts
+// src/h5.config.ts
+import { defineH5Config } from '@robot-h5/core';
+import dd from 'dingtalk-jsapi';
+
+export default defineH5Config({
+    bridge: {
+        platform: 'dingtalk',
+        dingtalk: { corpId: 'ding_xxx' },
+        overrides: {
+            scanner: {
+                scan: async () => {
+                    const res = await dd.biz.util.scan({ type: 'qrCode' });
+                    return res.text;
+                },
+            },
+        },
+    },
 });
 ```
 
-> 完整架构设计（三层模型、配置 API、测试策略、发布规范）参见 [robot-h5-core/DESIGN.md](../robot-h5-core/DESIGN.md)。
+> 完整 API 文档参见 [@robot-h5/core README](https://www.npmjs.com/package/@robot-h5/core)
 
 ---
 

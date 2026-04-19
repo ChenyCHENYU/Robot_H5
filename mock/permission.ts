@@ -119,7 +119,7 @@ const PERMISSION_CODES = [
 
 export default [
     {
-        url: '/pcApi/system/menu/getRouters',
+        url: '/api/system/menu/getRouters',
         timeout: 300,
         method: 'get',
         response: () => {
@@ -127,7 +127,7 @@ export default [
         },
     },
     {
-        url: '/pcApi/system/menu/getPermissions',
+        url: '/api/system/menu/getPermissions',
         timeout: 300,
         method: 'get',
         response: () => {

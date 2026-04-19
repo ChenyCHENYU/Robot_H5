@@ -14,6 +14,9 @@ importers:
       '@miracle-web/utils':
         specifier: ^0.0.6
         version: 0.0.6(vue@3.5.32(typescript@5.9.3))
+      '@robot-h5/core':
+        specifier: ^1.0.0
+        version: 1.0.0(vue@3.5.32(typescript@5.9.3))
       '@unocss/reset':
         specifier: ^66.5.1
         version: 66.6.8
@@ -1514,6 +1517,11 @@ packages:
   '@robot-admin/git-standards@1.0.3':
     resolution: {integrity: sha512-Cwd8m8fxmU4UWsesHjPipEvghbrltOTKtJOPIiNgu6/W9l4xC5xk89buJhuxBUWf1ZolkTfiCmT42wmDQ+un9w==}
     hasBin: true
+
+  '@robot-h5/core@1.0.0':
+    resolution: {integrity: sha512-MLqgZCJ/+q6qGrrTDWC1Ro8rnt1caWn/+0JEUEQrOVweTZJO4j5C6fGkKDrPermjgHe3g654CT5/vlTg+TG4hA==}
+    peerDependencies:
+      vue: ^3.3.0
 
   '@rolldown/pluginutils@1.0.0-rc.13':
     resolution: {integrity: sha512-3ngTAv6F/Py35BsYbeeLeecvhMKdsKm4AoOETVhAA+Qc8nrA2I0kF7oa93mE9qnIurngOSpMnQ0x2nQY2FPviA==}
@@ -7422,6 +7430,10 @@ snapshots:
       - '@types/node'
       - supports-color
       - typescript
+
+  '@robot-h5/core@1.0.0(vue@3.5.32(typescript@5.9.3))':
+    dependencies:
+      vue: 3.5.32(typescript@5.9.3)
 
   '@rolldown/pluginutils@1.0.0-rc.13': {}
 

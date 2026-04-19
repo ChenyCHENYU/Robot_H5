@@ -36,7 +36,6 @@ export const usePermissionStore = defineStore('app-permission-store', {
     actions: {
         /**
          * 加载权限数据（登录后调用一次）
-         * 从 PC 端网关获取当前用户在移动端应用下的菜单和按钮权限
          */
         async loadPermissions() {
             const { getEnvConfig } = useEnv();
