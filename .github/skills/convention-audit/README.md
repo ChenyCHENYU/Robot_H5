@@ -29,15 +29,35 @@
 
 两者互补，都需要通过。
 
+## 执行方式
+
+本技能通过 **Copilot Prompt 文件** 落地，非阻断式 lint，不影响提交流程。
+
+| 方式 | 说明 |
+|------|------|
+| Copilot Chat 输入 `审计规范 src/views/xxx/` | 触发针对指定模块的审计 |
+| Copilot Chat 输入 `审计规范` | 全量审计 |
+| Prompt 文件 | `.github/prompts/convention-audit.prompt.md` |
+
+执行流程：扫描文件 → 输出结构化报告（P0/P1/P2 三级） → 询问后自动修复。
+
+## 与其他工具的分工
+
+| 工具 | 检查范围 | 阻断提交 |
+|------|---------|----------|
+| `commitlint` | Git commit message 格式 | ✅ 是 |
+| `ESLint` (lint-staged) | JS/TS 代码质量 | ✅ 是 |
+| `vue-tsc` (type-check) | TypeScript 类型 | ✅ CI 门禁 |
+| **convention-audit** | 设计令牌 / BEM / 间距 / 安全区 | ❌ 不阻断，AI 按需扫描修复 |
+
 ## 已知局限（Gaps）
 
-- 目前为描述性规范，无自动化 lint 规则支持（ESLint 插件未覆盖所有项目规范）
-- 设计令牌合规检查（`var(--ds-*)` 覆盖率）需要人工审查
-- 原型字段完整性对比依赖 AI 判断，无自动化工具
+- 原型字段完整性对比依赖 AI 判断，无法 100% 自动化
+- 暗色模式视觉验证仍需人工检查（AI 无法渲染页面）
+- 跨组件的令牌一致性（如同一颜色在不同模块用了不同令牌）需全量扫描才能发现
 
 ## 维护指引
 
-- 当新的规范被确立时，先在 `skills.md` 的对应级别表格中添加条目
-- 将常见错误案例记录在表格的"检查项"列，方便快速识别
-- 当某个 Warning 在项目中被频繁触发且达成共识后，考虑升级为 Error
-- 当 ESLint 规则覆盖某项检查后，从 `skills.md` 中标注"已有自动化支持"
+- 新增规范时，同步更新 `skills.md` 和 `.github/prompts/convention-audit.prompt.md`
+- 当某个 P1 规则频繁触发且团队达成共识后，升级为 P0
+- Prompt 文件中的「可用设计令牌速查」需与 `src/styles/variables.scss` 保持同步
