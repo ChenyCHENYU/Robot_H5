@@ -2,9 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "pnpm build:prod",
   "outputDirectory": "dist",
-  "buildEnv": {
-    "VITE_PUBLIC_PATH": "/"
-  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
