@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [release-please](https://github.com/googleapis/release-please) for commit guidelines.
 
+## [2.0.0](https://github.com/ChenyCHENYU/Robot_H5/compare/v1.3.9...v2.0.0) (2026-04-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* **deploy:** release workflow changed from standard-version to release-please
+
+### Features
+
+* **deploy:** add vercel demo mode with mock data ([a9fdb50](https://github.com/ChenyCHENYU/Robot_H5/commit/a9fdb5081ddfd7141d52c9e6f2b94ec5f542f051))
+* **hooks:** enhance location/watermark/push demos ([811f2d3](https://github.com/ChenyCHENYU/Robot_H5/commit/811f2d34ab66a6db6c02709371f18d1e462f6c47))
+* **showcase:** 扩展5Tab布局、能力展示页、模板入口、加载屏优化 ([cef9aff](https://github.com/ChenyCHENYU/Robot_H5/commit/cef9aff1c1fb49631dfc8e8eeb198ebe44ef4142))
+* **showcase:** 重构能力页、修复图标、完善文档 ([624465e](https://github.com/ChenyCHENYU/Robot_H5/commit/624465e4fe148d32eba82bb70f800b89e810ee99))
+* **展示:** 水印平铺模式+头像上传+个人页重设计+SCSS警告修复 ([54adaed](https://github.com/ChenyCHENYU/Robot_H5/commit/54adaedaeb16d5930651f54c0d351603c63cb1df))
+* **首页:** 快捷入口改为玻璃卡片+替换为特色功能入口 ([242f0ed](https://github.com/ChenyCHENYU/Robot_H5/commit/242f0edc681168a0b811f618deefa336209e7431))
+
+
+### Bug Fixes
+
+* **build:** disable deleteOriginFile to prevent entry JS from being replaced by .gz ([2ac5da7](https://github.com/ChenyCHENYU/Robot_H5/commit/2ac5da78573bb3bafac0e14382b1c5f0420c9065))
+* **build:** pin packageManager and clean up stale docs ([4881a7d](https://github.com/ChenyCHENYU/Robot_H5/commit/4881a7d03a2caca01b3a55bd9165f13b76ecddc7))
+* **deploy:** add framework null to vercel.json to prevent auto-detection conflict ([0302274](https://github.com/ChenyCHENYU/Robot_H5/commit/03022743c998c6bf3437daedbd6aeb974c7768bc))
+* **deploy:** disable PWA + unregister stale SW + switch to release-please ([cb52945](https://github.com/ChenyCHENYU/Robot_H5/commit/cb52945baf9d5431ad090462f2f4e16b72f58c3c))
+* **deploy:** update lockfile after removing standard-version and vite-plugin-pwa ([90c07a7](https://github.com/ChenyCHENYU/Robot_H5/commit/90c07a7ea0353cb5a0741bcee5d2255d4dc23214))
+* **hooks:** watermark canvas rendering, env guides for QR/NFC, file preview examples, permission UX ([cbaab24](https://github.com/ChenyCHENYU/Robot_H5/commit/cbaab245865aac4adb12b5fb61de6cf61be18540))
+* **router:** allow all registered routes for logged-in users ([8aa76b6](https://github.com/ChenyCHENYU/Robot_H5/commit/8aa76b69adb17264997a7ea65551c1fde7bd0d49))
+* **scss:** fix dashboard unmatched brace and hooks [@use](https://github.com/use) error ([bd87544](https://github.com/ChenyCHENYU/Robot_H5/commit/bd8754491d2fb2c62a3fd94431c7b903e56b9094))
+* **构建:** 升级core到1.0.3修复mode类型+修正engines配置 ([bd6962a](https://github.com/ChenyCHENYU/Robot_H5/commit/bd6962a1a21cc4c32512c81da08c3405dac93713))
+* **样式:** 统一设计令牌+提取style块+修正文档 ([efb1dc8](https://github.com/ChenyCHENYU/Robot_H5/commit/efb1dc8d5643bce824679306ab457c6f134517ba))
+* **首页:** 修复卡片图标显示+统计数字配色 ([e14a124](https://github.com/ChenyCHENYU/Robot_H5/commit/e14a124874688c2d3ab0ba31c7409062fc1b5398))
+* **首页:** 快捷入口图标改用C_Icon组件修复不显示问题 ([feb8992](https://github.com/ChenyCHENYU/Robot_H5/commit/feb89920b6303b6bbf6ef9811483079b3f697615))
+
 ### [1.3.9](https://git.yourcompany.com/robot/robot-h5/compare/v1.3.8...v1.3.9) (2026-04-20)
 
 
