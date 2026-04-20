@@ -1,8 +1,14 @@
 <template>
     <div class="mine-page">
+        <!-- Ambient Orbs -->
+        <div class="mine-page__bg">
+            <div class="mine-page__bg-orb mine-page__bg-orb--1" />
+            <div class="mine-page__bg-orb mine-page__bg-orb--2" />
+        </div>
+
         <!-- Profile Card -->
         <div class="mine-page__profile" @click="$router.push('/editUserInfo')">
-            <van-image class="mine-page__avatar" round fit="cover" :src="userStore.getUserInfo.avatar" />
+            <VanImage class="mine-page__avatar" round fit="cover" :src="userStore.getUserInfo.avatar" />
             <div class="mine-page__info">
                 <h2 class="mine-page__name">{{ userStore.getUserInfo.nickname || 'CHENY' }}</h2>
                 <p class="mine-page__sign">{{ userStore.getUserInfo.sign || '把复杂的事做简单，把简单的事做极致。' }}</p>
@@ -12,7 +18,7 @@
 
         <!-- Settings Groups -->
         <div v-for="(group, gi) in settingsGroups" :key="gi" class="mine-page__group">
-            <van-cell
+            <VanCell
                 v-for="cell in group"
                 :key="cell.title"
                 :title="cell.title"
@@ -30,10 +36,10 @@
                 <template v-if="cell.value" #value>
                     <span class="mine-page__hint">{{ cell.value }}</span>
                 </template>
-            </van-cell>
+            </VanCell>
         </div>
 
-        <van-action-sheet
+        <VanActionSheet
             v-model:show="showLogoutAction"
             teleport="body"
             :actions="logoutActions"

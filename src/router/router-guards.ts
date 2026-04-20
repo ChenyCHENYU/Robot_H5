@@ -12,11 +12,8 @@ let npTimer: ReturnType<typeof setTimeout>;
 // 路由白名单（无需登录即可访问）
 const whitePathList = [PageEnum.BASE_LOGIN];
 
-// 系统页面（已登录但不需要权限校验的页面）
-const systemPaths = [
-    '/themeSetting', '/editUserInfo', '/editNickname', '/editSign',
-    '/accountSetting', '/changePassword', '/about',
-];
+// 不再硬编码 systemPaths — 所有在 router 中注册的命名路由（modules.ts / menu.ts）
+// 只要已登录即可访问，权限系统仅控制 TabBar 菜单可见性
 
 export function createRouterGuards(router: Router) {
     router.beforeEach(async (to, _from, next) => {
@@ -48,20 +45,14 @@ export function createRouterGuards(router: Router) {
             }
         }
 
-        // 系统页面（个人设置等）不需要权限校验
-        if (systemPaths.includes(to.path)) {
+        // 已注册的命名路由直接放行（modules.ts / menu.ts 中定义的页面）
+        if (to.name && to.matched.length > 0) {
             next();
             return;
         }
 
-        // 权限路由校验
-        if (!permissionStore.isRouteAllowed(to.path)) {
-            // 无权访问 → 跳转首页
-            next(PageEnum.BASE_HOME);
-            return;
-        }
-
-        next();
+        // 未注册路由 → 跳转首页
+        next(PageEnum.BASE_HOME);
     });
 
     // 进入某个路由之后触发的钩子

@@ -23,6 +23,8 @@
 <script lang="ts" setup>
     import './index.scss';
 
+    defineOptions({ name: 'NotFound' });
+
     const router = useRouter();
     function goHome() {
         router.push('/');

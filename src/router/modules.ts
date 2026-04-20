@@ -1,6 +1,15 @@
 import type { RouteRecordRaw } from 'vue-router';
 
 const routeModuleList: Array<RouteRecordRaw> = [
+  // ─── 404 ─────────────────────────────────────
+  {
+    path: '/404',
+    name: 'NotFound',
+    meta: {
+      title: '页面不存在',
+    },
+    component: () => import('@/views/exception/index.vue'),
+  },
   {
     path: '/requestAnimationFrame',
     name: 'RequestAnimationFrame',

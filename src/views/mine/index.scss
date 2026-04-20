@@ -1,9 +1,47 @@
 .mine-page {
+  position: relative;
   min-height: 100%;
   padding: 20px;
-  padding-top: 48px;
+  padding-top: 52px;
   padding-bottom: 32px;
   background: var(--ds-bg);
+
+  // ---------- Ambient Orbs ----------
+  &__bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 260px;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  &__bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(50px);
+    animation: orbFloat 9s ease-in-out infinite;
+
+    &--1 {
+      width: 160px;
+      height: 160px;
+      top: -40px;
+      right: -30px;
+      background: var(--ds-accent);
+      opacity: 0.3;
+    }
+
+    &--2 {
+      width: 120px;
+      height: 120px;
+      top: 60px;
+      left: -20px;
+      background: var(--ds-success);
+      opacity: 0.2;
+      animation-delay: -3s;
+    }
+  }
 
   // ---------- Profile Card ----------
   &__profile {
@@ -144,5 +182,16 @@
   &__hint {
     font-size: 13px;
     color: var(--ds-text-tertiary);
+  }
+}
+
+@keyframes orbFloat {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-12px) scale(1.04);
   }
 }

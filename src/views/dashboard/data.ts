@@ -15,7 +15,6 @@ export interface Feature {
     title: string;
     desc: string;
     color: string;
-    route?: string;
 }
 
 export const quotes: Quote[] = [
@@ -48,10 +47,10 @@ export const statsItems: StatItem[] = [
 export const heroOrbCount = 4;
 
 export const features: Feature[] = [
-    { icon: 'ph:lightning-bold', title: 'Vite 7', desc: '极速构建与热更新', color: '#FF9500', route: '/demo' },
-    { icon: 'ph:paint-brush-bold', title: 'UnoCSS', desc: '原子化 CSS 引擎', color: '#FF2D55', route: '/unoCss' },
-    { icon: 'ph:shield-check-bold', title: 'TypeScript', desc: '全量类型安全', color: '#5856D6', route: '/demo' },
-    { icon: 'ph:database-bold', title: 'Pinia', desc: '响应式状态管理', color: '#34C759', route: '/keepAliveDemo' },
-    { icon: 'ph:chart-bar-bold', title: 'ECharts', desc: '可视化图表引擎', color: '#0071E3', route: '/chart' },
-    { icon: 'ph:atom-bold', title: 'Core Hooks', desc: '15 个设备能力 Hook', color: '#7551CD', route: '/hooks' },
+    { icon: 'ph:lightning-bold', title: 'Vite 7', desc: '极速构建与热更新', color: '#FF9500' },
+    { icon: 'ph:paint-brush-bold', title: 'UnoCSS', desc: '原子化 CSS 引擎', color: '#FF2D55' },
+    { icon: 'ph:shield-check-bold', title: 'TypeScript', desc: '全量类型安全', color: '#5856D6' },
+    { icon: 'ph:database-bold', title: 'Pinia', desc: '响应式状态管理', color: '#34C759' },
+    { icon: 'ph:chart-bar-bold', title: 'ECharts', desc: '可视化图表引擎', color: '#0071E3' },
+    { icon: 'ph:atom-bold', title: 'Core Hooks', desc: '15 个设备能力 Hook', color: '#7551CD' },
 ];

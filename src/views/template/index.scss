@@ -1,11 +1,11 @@
 .template-page {
-  min-height: 100vh;
+  min-height: 100%;
   background: var(--ds-bg);
 
   // ─── Header ──────────────────────────────────
   &__header {
     position: relative;
-    padding: 64px 24px 32px;
+    padding: 52px 24px 24px;
     overflow: hidden;
   }
 
@@ -13,8 +13,8 @@
     position: absolute;
     border-radius: var(--ds-radius-full);
     filter: blur(60px);
-    opacity: 0.5;
-    animation: float 6s ease-in-out infinite;
+    opacity: 0.4;
+    animation: orbFloat 9s ease-in-out infinite;
 
     &--1 {
       width: 160px;
@@ -40,21 +40,22 @@
   }
 
   &__title {
-    font-size: 28px;
-    font-weight: 700;
+    font-size: 34px;
+    font-weight: 800;
     color: var(--ds-text-primary);
-    margin: 0 0 8px;
+    margin: 0 0 6px;
+    letter-spacing: -0.8px;
   }
 
   &__subtitle {
-    font-size: 15px;
+    font-size: 14px;
     color: var(--ds-text-secondary);
     margin: 0;
   }
 
   // ─── Section ─────────────────────────────────
   &__section {
-    padding: 0 16px 32px;
+    padding: 0 20px 32px;
   }
 
   // ─── Grid ────────────────────────────────────
@@ -90,8 +91,9 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 1px;
-    background: var(--ds-glass-shine);
+    height: 50%;
+    background: var(--ds-glass-gradient);
+    pointer-events: none;
   }
 
   &__card-icon {
@@ -142,7 +144,7 @@
   }
 }
 
-@keyframes float {
+@keyframes orbFloat {
   0%,
   100% {
     transform: translateY(0) scale(1);

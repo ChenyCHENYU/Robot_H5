@@ -23,8 +23,8 @@
       height: 180px;
       top: -50px;
       right: -30px;
-      background: radial-gradient(circle, #ff9500 0%, rgba(255, 149, 0, 0.2) 70%);
-      opacity: 0.4;
+      background: var(--ds-warning);
+      opacity: 0.35;
     }
 
     &--2 {
@@ -32,8 +32,8 @@
       height: 120px;
       bottom: 0;
       left: 20%;
-      background: radial-gradient(circle, #af52de 0%, rgba(175, 82, 222, 0.2) 70%);
-      opacity: 0.3;
+      background: var(--ds-accent);
+      opacity: 0.25;
       animation-delay: -4s;
     }
   }
