@@ -38,10 +38,15 @@
                 class="dashboard__action"
                 @click="router.push(item.route)"
             >
-                <div class="dashboard__action-icon" :style="{ background: item.color }">
-                    <C_Icon :name="item.icon" :size="22" color="#fff" />
+                <div class="dashboard__action-tint" :style="{ background: item.color }" />
+                <div class="dashboard__action-icon" :style="{ background: item.color + '1a' }">
+                    <i :class="item.icon" :style="{ color: item.color }" />
                 </div>
-                <span class="dashboard__action-label">{{ item.label }}</span>
+                <div class="dashboard__action-body">
+                    <p class="dashboard__action-title">{{ item.label }}</p>
+                    <p class="dashboard__action-desc">{{ item.desc }}</p>
+                </div>
+                <i class="ph:caret-right-bold dashboard__action-arrow" />
             </div>
         </div>
 

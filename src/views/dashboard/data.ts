@@ -6,6 +6,7 @@ export interface Quote {
 export interface QuickAction {
     icon: string;
     label: string;
+    desc: string;
     route: string;
     color: string;
 }
@@ -26,10 +27,10 @@ export const quotes: Quote[] = [
 ];
 
 export const quickActions: QuickAction[] = [
-    { icon: 'ph:squares-four-bold', label: '组件', route: '/demo', color: '#FF9500' },
-    { icon: 'ph:browsers-bold', label: '模板', route: '/template', color: '#5856D6' },
-    { icon: 'ph:atom-bold', label: '能力', route: '/hooks', color: '#0071E3' },
-    { icon: 'ph:palette-bold', label: '主题', route: '/themeSetting', color: '#34C759' },
+    { icon: 'ph:wrench-bold', label: '工单表单', desc: '多步骤 · 动态验证', route: '/formDemo', color: '#FF9500' },
+    { icon: 'ph:address-book-bold', label: '客户档案', desc: '完整 CRUD 业务模板', route: '/customerArchive', color: '#5856D6' },
+    { icon: 'ph:chart-bar-bold', label: '数据图表', desc: 'ECharts 可视化', route: '/chart', color: '#0071E3' },
+    { icon: 'ph:pen-nib-bold', label: '手写签名', desc: 'Canvas 笔迹识别', route: '/hooks/signature', color: '#FF2D55' },
 ];
 
 export interface StatItem {
@@ -39,7 +40,7 @@ export interface StatItem {
 }
 
 export const statsItems: StatItem[] = [
-    { label: '组件', value: '17' },
+    { label: '组件', value: '16' },
     { label: '能力', value: '15' },
     { label: 'TypeScript', value: '100%', up: true },
 ];
