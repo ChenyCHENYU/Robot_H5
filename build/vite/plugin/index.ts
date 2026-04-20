@@ -42,9 +42,6 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
     // 加载 html 插件 vite-plugin-html
     vitePlugins.push(configHtmlPlugin(viteEnv));
 
-    // PWA 已禁用 — Vercel CDN 自带缓存，SW 在频繁部署阶段反而导致 MIME 错误
-    // 后续稳定后可重新启用 vite-plugin-pwa
-
     if (isBuild) {
         // 构建时显示进度条
         vitePlugins.push(configProgressPlugin());

@@ -49,7 +49,7 @@ page-spec.json + api.ts → [page-codegen] → index.vue + index.scss + data.ts
 
 - 图表页面（ECharts）暂无标准模板，需参考 `src/views/chart/`
 - 多级嵌套列表（树形结构）不在当前模板范围
-- 离线缓存/PWA 相关逻辑需手动添加
+- 离线缓存相关逻辑需手动添加
 - 权限控制（按钮级别 v-permission）尚未集成到模板中
 
 ## 维护指引

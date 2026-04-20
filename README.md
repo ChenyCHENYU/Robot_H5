@@ -84,7 +84,6 @@ pnpm build:prod
 | 图表 | ECharts | 6.0 |
 | HTTP | Axios（MAxios 封装） | — |
 | Mock | vite-plugin-mock + MockJS | — |
-| PWA | vite-plugin-pwa | 1.2 |
 | 工程规范 | @robot-admin/git-standards | 1.0 |
 
 ---
