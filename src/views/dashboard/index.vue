@@ -40,7 +40,7 @@
             >
                 <div class="dashboard__action-tint" :style="{ background: item.color }" />
                 <div class="dashboard__action-icon" :style="{ background: item.color + '1a' }">
-                    <i :class="item.icon" :style="{ color: item.color }" />
+                    <C_Icon :name="item.icon" :size="20" :color="item.color" />
                 </div>
                 <div class="dashboard__action-body">
                     <p class="dashboard__action-title">{{ item.label }}</p>
