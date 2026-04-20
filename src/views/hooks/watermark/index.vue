@@ -11,9 +11,30 @@
 
         <div class="hook-demo__playground">
             <VanField v-model="watermarkText" label="水印文字" placeholder="输入水印文字" />
+            <VanField label="字号">
+                <template #input>
+                    <VanStepper v-model="fontSize" :min="12" :max="72" :step="4" />
+                </template>
+            </VanField>
             <VanField label="透明度">
                 <template #input>
                     <VanSlider v-model="opacity" :min="10" :max="100" :step="10" />
+                </template>
+            </VanField>
+            <VanField label="颜色">
+                <template #input>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                        <span
+                            v-for="c in colorOptions"
+                            :key="c.value"
+                            :style="{
+                                width: '28px', height: '28px', borderRadius: '50%',
+                                background: c.value, border: fontColor === c.value ? '2px solid var(--ds-accent)' : '2px solid var(--ds-border)',
+                                cursor: 'pointer',
+                            }"
+                            @click="fontColor = c.value"
+                        />
+                    </div>
                 </template>
             </VanField>
             <div class="hook-demo__btn-group" style="margin-top: 12px">
@@ -44,8 +65,19 @@
     defineOptions({ name: 'HookWatermark' });
 
     const watermarkText = ref('Robot H5 水印');
-    const opacity = ref(50);
+    const opacity = ref(80);
+    const fontSize = ref(28);
+    const fontColor = ref('#000000');
     const resultUrl = ref('');
+
+    const colorOptions = [
+        { value: '#000000' },
+        { value: '#ffffff' },
+        { value: '#ff3b30' },
+        { value: '#007aff' },
+        { value: '#34c759' },
+        { value: '#ff9500' },
+    ];
 
     const { loading, error, addWatermark } = useWatermark();
 
@@ -59,9 +91,12 @@
                 const result = await addWatermark(file, {
                     text: watermarkText.value,
                     opacity: opacity.value / 100,
+                    fontSize: fontSize.value,
+                    fontColor: fontColor.value,
                     position: 'bottomRight',
                 });
                 if (result) {
+                    if (resultUrl.value) URL.revokeObjectURL(resultUrl.value);
                     resultUrl.value = URL.createObjectURL(result);
                 }
             }
