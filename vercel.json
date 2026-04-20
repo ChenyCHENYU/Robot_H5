@@ -1,11 +1,11 @@
 {
-  "buildCommand": "pnpm build",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "pnpm build:prod",
   "outputDirectory": "dist",
+  "buildEnv": {
+    "VITE_PUBLIC_PATH": "/"
+  },
   "rewrites": [
-    { "source": "/robot-h5/static/(.*)", "destination": "/static/$1" },
-    { "source": "/robot-h5/registerSW.js", "destination": "/registerSW.js" },
-    { "source": "/robot-h5/manifest.webmanifest", "destination": "/manifest.webmanifest" },
-    { "source": "/robot-h5/(.*)", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
@@ -16,10 +16,16 @@
       ]
     },
     {
+      "source": "/index.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    },
+    {
       "source": "/manifest.webmanifest",
       "headers": [
         { "key": "Content-Type", "value": "application/manifest+json" },
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        { "key": "Cache-Control", "value": "no-cache" }
       ]
     }
   ]
