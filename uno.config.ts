@@ -175,5 +175,13 @@ export default defineConfig({
     "i-ph:broadcast-bold",
     "i-ph:clipboard-bold",
     "i-ph:clipboard-text-bold",
+    // File Preview 文件类型图标
+    "i-ph:file-pdf-bold",
+    "i-ph:file-xls-bold",
+    "i-ph:file-doc-bold",
+    "i-ph:file-ppt-bold",
+    "i-ph:music-note-bold",
+    "i-ph:file-text-bold",
+    "i-ph:brackets-curly-bold",
   ],
 });
