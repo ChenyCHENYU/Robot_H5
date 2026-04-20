@@ -27,6 +27,7 @@
     "dev:prod": "vite --mode production",
     "build:test": "vue-tsc --noEmit && vite build --mode test",
     "build:prod": "vue-tsc --noEmit && vite build --mode production",
+    "build:vercel": "vue-tsc --noEmit && vite build --mode vercel",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "pnpm run build:prod && vite preview --port 5050",
     "preview:dist": "vite preview",
