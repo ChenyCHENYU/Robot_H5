@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.9](https://git.yourcompany.com/robot/robot-h5/compare/v1.3.8...v1.3.9) (2026-04-20)
+
+
+### 🐛 Bug 修复
+
+* **pwa:** restore index.html in globPatterns and add navigateFallback ([84c67c9](https://git.yourcompany.com/robot/robot-h5/commit/84c67c98168f1b1cafd9f8212b7ce44c94e3cb42))
+
 ### [1.3.8](https://git.yourcompany.com/robot/robot-h5/compare/v1.3.7...v1.3.8) (2026-04-20)
 
 
