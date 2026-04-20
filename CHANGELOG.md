@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [release-please](https://github.com/googleapis/release-please) for commit guidelines.
 
 ### [1.3.9](https://git.yourcompany.com/robot/robot-h5/compare/v1.3.8...v1.3.9) (2026-04-20)
 

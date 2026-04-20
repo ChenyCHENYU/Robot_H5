@@ -32,7 +32,7 @@
 | 自研组件 | C_NavBar / C_Form / C_Table / C_PullRefreshList / C_Icon / C_SvgIcon / C_Logo / C_VirtualStatusBar / C_WebSite |
 | Hooks | useTheme / useEnv / useECharts / useScrollCache / useOpenInstall |
 | 指令库 | v-lazy / v-slide-in / v-drag / v-copy / v-long-press / v-watermark / v-ripple / v-debounce / v-throttle |
-| CI | GitHub Actions — `pnpm type-check` 门禁 + `standard-version` 自动发版 |
+| CI | GitHub Actions — `pnpm type-check` 门禁 + `release-please` 自动发版 |
 
 ---
 
@@ -103,12 +103,7 @@
 | AI 工具 | 配置文件 | 加载方式 |
 |---------|---------|---------|
 | **GitHub Copilot** | `.github/copilot-instructions.md` | 自动（原生支持） |
-| **Cursor** | `.cursorrules` | 自动 |
-| **Windsurf** | `.windsurfrules` | 自动 |
-| **Kiro** | `.kiro/steering/conventions.md` | 自动 |
-| **Trae** | `.trae/rules/conventions.md` | 自动 |
 | **Claude Code** | `CLAUDE.md` | 自动 |
-| **Cline / Roo Code** | `.clinerules` | 自动 |
 | **通用标准** | `AGENTS.md` | 自动 |
 
 ---
@@ -154,12 +149,7 @@
         ├── skills.md
         └── README.md
 
-# 编辑器配置文件（安装时由 CLI 从母版自动生成）
-.cursorrules                             ✅ Cursor
-.windsurfrules                           ✅ Windsurf
-.clinerules                              ✅ Cline
-.kiro/steering/conventions.md            ✅ Kiro
-.trae/rules/conventions.md               ✅ Trae
+# 编辑器配置文件（主源 → copilot-instructions.md，同步到以下文件）
 CLAUDE.md                                ✅ Claude Code
 AGENTS.md                                ✅ 通用标准
 

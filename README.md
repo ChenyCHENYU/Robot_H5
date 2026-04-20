@@ -787,7 +787,6 @@ if (import.meta.hot)
 | `VITE_GLOB_API_URL_PREFIX` | 接口前缀 | `/api` |
 | `VITE_GLOB_APP_ID` | 移动端应用标识 | `robot-h5`（用于获取菜单权限） |
 | `VITE_HASH_ROUTE` | Hash 路由模式 | `false` |
-| `VITE_BUILD_COMPRESS` | 构建压缩 | `gzip` / `brotli` / `none` |
 
 ### 代理配置
 
@@ -890,8 +889,7 @@ pnpm cz   # 交互式规范提交（推荐）
 | `feat` | minor（0.x.0） | `1.0.0` → `1.1.0` |
 | `feat` + `BREAKING CHANGE` | major（x.0.0） | `1.0.0` → `2.0.0` |
 
-> 基于 `standard-version` + `.versionrc.cjs`，CI 配置见 `.github/workflows/release.yml`。
-> 手动发版备选：`pnpm release`（自动识别 type），`pnpm release:patch` / `release:minor` / `release:major`。
+> 基于 `release-please`，CI 配置见 `.github/workflows/release.yml`。
 
 ### 类型检查
 

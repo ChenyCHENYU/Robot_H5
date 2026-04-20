@@ -1,7 +1,7 @@
 # Robot H5 — Copilot 项目指令
 
 > 本文件由 GitHub Copilot 自动加载，作为所有 AI 辅助开发的上下文基线。
-> 同源规则同步至 `.cursorrules`（Cursor）/ `.windsurfrules`（Windsurf）/ `.clinerules`（Cline）/ `.kiro/steering/conventions.md`（Kiro）/ `.trae/rules/conventions.md`（Trae）/ `CLAUDE.md`（Claude Code）/ `AGENTS.md`（通用标准），变更时须同步更新。
+> 同源规则同步至 `CLAUDE.md`（Claude Code）/ `AGENTS.md`（通用标准），变更时须同步更新。
 
 ## 项目概述
 
@@ -87,8 +87,8 @@ export const MOCK_CUSTOMERS: Customer[] = [ ... ];
 推送到 `main` 分支后 CI 自动根据 commit type 升版本号：
 - `fix` → patch, `feat` → minor, `BREAKING CHANGE` → major
 - CI 发版前自动执行 `pnpm type-check` 质量门禁
-- 基于 standard-version + `.versionrc.cjs`
-- commitlint 允许的所有 type（`wip` / `deps` / `test` 等）必须在 `.versionrc.cjs` 的 `types` 中同步声明（可 `hidden: true`）
+- 基于 release-please，CI 配置见 `.github/workflows/release.yml`
+- commitlint 允许的所有 type（`wip` / `deps` / `test` 等）须在 release-please 的 `changelog-sections` 中同步声明（可 `hidden: true`）
 
 ### 10. 代码交付前自动审计（convention-audit）
 
