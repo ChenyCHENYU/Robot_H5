@@ -1,26 +1,23 @@
 <template>
     <div class="edit-info-page">
-        <C_NavBar />
+        <C_NavBar title="编辑资料" />
 
+        <!-- Avatar Hero -->
+        <div class="edit-info-page__avatar-hero">
+            <UploaderImage @uploaded="onAvatarUploaded">
+                <div class="edit-info-page__avatar-wrap">
+                    <VanImage class="edit-info-page__avatar" round fit="cover" :src="avatarSrc" />
+                    <div class="edit-info-page__avatar-badge">
+                        <i class="i-ph:camera-bold" />
+                    </div>
+                </div>
+            </UploaderImage>
+            <p class="edit-info-page__avatar-hint">点击更换头像</p>
+        </div>
+
+        <!-- Basic Info Group -->
         <h3 class="edit-info-page__heading">基本信息</h3>
         <div class="edit-info-page__group">
-            <VanField
-                label="头像"
-                class="edit-info-page__cell"
-                label-class="font-bold"
-                input-align="right"
-                :center="true"
-                :border="false"
-                is-link
-                readonly
-            >
-                <template #input>
-                    <UploaderImage>
-                        <VanImage class="h-16 w-16" round fit="cover" :src="avatar" />
-                    </UploaderImage>
-                </template>
-            </VanField>
-
             <VanField
                 v-model="state.nickname"
                 label="昵称"
@@ -33,7 +30,6 @@
                 is-link
                 to="/editNickname"
             />
-
             <VanField
                 v-model="state.genderText"
                 label="性别"
@@ -46,7 +42,6 @@
                 is-link
                 @click="showGenderPicker = true"
             />
-
             <VanField
                 v-model="state.sign"
                 label="签名"
@@ -59,24 +54,6 @@
                 is-link
                 to="/editSign"
             />
-
-            <VanField
-                label="主页封面"
-                class="edit-info-page__cell"
-                label-class="font-bold"
-                input-align="right"
-                :center="true"
-                :border="false"
-                is-link
-                readonly
-            >
-                <template #input>
-                    <UploaderImage>
-                        <VanImage class="bg-cover h-15 w-25" fit="cover" :src="cover ? cover : avatar" />
-                    </UploaderImage>
-                </template>
-            </VanField>
-
             <VanField
                 v-model="state.industryText"
                 label="行业"
@@ -89,6 +66,27 @@
                 is-link
                 @click="showIndustryPicker = true"
             />
+        </div>
+
+        <!-- Cover Group -->
+        <h3 class="edit-info-page__heading">主页封面</h3>
+        <div class="edit-info-page__group">
+            <VanField
+                label="封面图"
+                class="edit-info-page__cell"
+                label-class="font-bold"
+                input-align="right"
+                :center="true"
+                :border="false"
+                is-link
+                readonly
+            >
+                <template #input>
+                    <UploaderImage @uploaded="onCoverUploaded">
+                        <VanImage class="edit-info-page__cover" fit="cover" :src="coverSrc" />
+                    </UploaderImage>
+                </template>
+            </VanField>
         </div>
 
         <VanPopup v-model:show="showGenderPicker" position="bottom" round>
@@ -117,10 +115,16 @@
     import { showToast } from 'vant';
     import UploaderImage from '../components/UploaderImage.vue';
     import { genderColumns, industryColumns, type FormColumns } from '../pickColumns';
+    import { DEFAULT_AVATAR } from '../data';
     import { useUserStore } from '@/store/modules/user';
 
+    defineOptions({ name: 'EditUserInfo' });
+
     const userStore = useUserStore();
-    const { avatar, gender, industry, cover } = userStore.getUserInfo;
+    const { gender, industry } = userStore.getUserInfo;
+
+    const avatarSrc = computed(() => userStore.getUserInfo.avatar || DEFAULT_AVATAR);
+    const coverSrc = computed(() => userStore.getUserInfo.cover || avatarSrc.value);
 
     const showGenderPicker = ref(false);
     const showIndustryPicker = ref(false);
@@ -134,17 +138,23 @@
         genderValues: [0],
     });
 
+    function onAvatarUploaded(url: string) {
+        userStore.setUserInfo({ ...userStore.getUserInfo, avatar: url });
+    }
+
+    function onCoverUploaded(url: string) {
+        userStore.setUserInfo({ ...userStore.getUserInfo, cover: url });
+    }
+
     function handleGender({ selectedOptions }: { selectedOptions: { text: string; value: number }[] }) {
         state.genderText = selectedOptions[0].text;
         showToast(JSON.stringify(selectedOptions));
-        // do something
         showGenderPicker.value = false;
     }
 
     function handleIndustry({ selectedOptions }: { selectedOptions: { text: string; value: number }[] }) {
         state.industryText = selectedOptions[0].text;
         showToast(JSON.stringify(selectedOptions));
-        // do something
         showIndustryPicker.value = false;
     }
 
@@ -156,10 +166,8 @@
         Object.keys(state).forEach(key => {
             (state as Record<string, unknown>)[key] = (userStore.getUserInfo as Record<string, unknown>)[key];
         });
-        // set field text value.
         state.genderText = getFromText(genderColumns, gender) ?? '';
         state.industryText = getFromText(industryColumns, industry) ?? '';
-        // set the pick selected value.
         state.industryValues = [industry ?? 0];
         state.genderValues = [gender];
     }

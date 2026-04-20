@@ -6,11 +6,28 @@
                 <C_Icon name="ph:drop-bold" :size="28" color="#fff" />
             </div>
             <h2 class="hook-demo__header-title">图片水印</h2>
-            <p class="hook-demo__header-desc">文字水印叠加 + 位置 / 透明度 / 自动缩放</p>
+            <p class="hook-demo__header-desc">单点水印 / 整篇平铺 / 位置 / 透明度 / 自动缩放</p>
         </div>
 
         <div class="hook-demo__playground">
             <VanField v-model="watermarkText" label="水印文字" placeholder="输入水印文字" />
+            <VanField label="模式">
+                <template #input>
+                    <div style="display: flex; gap: 8px">
+                        <VanTag
+                            v-for="m in modeOptions"
+                            :key="m.value"
+                            :type="mode === m.value ? 'primary' : 'default'"
+                            round
+                            size="medium"
+                            style="cursor: pointer"
+                            @click="mode = m.value"
+                        >
+                            {{ m.label }}
+                        </VanTag>
+                    </div>
+                </template>
+            </VanField>
             <VanField label="字号">
                 <template #input>
                     <VanStepper v-model="fontSize" :min="12" :max="120" :step="4" />
@@ -37,7 +54,7 @@
                     </div>
                 </template>
             </VanField>
-            <VanField label="位置">
+            <VanField v-if="mode === 'single'" label="位置">
                 <template #input>
                     <div style="display: flex; gap: 8px; flex-wrap: wrap">
                         <VanTag
@@ -87,7 +104,13 @@
     const fontSize = ref(48);
     const fontColor = ref('#ff3b30');
     const position = ref<NonNullable<UseWatermarkOptions['position']>>('bottomRight');
+    const mode = ref<NonNullable<UseWatermarkOptions['mode']>>('tiled');
     const resultUrl = ref('');
+
+    const modeOptions: { value: NonNullable<UseWatermarkOptions['mode']>; label: string }[] = [
+        { value: 'single', label: '单点水印' },
+        { value: 'tiled', label: '整篇平铺' },
+    ];
 
     const colorOptions = [
         { value: '#000000' },
@@ -121,6 +144,7 @@
                 fontSize: fontSize.value,
                 fontColor: fontColor.value,
                 position: position.value,
+                mode: mode.value,
             });
             if (result) {
                 if (resultUrl.value) URL.revokeObjectURL(resultUrl.value);

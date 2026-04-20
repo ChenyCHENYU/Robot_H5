@@ -48,6 +48,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
                 scss: {
                     // @ts-expect-error
                     api: 'modern-compiler',
+                    silenceDeprecations: ['import'],
                     // src/ 下的组件 SCSS 自动包裹进 @layer components
                     // UnoCSS 工具类在 @layer utilities（后声明 = 高优先级）
                     // 这样工具类能覆盖组件 SCSS，彻底修复级联冲突

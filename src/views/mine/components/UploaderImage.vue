@@ -3,7 +3,7 @@
         :max-size="700 * 1024"
         :max-count="1"
         :before-read="beforeRead"
-        :after-read="afterRead"
+        :after-read="handleAfterRead"
         accept="image/*"
     >
         <template #default>
@@ -13,15 +13,26 @@
 </template>
 
 <script setup lang="ts">
-    import { type UploaderFileListItem, showFailToast } from 'vant';
+    import { type UploaderFileListItem, showFailToast, showSuccessToast } from 'vant';
+
+    const emit = defineEmits<{
+        uploaded: [url: string];
+    }>();
 
     function beforeRead(file: File | File[]) {
         const files = Array.isArray(file) ? file : [file];
-        return files.every(f => ['image/jpeg', 'image/png', 'image/jpg'].includes(f.type)) || (showFailToast('请上传正确格式的图片'), false);
+        return (
+            files.every(f => ['image/jpeg', 'image/png', 'image/jpg'].includes(f.type)) ||
+            (showFailToast('请上传正确格式的图片'), false)
+        );
     }
 
-    function afterRead(file: UploaderFileListItem | UploaderFileListItem[]) {
-        console.log('%c [ file ]-43', 'font-size:13px; background:pink; color:#bf2c9f;', file);
-        // 这里写上传逻辑
+    function handleAfterRead(file: UploaderFileListItem | UploaderFileListItem[]) {
+        const item = Array.isArray(file) ? file[0] : file;
+        if (item?.file) {
+            const url = URL.createObjectURL(item.file);
+            emit('uploaded', url);
+            showSuccessToast('上传成功');
+        }
     }
 </script>
