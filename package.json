@@ -89,7 +89,6 @@
     "rimraf": "^5.0.0",
     "rollup-plugin-visualizer": "^6.0.3",
     "sass": "^1.92.1",
-
     "typescript": "~5.9.2",
     "unocss": "^66.5.1",
     "unplugin-auto-import": "^20.1.0",
@@ -99,7 +98,6 @@
     "vite-plugin-html": "^3.2.2",
     "vite-plugin-mock": "^2.9.8",
     "vite-plugin-progress": "^0.0.7",
-    "vite-plugin-pwa": "1.2.0",
     "vite-plugin-svg-icons": "^2.0.1",
     "vue-tsc": "^3.0.7"
   },
