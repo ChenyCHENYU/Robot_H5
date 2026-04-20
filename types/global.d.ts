@@ -74,7 +74,5 @@ declare global {
         VITE_GLOB_UPLOAD_URL: string;
         VITE_GLOB_IMG_URL_PREFIX: string;
         VITE_PROXY: [string, string][];
-        VITE_BUILD_COMPRESS: 'gzip' | 'brotli' | 'none';
-        VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE: boolean;
     }
 }

@@ -4,7 +4,6 @@ import vueJsx from '@vitejs/plugin-vue-jsx';
 import UnoCSS from 'unocss/vite';
 import { configAutoImportPlugin } from './autoImport';
 import { configAutoComponentsPlugin } from './autocomponents';
-import { configCompressPlugin } from './compress';
 import { configVisualizerConfig } from './visualizer';
 import { configProgressPlugin } from './progress';
 import { configSvgIconsPlugin } from './svgSprite';
@@ -12,7 +11,7 @@ import { configMockPlugin } from './mock';
 import { configHtmlPlugin } from './injectHtml';
 
 export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
-    const { VITE_USE_MOCK, VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE } = viteEnv;
+    const { VITE_USE_MOCK } = viteEnv;
 
     const vitePlugins: (Plugin | Plugin[])[] = [
         // vue支持
@@ -47,8 +46,6 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
         vitePlugins.push(configProgressPlugin());
         // 打包分析 rollup-plugin-visualizer
         vitePlugins.push(configVisualizerConfig());
-        // 开启 gzip 压缩
-        vitePlugins.push(configCompressPlugin(VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE));
     }
 
     return vitePlugins;
