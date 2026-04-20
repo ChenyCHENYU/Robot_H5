@@ -21,23 +21,33 @@ const menuRouteList: Array<RouteRecordRaw> = [
             },
             {
                 path: '/demo',
-                name: 'Demo',
+                name: 'DemoPage',
                 meta: {
-                    title: 'Demo',
+                    title: '组件',
                     icon: 'ph:squares-four-bold',
                     keepAlive: false,
                 },
                 component: () => import('@/views/demo/index.vue'),
             },
             {
-                path: '/chart',
-                name: 'Chart',
+                path: '/template',
+                name: 'TemplatePage',
                 meta: {
-                    title: '图表',
-                    icon: 'ph:chart-bar-bold',
+                    title: '模板',
+                    icon: 'ph:browsers-bold',
                     keepAlive: false,
                 },
-                component: () => import('@/views/chart/index.vue'),
+                component: () => import('@/views/template/index.vue'),
+            },
+            {
+                path: '/hooks',
+                name: 'HooksPage',
+                meta: {
+                    title: '能力',
+                    icon: 'ph:atom-bold',
+                    keepAlive: false,
+                },
+                component: () => import('@/views/hooks/index.vue'),
             },
             {
                 path: '/mine',

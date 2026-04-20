@@ -1,0 +1,153 @@
+.template-page {
+  min-height: 100vh;
+  background: var(--ds-bg);
+
+  // ─── Header ──────────────────────────────────
+  &__header {
+    position: relative;
+    padding: 64px 24px 32px;
+    overflow: hidden;
+  }
+
+  &__header-orb {
+    position: absolute;
+    border-radius: var(--ds-radius-full);
+    filter: blur(60px);
+    opacity: 0.5;
+    animation: float 6s ease-in-out infinite;
+
+    &--1 {
+      width: 160px;
+      height: 160px;
+      top: -40px;
+      right: -20px;
+      background: linear-gradient(135deg, var(--ds-accent), var(--ds-success));
+    }
+
+    &--2 {
+      width: 120px;
+      height: 120px;
+      bottom: -20px;
+      left: -10px;
+      background: linear-gradient(135deg, var(--ds-warning), var(--ds-danger));
+      animation-delay: -3s;
+    }
+  }
+
+  &__header-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  &__title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ds-text-primary);
+    margin: 0 0 8px;
+  }
+
+  &__subtitle {
+    font-size: 15px;
+    color: var(--ds-text-secondary);
+    margin: 0;
+  }
+
+  // ─── Section ─────────────────────────────────
+  &__section {
+    padding: 0 16px 32px;
+  }
+
+  // ─── Grid ────────────────────────────────────
+  &__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  // ─── Card ────────────────────────────────────
+  &__card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: var(--ds-radius-lg);
+    background: var(--ds-glass-bg);
+    border: 1px solid var(--ds-glass-border);
+    backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+    -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  &__card-shine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--ds-glass-shine);
+  }
+
+  &__card-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--ds-radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+
+  &__card-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__card-code {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ds-text-tertiary);
+    background: var(--ds-bg-tertiary);
+    padding: 2px 6px;
+    border-radius: var(--ds-radius-sm);
+    margin-bottom: 4px;
+  }
+
+  &__card-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ds-text-primary);
+    margin: 0 0 4px;
+  }
+
+  &__card-desc {
+    font-size: 13px;
+    color: var(--ds-text-secondary);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__card-arrow {
+    flex-shrink: 0;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-12px) scale(1.05);
+  }
+}

@@ -119,4 +119,11 @@ export const menuItems: MenuItem[] = [
     icon: 'ph:address-book-bold',
     color: '#007AFF',
   },
+  {
+    title: 'ECharts 图表',
+    desc: '折线图 · 柱状图 · 饼图',
+    route: '/chart',
+    icon: 'ph:chart-bar-bold',
+    color: '#5856D6',
+  },
 ];

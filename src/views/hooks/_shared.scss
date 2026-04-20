@@ -1,0 +1,311 @@
+// ─── Hook Demo 共享样式 ────────────────────────
+// 每个 hook 演示页的 index.scss 通过 @use '../shared' 引入
+
+.hook-demo {
+  min-height: 100vh;
+  background: var(--ds-bg);
+  padding-bottom: calc(32px + env(safe-area-inset-bottom));
+
+  // ─── Header ────────────────────────────────
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px 24px;
+    text-align: center;
+  }
+
+  &__header-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--ds-radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.25);
+  }
+
+  &__header-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ds-text-primary);
+    margin: 0 0 4px;
+  }
+
+  &__header-desc {
+    font-size: 14px;
+    color: var(--ds-text-secondary);
+    margin: 0;
+  }
+
+  // ─── Section ───────────────────────────────
+  &__section {
+    padding: 0 16px 16px;
+  }
+
+  &__section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ds-text-secondary);
+    padding: 0 4px 8px;
+    margin: 0;
+  }
+
+  // ─── Card (glass) ─────────────────────────
+  &__card {
+    position: relative;
+    border-radius: var(--ds-radius-lg);
+    background: var(--ds-glass-bg);
+    border: 1px solid var(--ds-glass-border);
+    backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+    -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+    padding: 16px;
+    overflow: hidden;
+
+    &-shine {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--ds-glass-shine);
+    }
+  }
+
+  // ─── Playground (交互操作区) ───────────────
+  &__playground {
+    margin: 0 16px 16px;
+    border-radius: var(--ds-radius-lg);
+    background: var(--ds-glass-bg);
+    border: 1px solid var(--ds-glass-border);
+    backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+    -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+    padding: 20px 16px;
+    overflow: hidden;
+  }
+
+  // ─── Button Group ─────────────────────────
+  &__btn-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  // ─── Result Preview ───────────────────────
+  &__result {
+    margin-top: 16px;
+  }
+
+  &__result-img {
+    width: 100%;
+    border-radius: var(--ds-radius-md);
+    object-fit: cover;
+  }
+
+  // ─── State Panel (实时状态) ────────────────
+  &__state {
+    margin: 0 16px 16px;
+  }
+
+  &__state-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ds-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 8px;
+  }
+
+  &__state-body {
+    border-radius: var(--ds-radius-md);
+    background: var(--ds-bg-secondary);
+    padding: 12px;
+    font-size: 13px;
+    font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+    color: var(--ds-text-secondary);
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    line-height: 1.6;
+  }
+
+  // ─── Status Badge ─────────────────────────
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: var(--ds-radius-full);
+    font-size: 12px;
+    font-weight: 500;
+
+    &--success {
+      background: rgba(52, 199, 89, 0.12);
+      color: var(--ds-success);
+    }
+
+    &--danger {
+      background: rgba(255, 59, 48, 0.12);
+      color: var(--ds-danger);
+    }
+
+    &--warning {
+      background: rgba(255, 149, 0, 0.12);
+      color: var(--ds-warning);
+    }
+
+    &--info {
+      background: rgba(0, 122, 255, 0.12);
+      color: var(--ds-accent);
+    }
+  }
+
+  // ─── Empty State ──────────────────────────
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    color: var(--ds-text-tertiary);
+    font-size: 14px;
+    text-align: center;
+  }
+
+  // ─── Progress Bar ─────────────────────────
+  &__progress {
+    height: 8px;
+    border-radius: var(--ds-radius-full);
+    background: var(--ds-bg-tertiary);
+    overflow: hidden;
+    margin-top: 12px;
+
+    &-fill {
+      height: 100%;
+      border-radius: var(--ds-radius-full);
+      background: var(--ds-accent);
+      transition: width 0.3s ease;
+    }
+  }
+
+  // ─── Info Row ─────────────────────────────
+  &__info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--ds-divider);
+    }
+  }
+
+  &__info-label {
+    font-size: 14px;
+    color: var(--ds-text-secondary);
+  }
+
+  &__info-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ds-text-primary);
+  }
+
+  // ─── Canvas Area ──────────────────────────
+  &__canvas-wrap {
+    border-radius: var(--ds-radius-md);
+    border: 2px dashed var(--ds-border);
+    overflow: hidden;
+    background: var(--ds-surface);
+
+    canvas {
+      display: block;
+      width: 100%;
+      touch-action: none;
+    }
+  }
+
+  // ─── Video Preview ────────────────────────
+  &__video-wrap {
+    border-radius: var(--ds-radius-md);
+    overflow: hidden;
+    background: #000;
+
+    video {
+      display: block;
+      width: 100%;
+    }
+  }
+
+  // ─── Audio Waveform ───────────────────────
+  &__duration {
+    font-size: 34px;
+    font-weight: 200;
+    color: var(--ds-text-primary);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    margin: 16px 0;
+  }
+
+  // ─── Permission Grid ──────────────────────
+  &__perm-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  &__perm-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 8px;
+    border-radius: var(--ds-radius-md);
+    background: var(--ds-bg-secondary);
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:active {
+      transform: scale(0.96);
+    }
+  }
+
+  &__perm-name {
+    font-size: 13px;
+    color: var(--ds-text-primary);
+    font-weight: 500;
+  }
+
+  // ─── KV Storage Item ──────────────────────
+  &__kv-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 0;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--ds-divider);
+    }
+  }
+
+  &__kv-key {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ds-accent);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__kv-value {
+    flex: 2;
+    font-size: 13px;
+    color: var(--ds-text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

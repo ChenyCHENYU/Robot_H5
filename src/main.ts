@@ -20,6 +20,18 @@ async function bootstrap() {
     await router.isReady();
     // 路由准备就绪后挂载APP实例
     app.mount('#app', true);
+
+    // 等待首帧渲染完成后，平滑退出 App Shell 加载屏
+    requestAnimationFrame(() => {
+        const shell = document.getElementById('app-shell');
+        if (shell) {
+            shell.classList.add('shell-exit');
+            shell.addEventListener('transitionend', () => {
+                shell.remove();
+                document.getElementById('app-shell-style')?.remove();
+            }, { once: true });
+        }
+    });
 }
 
 void bootstrap();

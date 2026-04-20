@@ -22,16 +22,255 @@
         <title> <%= title %> </title>
         <!-- CSS @layer 优先级声明：base(reset) < components(SCSS) < utilities(UnoCSS) -->
         <style>@layer base, components, utilities;</style>
+        <!-- 同步初始化主题（不等 DOMContentLoaded） -->
+        <script>
+            (function() {
+                try {
+                    var s = localStorage.getItem('THEME-SETTING');
+                    if (s) {
+                        var t = JSON.parse(s);
+                        if (t.themeMode === 'dark') document.documentElement.classList.add('dark');
+                        if (t.themeColor) document.documentElement.style.setProperty('--app-theme-color', t.themeColor);
+                    }
+                } catch(e) {}
+            })();
+        </script>
+        <!-- App Shell 高级加载屏：零延迟渲染 -->
+        <style id="app-shell-style">
+            /* ===== 基础主题 ===== */
+            html { background: #f5f5f7; }
+            html.dark { background: #000; }
+
+            /* ===== Shell 全屏覆盖层 ===== */
+            #app-shell {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                background: #f5f5f7;
+                overflow: hidden;
+                transition:
+                    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                    filter 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            html.dark #app-shell { background: #000; }
+            #app-shell.shell-exit {
+                opacity: 0;
+                transform: scale(1.06);
+                filter: blur(12px);
+                pointer-events: none;
+            }
+
+            /* ===== Ambient 漂浮光晕 ===== */
+            .shell-ambient {
+                position: absolute;
+                inset: 0;
+                overflow: hidden;
+                pointer-events: none;
+            }
+            .shell-blob {
+                position: absolute;
+                border-radius: 50%;
+                filter: blur(90px);
+                opacity: 0.4;
+                will-change: transform;
+            }
+            html.dark .shell-blob { opacity: 0.18; }
+            .shell-blob--1 {
+                width: 320px; height: 320px;
+                background: radial-gradient(circle, #7551CD 0%, transparent 70%);
+                top: -100px; left: -80px;
+                animation: blob-1 18s ease-in-out infinite;
+            }
+            .shell-blob--2 {
+                width: 280px; height: 280px;
+                background: radial-gradient(circle, #0071E3 0%, transparent 70%);
+                bottom: -80px; right: -60px;
+                animation: blob-2 20s ease-in-out infinite;
+            }
+            .shell-blob--3 {
+                width: 200px; height: 200px;
+                background: radial-gradient(circle, #5AC8FA 0%, transparent 70%);
+                top: 45%; left: 60%;
+                animation: blob-3 15s ease-in-out infinite;
+            }
+            @keyframes blob-1 {
+                0%, 100% { transform: translate(0, 0) scale(1); }
+                33% { transform: translate(50px, 40px) scale(1.15); }
+                66% { transform: translate(-30px, 60px) scale(0.9); }
+            }
+            @keyframes blob-2 {
+                0%, 100% { transform: translate(0, 0) scale(1); }
+                33% { transform: translate(-40px, -50px) scale(0.85); }
+                66% { transform: translate(60px, -20px) scale(1.1); }
+            }
+            @keyframes blob-3 {
+                0%, 100% { transform: translate(0, 0) scale(1); }
+                50% { transform: translate(-50px, 30px) scale(1.2); }
+            }
+
+            /* ===== 中心内容区 ===== */
+            .shell-center {
+                position: relative;
+                z-index: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 28px;
+                animation: shell-enter 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+            }
+            @keyframes shell-enter {
+                from { opacity: 0; transform: translateY(20px) scale(0.96); }
+                to { opacity: 1; transform: translateY(0) scale(1); }
+            }
+
+            /* ===== Logo + 旋转渐变边框 ===== */
+            .shell-logo-wrap {
+                position: relative;
+                width: 94px; height: 94px;
+                border-radius: 26px;
+                overflow: hidden;
+                box-shadow:
+                    0 0 40px rgba(117, 81, 205, 0.25),
+                    0 0 80px rgba(0, 113, 227, 0.12);
+                will-change: transform;
+            }
+            html.dark .shell-logo-wrap {
+                box-shadow:
+                    0 0 50px rgba(117, 81, 205, 0.35),
+                    0 0 100px rgba(0, 113, 227, 0.18);
+            }
+            /* 旋转 conic-gradient 伪元素 */
+            .shell-logo-wrap::before {
+                content: '';
+                position: absolute;
+                top: 50%; left: 50%;
+                width: 200%; height: 200%;
+                transform-origin: center;
+                background: conic-gradient(
+                    from 0deg,
+                    #7551CD, #0071E3, #5AC8FA, #34C759,
+                    #0071E3, #7551CD
+                );
+                animation: ring-spin 3s linear infinite;
+                will-change: transform;
+            }
+            @keyframes ring-spin {
+                from { transform: translate(-50%, -50%) rotate(0deg); }
+                to { transform: translate(-50%, -50%) rotate(360deg); }
+            }
+            .shell-logo-wrap img {
+                position: relative;
+                z-index: 1;
+                display: block;
+                width: 88px; height: 88px;
+                margin: 3px;
+                border-radius: 22px;
+            }
+
+            /* ===== 品牌文字 ===== */
+            .shell-brand {
+                font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+                font-size: 18px;
+                font-weight: 600;
+                letter-spacing: 3px;
+                text-transform: uppercase;
+                color: #1d1d1f;
+                background: linear-gradient(135deg, #7551CD 0%, #0071E3 50%, #5AC8FA 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            html.dark .shell-brand {
+                background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 50%, #67e8f9 100%);
+                -webkit-background-clip: text;
+                background-clip: text;
+            }
+
+            /* ===== 呼吸光点 ===== */
+            .shell-dots {
+                display: flex;
+                gap: 10px;
+            }
+            .shell-dots span {
+                width: 6px; height: 6px;
+                border-radius: 50%;
+                background: #7551CD;
+                animation: dot-breath 1.6s ease-in-out infinite;
+            }
+            html.dark .shell-dots span { background: #a78bfa; }
+            .shell-dots span:nth-child(2) { animation-delay: 0.2s; }
+            .shell-dots span:nth-child(3) { animation-delay: 0.4s; }
+            @keyframes dot-breath {
+                0%, 100% {
+                    transform: scale(0.5);
+                    opacity: 0.25;
+                }
+                50% {
+                    transform: scale(1.2);
+                    opacity: 1;
+                }
+            }
+
+            /* ===== 底部水印 ===== */
+            .shell-footer {
+                position: absolute;
+                bottom: calc(28px + env(safe-area-inset-bottom));
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 6px;
+            }
+            .shell-footer-line {
+                width: 32px; height: 1px;
+                background: linear-gradient(90deg, transparent, #aeaeb2, transparent);
+                opacity: 0.5;
+            }
+            html.dark .shell-footer-line {
+                background: linear-gradient(90deg, transparent, #636366, transparent);
+            }
+            .shell-footer-text {
+                font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+                font-size: 11px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                color: #aeaeb2;
+            }
+            html.dark .shell-footer-text { color: #636366; }
+        </style>
     </head>
 
     <body>
-        <div id="app">
-            <!-- 引入设置初始化脚本 -->
-            <script src="./loading/initSettings.js"></script>
-            <!-- 引入 loading 模块 -->
-            <div id="loadingContainer"></div>
+        <!-- App Shell 加载屏（独立于 #app，Vue 挂载后平滑退出） -->
+        <div id="app-shell">
+            <!-- 环境光晕 -->
+            <div class="shell-ambient">
+                <div class="shell-blob shell-blob--1"></div>
+                <div class="shell-blob shell-blob--2"></div>
+                <div class="shell-blob shell-blob--3"></div>
+            </div>
+            <!-- 主内容 -->
+            <div class="shell-center">
+                <div class="shell-logo-wrap">
+                    <img src="/logo.svg" alt="" />
+                </div>
+                <div class="shell-brand">Robot H5</div>
+                <div class="shell-dots">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <!-- 底部 -->
+            <div class="shell-footer">
+                <div class="shell-footer-line"></div>
+                <div class="shell-footer-text">Powered by Robot</div>
+            </div>
         </div>
+
+        <div id="app"></div>
         <script type="module" src="/src/main.ts"></script>
-        <script src="./loading/loading.js"></script>
     </body>
 </html>

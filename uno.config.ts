@@ -108,7 +108,8 @@ export default defineConfig({
     // Tabbar 图标
     "i-ph:house-bold",
     "i-ph:squares-four-bold",
-    "i-ph:chart-bar-bold",
+    "i-ph:browsers-bold",
+    "i-ph:atom-bold",
     "i-ph:user-bold",
     // Mine 页面图标
     "i-ph:shield-check-bold",
@@ -133,11 +134,40 @@ export default defineConfig({
     "i-ph:package-bold",
     "i-ph:scroll-bold",
     "i-ph:list-bold",
+    "i-ph:chart-bar-bold",
     // NavBar
     "i-ic:sharp-arrow-back-ios",
     // Logo
     "i-ph:rocket-launch-bold",
     // Dashboard 设置快捷入口
     "i-ph:gear-bold",
+    // Template 领域图标
+    "i-ph:buildings-bold",
+    "i-ph:wrench-bold",
+    "i-ph:truck-bold",
+    "i-ph:scales-bold",
+    "i-ph:shield-warning-bold",
+    "i-ph:leaf-bold",
+    "i-ph:video-camera-bold",
+    "i-ph:seal-check-bold",
+    "i-ph:megaphone-bold",
+    // Hooks 演示页图标
+    "i-ph:camera-bold",
+    "i-ph:film-strip-bold",
+    "i-ph:microphone-bold",
+    "i-ph:map-pin-bold",
+    "i-ph:qr-code-bold",
+    "i-ph:contactless-payment-bold",
+    "i-ph:cloud-arrow-up-bold",
+    "i-ph:cloud-arrow-down-bold",
+    "i-ph:eye-bold",
+    "i-ph:bluetooth-bold",
+    "i-ph:bell-bold",
+    "i-ph:key-bold",
+    "i-ph:pen-nib-bold",
+    "i-ph:drop-bold",
+    "i-ph:broadcast-bold",
+    "i-ph:clipboard-bold",
+    "i-ph:clipboard-text-bold",
   ],
 });
