@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.8](https://git.yourcompany.com/robot/robot-h5/compare/v1.3.7...v1.3.8) (2026-04-20)
+
+
+### 🐛 Bug 修复
+
+* **pwa:** exclude index.html from SW precache to prevent MIME error on SW update ([1f33045](https://git.yourcompany.com/robot/robot-h5/commit/1f33045a2489b2987380e68029dd2543b1c50591))
+
 ### [1.3.7](https://git.yourcompany.com/robot/robot-h5/compare/v1.3.6...v1.3.7) (2026-04-20)
 
 
