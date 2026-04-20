@@ -58,9 +58,9 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
                 start_url: '.',
             },
             workbox: {
-                // 不缓存 index.html，让浏览器始终从网络获取最新版本
-                // 避免 SW 更新时旧 index.html 请求已过期的 JS hash 路径导致 MIME 错误
-                globPatterns: ['**/*.{js,css,ico,png,svg,woff2}'],
+                globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+                // SPA 导航回退
+                navigateFallback: 'index.html',
                 // 清理旧版本 SW 缓存
                 cleanupOutdatedCaches: true,
                 // 大文件阈值（echarts 等大依赖可能超过默认 2MB）
