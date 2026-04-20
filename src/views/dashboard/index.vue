@@ -59,7 +59,7 @@
         <section class="dashboard__section">
             <h2 class="dashboard__section-title">核心能力</h2>
             <div class="dashboard__features">
-                <div v-for="(f, i) in features" :key="f.title" class="dashboard__feature" :style="{ '--i': i }">
+                <div v-for="(f, i) in features" :key="f.title" class="dashboard__feature" :style="{ '--i': i }" @click="f.route && router.push(f.route)">
                     <div class="dashboard__feature-shine" />
                     <div class="dashboard__feature-icon" :style="{ background: f.color }">
                         <C_Icon :name="f.icon" :size="20" color="#fff" />

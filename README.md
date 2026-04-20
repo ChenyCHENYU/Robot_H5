@@ -9,7 +9,7 @@
 ## 目录
 
 - [快速开始](#快速开始)
-- [内置 Demo](#内置-demo)
+- [五大模块](#五大模块)
 - [技术栈](#技术栈)
 - [服务架构](#服务架构)
 - [权限体系](#权限体系)
@@ -48,9 +48,27 @@ pnpm build:prod
 
 ---
 
-## 内置 Demo
+## 五大模块
 
-底部 TabBar「Demo」页提供 13 个交互示例，覆盖常见移动端场景：
+底部 TabBar 提供 **5 大功能模块**，覆盖开发全流程：
+
+| Tab | 模块 | 说明 |
+|-----|------|------|
+| 🏠 首页 | Dashboard | 问候语 + 快捷入口 + 每日金句 + 核心能力卡片 |
+| 📦 组件 | 组件中心 | 17 个交互示例 + 开发工具（暗黑模式 / Eruda） |
+| 📋 模板 | 模板中心 | 10 大业务领域模板入口（CRM / 工单 / 审批等） |
+| ⚡ 能力 | 能力中心 | 15 个 @robot-h5/core 设备能力 Hook 可交互演示 |
+| 👤 我的 | 个人中心 | 账号设置 / 主题外观 / 关于 / 退出登录 |
+
+### 首页 Dashboard
+
+- Mesh Gradient Hero 区域 + 时段问候 + 用户昵称
+- Liquid Glass 统计卡片（组件 17 / 能力 15 / TypeScript 100%）
+- 4 个快捷入口（组件 / 模板 / 能力 / 主题）
+- 每日金句轮播（Apple / 乔布斯 / 黑客精神主题）
+- 6 张核心能力卡片（Vite 7 / UnoCSS / TypeScript / Pinia / ECharts / Core Hooks）
+
+### 组件中心（17 个示例）
 
 | 示例 | 路由 | 亮点 |
 |------|------|------|
@@ -66,7 +84,38 @@ pnpm build:prod
 | 弹出层组合 | `/popupDemo` | ActionSheet / Popup 5 方位 / Dialog |
 | 手势交互 | `/gestureDemo` | SwipeCell 删除、长按菜单、多按钮滑动 |
 | 骨架屏 | `/skeletonDemo` | 基础骨架、商品卡片、联系人列表 |
-| 表单验证 | `/formDemo` | 异步校验、动态规则、多步骤表单 |
+| 表单验证 | `/formDemo` | C_Form 异步校验、动态规则、多步骤表单 |
+| 表格组件 | `/tableDemo` | C_Table 虚拟滚动、排序、多选 |
+| 剪贴板 | `/clipboardDemo` | 文本/代码复制、粘贴读取 |
+| 客户档案 | `/customerArchive` | 完整 CRUD 业务模板 |
+| ECharts 图表 | `/chart` | 折线/饼图/仪表盘可视化 |
+
+### 能力中心（15 个 Hook 演示）
+
+按 5 大分类展示 `@robot-h5/core` 全部设备能力，每个 Hook 提供可交互的 Playground：
+
+| 分类 | Hooks | 说明 |
+|------|-------|------|
+| 📸 影像采集 | useCamera · useVideoRecorder · useAudioRecorder | 拍照/录像/录音 + 实时预览 |
+| 📍 定位扫描 | useLocation · useQrScanner · useNfc | GPS 定位 + 二维码 + NFC |
+| 📁 文件处理 | useFileUpload · useFileDownload · useFilePreview | 分片上传 + 下载 + 预览 |
+| ⚙️ 系统能力 | useBluetooth · useOfflineStorage · usePushNotification · usePermission | 蓝牙 / 离线 / 推送 / 权限 |
+| ✨ 创意工具 | useSignature · useWatermark | 手写签名 + 图片水印 |
+
+### 模板中心（10 大领域）
+
+| 领域 | 代码 | 说明 |
+|------|------|------|
+| 客户管理 | CRM | 客户档案 / 跟进记录 / 商机 |
+| 设备巡检 | INSPECT | 巡检计划 / 故障报修 / 备件 |
+| 物流配送 | LOGISTICS | 运单 / 签收 / 轨迹 |
+| 合同管理 | CONTRACT | 合同模板 / 审批流 / 归档 |
+| 安全管理 | SAFETY | 隐患排查 / 应急预案 |
+| 能源管理 | ENERGY | 能耗监控 / 碳排放 |
+| 视频监控 | VIDEO | 实时流 / 回放 / AI 告警 |
+| 质量管理 | QUALITY | 质检记录 / 不良追溯 |
+| 营销活动 | MARKETING | 活动管理 / 优惠券 / 推送 |
+| 运维管理 | OPS | 工单系统 / 值班排班 |
 
 ---
 
@@ -286,7 +335,7 @@ const tabBarMenus = apiMenus.length > 0 ? apiMenus : localMenus;
 │       └── plugin/             #   Vite 插件（按需启用）
 │
 ├── mock/                       # Mock 数据（按模块分目录）
-│   ├── permission.ts          #   权限菜单 Mock
+│   ├── permission.ts          #   权限菜单 Mock（5-Tab）
 │   └── user/                  #   用户登录 Mock
 │
 ├── src/
@@ -296,12 +345,14 @@ const tabBarMenus = apiMenus.length > 0 ? apiMenus : localMenus;
 │   ├── components/             # 全局组件（C_ 前缀，自动注册）
 │   ├── hooks/                  # 组合式函数
 │   │   ├── useEnv/            #   环境配置
-│   │   └── usePermission/     #   权限校验 Hook + v-permission 指令
-│   ├── layout/                 # 布局容器（TabBar）
+│   │   ├── usePermission/     #   权限校验 Hook + v-permission 指令
+│   │   ├── useScrollCache/    #   滚动位置缓存
+│   │   └── useTheme/          #   主题切换
+│   ├── layout/                 # 布局容器（TabBar 动态渲染）
 │   ├── plugins/                # 插件注册入口
 │   ├── router/                 # 路由（守卫 + 菜单 + 子页面）
-│   │   ├── menu.ts            #   TabBar 主导航路由
-│   │   └── modules.ts         #   子页面路由
+│   │   ├── menu.ts            #   TabBar 主导航（5 Tab）
+│   │   └── modules.ts         #   子页面路由（~40 条）
 │   ├── services/               # 原生桥接（JSBridge）
 │   ├── store/                  # Pinia 状态管理
 │   │   └── modules/
@@ -315,6 +366,22 @@ const tabBarMenus = apiMenus.length > 0 ? apiMenus : localMenus;
 │   │       └── index.ts       #   HTTP 封装（get/post/put/del）
 │   ├── h5.config.ts            # @robot-h5/core 配置文件
 │   └── views/                  # 页面视图（每页一个目录）
+│       ├── dashboard/          #   首页（Hero + Quick Actions + Features）
+│       ├── demo/               #   组件中心（17 个交互示例入口）
+│       │   ├── chart/         #     ECharts 图表
+│       │   ├── c-form/        #     表单组件
+│       │   ├── c-table/       #     表格组件
+│       │   ├── customer-archive/ #  客户档案 CRUD 模板
+│       │   └── ...            #     更多 demo 子页面
+│       ├── hooks/              #   能力中心（15 个 Hook 演示）
+│       │   ├── camera/        #     useCamera 演示
+│       │   ├── location/      #     useLocation 演示
+│       │   ├── signature/     #     useSignature 演示
+│       │   ├── _shared.scss   #     共享演示页样式
+│       │   └── ...            #     更多 hook 子页面
+│       ├── template/           #   模板中心（10 领域入口）
+│       ├── mine/               #   个人中心
+│       └── login/              #   登录页
 │
 ├── types/                      # 全局类型声明
 │   ├── Permission/type.ts     #   权限菜单类型（ApiMenuItem）
@@ -326,7 +393,7 @@ const tabBarMenus = apiMenus.length > 0 ? apiMenus : localMenus;
 ├── .env.development            # 开发环境变量
 ├── .env.test                   # 测试环境变量
 ├── .env.production             # 生产环境变量
-├── index.html                  # HTML 入口（@layer 声明）
+├── index.html                  # HTML 入口（@layer 声明 + 加载屏）
 ├── DESIGN_SYSTEM.md            # 设计系统规范
 ├── vite.config.ts              # Vite 配置
 └── uno.config.ts               # UnoCSS 配置
@@ -850,6 +917,19 @@ server {
     gzip_types text/css application/javascript application/json image/svg+xml;
 }
 ```
+
+### Vercel 部署
+
+项目已配置 Vercel 零配置部署，推送到 `main` 分支后自动构建发布。
+
+### 加载屏
+
+`index.html` 内嵌了高级质感加载屏（Ambient Blob + Conic-gradient Logo + 品牌文字），确保首屏无白屏：
+
+- 3 个模糊光晕 ambient orb 动画
+- 锥形渐变旋转边框 Logo 容器
+- 渐变品牌文字「ROBOT H5」+ 呼吸圆点
+- Vue 挂载完成后 `requestAnimationFrame` 触发淡出 + 缩放 + 模糊退场动画
 
 ---
 

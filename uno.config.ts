@@ -135,6 +135,12 @@ export default defineConfig({
     "i-ph:scroll-bold",
     "i-ph:list-bold",
     "i-ph:chart-bar-bold",
+    "i-ph:stack-bold",
+    "i-ph:hand-swipe-right-bold",
+    "i-ph:layout-bold",
+    "i-ph:note-pencil-bold",
+    "i-ph:table-bold",
+    "i-ph:address-book-bold",
     // NavBar
     "i-ic:sharp-arrow-back-ios",
     // Logo
