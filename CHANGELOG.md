@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.5](https://git.yourcompany.com/robot/robot-h5/compare/v1.3.4...v1.3.5) (2026-04-20)
+
+
+### 🐛 Bug 修复
+
+* **deploy:** fix vercel base path and add auto deploy workflow ([7952b1b](https://git.yourcompany.com/robot/robot-h5/commit/7952b1b703f34df4676f2ffd4755d5e6db348bf8))
+
 ### [1.3.4](https://git.yourcompany.com/robot/robot-h5/compare/v1.3.3...v1.3.4) (2026-04-20)
 
 
