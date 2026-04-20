@@ -1,6 +1,6 @@
-# 自动发版 — 根据 commit type 自动升级版本号
-# feat → minor, fix → patch, BREAKING CHANGE → major
-name: Auto Release
+# 自动发版 — 基于 release-please
+# push 到 main → release-please 创建/更新 PR → 合并 PR 后自动发布版本
+name: Release Please
 
 on:
   push:
@@ -8,39 +8,16 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
+  issues: write
 
 jobs:
-  release:
-    # 跳过 standard-version 自身产生的 chore(release) 提交，避免无限循环
-    if: "!startsWith(github.event.head_commit.message, 'chore(release)')"
+  release-please:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: googleapis/release-please-action@v4
         with:
-          fetch-depth: 0
+          release-type: node
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: pnpm
-
-      - run: pnpm install --frozen-lockfile
-
-      - name: Quality Gate
-        run: pnpm run type-check
-
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Run standard-version
-        run: npx standard-version
-
-      - name: Push changes & tags
-        run: git push --follow-tags origin main
+          config-file: .github/workflows/release-please-config.json
+          manifest-file: .github/workflows/release-please-manifest.json

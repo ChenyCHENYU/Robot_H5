@@ -37,11 +37,7 @@
     "deps:check": "pnpm outdated",
     "deps:update": "pnpm update --latest",
     "preinstall": "npx only-allow pnpm",
-    "release": "standard-version",
-    "release:minor": "standard-version --release-as minor",
-    "release:major": "standard-version --release-as major",
-    "release:patch": "standard-version --release-as patch",
-    "release:first": "standard-version --first-release"
+    "release": "echo 'Use release-please PR workflow instead'"
   },
   "dependencies": {
     "@iconify/vue": "5.0.0",
@@ -93,7 +89,7 @@
     "rimraf": "^5.0.0",
     "rollup-plugin-visualizer": "^6.0.3",
     "sass": "^1.92.1",
-    "standard-version": "9.5.0",
+
     "typescript": "~5.9.2",
     "unocss": "^66.5.1",
     "unplugin-auto-import": "^20.1.0",

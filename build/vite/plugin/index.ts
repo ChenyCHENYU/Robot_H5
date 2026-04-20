@@ -2,7 +2,6 @@ import type { Plugin } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import UnoCSS from 'unocss/vite';
-import { VitePWA } from 'vite-plugin-pwa';
 import { configAutoImportPlugin } from './autoImport';
 import { configAutoComponentsPlugin } from './autocomponents';
 import { configCompressPlugin } from './compress';
@@ -43,39 +42,8 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
     // 加载 html 插件 vite-plugin-html
     vitePlugins.push(configHtmlPlugin(viteEnv));
 
-    // PWA 支持
-    vitePlugins.push(
-        VitePWA({
-            registerType: 'autoUpdate',
-            includeAssets: ['logo.svg'],
-            manifest: {
-                name: 'Robot H5',
-                short_name: 'Robot',
-                description: 'Robot H5 移动端应用框架',
-                theme_color: '#0071E3',
-                background_color: '#F5F5F7',
-                display: 'standalone',
-                start_url: '.',
-            },
-            workbox: {
-                globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-                // SPA 导航回退
-                navigateFallback: 'index.html',
-                // 清理旧版本 SW 缓存
-                cleanupOutdatedCaches: true,
-                // 大文件阈值（echarts 等大依赖可能超过默认 2MB）
-                maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
-                // 运行时缓存 API 请求
-                runtimeCaching: [
-                    {
-                        urlPattern: /^https:\/\/api\./i,
-                        handler: 'NetworkFirst',
-                        options: { cacheName: 'api-cache', expiration: { maxEntries: 50, maxAgeSeconds: 300 } },
-                    },
-                ],
-            },
-        }),
-    );
+    // PWA 已禁用 — Vercel CDN 自带缓存，SW 在频繁部署阶段反而导致 MIME 错误
+    // 后续稳定后可重新启用 vite-plugin-pwa
 
     if (isBuild) {
         // 构建时显示进度条
