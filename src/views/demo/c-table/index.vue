@@ -16,6 +16,7 @@
 </template>
 
 <script setup lang="ts">
+    import './index.scss';
     import type { TableColumn, TableOperation } from '#/Table/type';
 
     defineOptions({ name: 'CTableDemo' });
@@ -134,10 +135,3 @@
     // 首次加载
     onMounted(() => onLoad(1));
 </script>
-
-<style lang="scss" scoped>
-.c-table-demo {
-    min-height: 100dvh;
-    background: var(--ds-bg);
-}
-</style>

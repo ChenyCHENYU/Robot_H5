@@ -13,9 +13,9 @@
     }
 
     &__tabbar {
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-        background: rgba(255, 255, 255, 0.78) !important;
+        backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        background: var(--ds-glass-bg) !important;
         border-top: 0.5px solid var(--ds-divider) !important;
 
         :deep(.van-tabbar-item) {
@@ -43,7 +43,7 @@
 }
 
 html.dark .layout__tabbar {
-    background: rgba(28, 28, 30, 0.78) !important;
+    background: var(--ds-glass-bg) !important;
 }
 
 // Tab 切换过渡 — 极轻量，避免"闪烁重载感"

@@ -55,7 +55,7 @@ pnpm build:prod
 | Tab | 模块 | 说明 |
 |-----|------|------|
 | 🏠 首页 | Dashboard | 问候语 + 快捷入口 + 每日金句 + 核心能力卡片 |
-| 📦 组件 | 组件中心 | 17 个交互示例 + 开发工具（暗黑模式 / Eruda） |
+| 📦 组件 | 组件中心 | 16 个交互示例 + 开发工具（暗黑模式 / Eruda） |
 | 📋 模板 | 模板中心 | 10 大业务领域模板入口（CRM / 工单 / 审批等） |
 | ⚡ 能力 | 能力中心 | 15 个 @robot-h5/core 设备能力 Hook 可交互演示 |
 | 👤 我的 | 个人中心 | 账号设置 / 主题外观 / 关于 / 退出登录 |
@@ -63,12 +63,12 @@ pnpm build:prod
 ### 首页 Dashboard
 
 - Mesh Gradient Hero 区域 + 时段问候 + 用户昵称
-- Liquid Glass 统计卡片（组件 17 / 能力 15 / TypeScript 100%）
+- Liquid Glass 统计卡片（组件 16 / 能力 15 / TypeScript 100%）
 - 4 个快捷入口（组件 / 模板 / 能力 / 主题）
 - 每日金句轮播（Apple / 乔布斯 / 黑客精神主题）
 - 6 张核心能力卡片（Vite 7 / UnoCSS / TypeScript / Pinia / ECharts / Core Hooks）
 
-### 组件中心（17 个示例）
+### 组件中心（16 个示例）
 
 | 示例 | 路由 | 亮点 |
 |------|------|------|
@@ -86,7 +86,6 @@ pnpm build:prod
 | 骨架屏 | `/skeletonDemo` | 基础骨架、商品卡片、联系人列表 |
 | 表单验证 | `/formDemo` | C_Form 异步校验、动态规则、多步骤表单 |
 | 表格组件 | `/tableDemo` | C_Table 虚拟滚动、排序、多选 |
-| 剪贴板 | `/clipboardDemo` | 文本/代码复制、粘贴读取 |
 | 客户档案 | `/customerArchive` | 完整 CRUD 业务模板 |
 | ECharts 图表 | `/chart` | 折线/饼图/仪表盘可视化 |
 
