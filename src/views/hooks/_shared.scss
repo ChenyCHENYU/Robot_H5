@@ -1,5 +1,5 @@
 // ─── Hook Demo 共享样式 ────────────────────────
-// 每个 hook 演示页的 index.scss 通过 @use '../shared' 引入
+// 每个 hook 演示页的 index.scss 通过 @import '../shared' 引入
 
 .hook-demo {
   min-height: 100%;
