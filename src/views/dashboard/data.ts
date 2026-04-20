@@ -36,13 +36,13 @@ export const quickActions: QuickAction[] = [
 export interface StatItem {
     label: string;
     value: string;
-    up?: boolean;
+    color?: string;
 }
 
 export const statsItems: StatItem[] = [
-    { label: '组件', value: '16' },
-    { label: '能力', value: '15' },
-    { label: 'TypeScript', value: '100%', up: true },
+    { label: '组件', value: '16', color: '#0071E3' },
+    { label: '能力', value: '15', color: '#FF9500' },
+    { label: 'TypeScript', value: '100%', color: '#34C759' },
 ];
 
 export const heroOrbCount = 4;

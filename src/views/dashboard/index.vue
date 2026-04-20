@@ -21,7 +21,7 @@
                         <span class="dashboard__glass-label">{{ stat.label }}</span>
                         <span
                             class="dashboard__glass-value"
-                            :class="{ 'dashboard__glass-value--up': stat.up }"
+                            :style="stat.color ? { color: stat.color } : {}"
                         >
                             {{ stat.value }}
                         </span>
@@ -46,7 +46,7 @@
                     <p class="dashboard__action-title">{{ item.label }}</p>
                     <p class="dashboard__action-desc">{{ item.desc }}</p>
                 </div>
-                <i class="ph:caret-right-bold dashboard__action-arrow" />
+                <i class="i-ph:caret-right-bold dashboard__action-arrow" />
             </div>
         </div>
 
