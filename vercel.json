@@ -1,0 +1,26 @@
+{
+  "buildCommand": "pnpm build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/robot-h5/static/(.*)", "destination": "/static/$1" },
+    { "source": "/robot-h5/registerSW.js", "destination": "/registerSW.js" },
+    { "source": "/robot-h5/manifest.webmanifest", "destination": "/manifest.webmanifest" },
+    { "source": "/robot-h5/(.*)", "destination": "/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/manifest.webmanifest",
+      "headers": [
+        { "key": "Content-Type", "value": "application/manifest+json" },
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
+  ]
+}
