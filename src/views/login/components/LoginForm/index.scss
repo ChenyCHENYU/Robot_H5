@@ -1,7 +1,7 @@
 .login-form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 14px;
     width: 100%;
     min-width: 0;
     box-sizing: border-box;
@@ -20,7 +20,7 @@
             0 1px 0 rgba(255, 255, 255, 0.95) !important;
         overflow: hidden;
         transition: box-shadow 0.22s ease, background 0.22s ease;
-        padding: 6px 12px !important;
+        padding: 10px 14px !important;
 
         .van-cell {
             background: transparent !important;
