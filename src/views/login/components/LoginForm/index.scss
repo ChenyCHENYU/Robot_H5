@@ -103,11 +103,12 @@
         cursor: pointer;
         background: var(--ds-bg-secondary);
         border: 1px solid rgba(0, 0, 0, 0.06);
-        transition: opacity 0.2s;
+        transition: opacity 0.2s, transform 0.15s;
         flex-shrink: 0;
 
         &:active {
             opacity: 0.7;
+            transform: scale(0.95);
         }
     }
 
@@ -116,12 +117,23 @@
         height: 100%;
         object-fit: cover;
         display: block;
+        transition: opacity 0.3s;
+
+        &.is-refreshing {
+            animation: captchaRefresh 0.5s ease;
+        }
     }
 
     &__captcha-loading {
         font-size: 11px;
         color: var(--ds-text-tertiary);
     }
+}
+
+@keyframes captchaRefresh {
+    0% { opacity: 1; transform: scale(1); }
+    40% { opacity: 0.3; transform: scale(0.92); }
+    100% { opacity: 1; transform: scale(1); }
 }
 
 html.dark .login-form {

@@ -47,6 +47,7 @@
                         v-if="captchaImage"
                         :src="captchaImage"
                         class="login-form__captcha-img"
+                        :class="{ 'is-refreshing': captchaRefreshing }"
                         alt="验证码"
                     />
                     <span v-else class="login-form__captcha-loading">加载中</span>
@@ -107,6 +108,7 @@
     const nickname = ref('');
     const captchaImage = ref('');
     const captchaId = ref('');
+    const captchaRefreshing = ref(false);
     const formData = reactive({
         username: 'admin',
         password: '123456',
@@ -118,12 +120,17 @@
     /** 获取验证码 */
     async function refreshCaptcha() {
         try {
+            captchaRefreshing.value = true;
             const { data } = await getCaptcha();
             captchaId.value = data.captchaId;
             const img = data.image || '';
             captchaImage.value = img.startsWith('data:') ? img : `data:image/png;base64,${img}`;
         } catch {
             console.warn('验证码加载失败');
+        } finally {
+            setTimeout(() => {
+                captchaRefreshing.value = false;
+            }, 500);
         }
     }
 
