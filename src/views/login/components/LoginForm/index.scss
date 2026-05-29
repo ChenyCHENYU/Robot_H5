@@ -45,14 +45,14 @@
         color: var(--ds-text-tertiary);
         display: flex;
         align-items: center;
-        height: 100%;
     }
 
-    // 覆盖 Vant Field 左侧图标容器的对齐
+    // 覆盖 Vant Field 左侧图标容器的对齐（强制垂直居中）
     .van-field__left-icon {
-        display: flex;
-        align-items: center;
-        height: 100%;
+        display: flex !important;
+        align-items: center !important;
+        margin-right: 0 !important;
+        padding-top: 0 !important;
     }
 
     &__options {
