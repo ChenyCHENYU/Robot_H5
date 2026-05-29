@@ -126,6 +126,21 @@
         margin-right: auto;
         animation: loginFadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
+
+    &__footer {
+        position: relative;
+        z-index: 1;
+        margin-top: auto;
+        padding: 20px 0 16px;
+        text-align: center;
+    }
+
+    &__footer-text {
+        font-size: 11px;
+        color: var(--ds-text-tertiary);
+        letter-spacing: 0.3px;
+        opacity: 0.7;
+    }
 }
 
 @keyframes loginOrb {

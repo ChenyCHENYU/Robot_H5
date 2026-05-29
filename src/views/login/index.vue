@@ -11,6 +11,11 @@
                 <RegisterForm />
             </div>
         </div>
+
+        <!-- Footer -->
+        <div class="login-page__footer">
+            <span class="login-page__footer-text">© 2026 @CHENY · Robot H5</span>
+        </div>
     </div>
 </template>
 
