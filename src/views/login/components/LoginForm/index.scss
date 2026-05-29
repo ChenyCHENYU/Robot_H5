@@ -43,6 +43,9 @@
         margin-right: 8px;
         font-size: 18px;
         color: var(--ds-text-tertiary);
+        display: flex;
+        align-items: center;
+        height: 100%;
     }
 
     &__options {
