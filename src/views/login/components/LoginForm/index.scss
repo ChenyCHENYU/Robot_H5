@@ -48,6 +48,13 @@
         height: 100%;
     }
 
+    // 覆盖 Vant Field 左侧图标容器的对齐
+    .van-field__left-icon {
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+
     &__options {
         display: flex;
         justify-content: space-between;
