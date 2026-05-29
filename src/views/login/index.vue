@@ -14,7 +14,6 @@
 
         <!-- Footer -->
         <div class="login-page__footer">
-            <span class="login-page__footer-brand">Robot H5 · Enterprise Mobile Template</span>
             <span class="login-page__footer-text">© 2026 @CHENY · v1.5.0</span>
         </div>
     </div>
