@@ -47,19 +47,36 @@
             description="确认退出当前账号？"
             close-on-click-action
         />
+
+        <!-- 退出过渡动画 -->
+        <LogoutTransition :visible="showLogoutTransition" />
     </div>
 </template>
 
 <script lang="ts" setup>
     import './index.scss';
-    import { settingsGroups, createLogoutActions, DEFAULT_AVATAR } from './data';
+    import { settingsGroups, DEFAULT_AVATAR } from './data';
     import { useUserStore } from '@/store/modules/user';
+    import LogoutTransition from '@/views/login/components/LogoutTransition/index.vue';
+    import type { ActionSheetAction } from 'vant';
 
     defineOptions({ name: 'MinePage' });
 
     const userStore = useUserStore();
     const showLogoutAction = ref(false);
+    const showLogoutTransition = ref(false);
     const avatarSrc = computed(() => userStore.getUserInfo.avatar || DEFAULT_AVATAR);
 
-    const logoutActions = createLogoutActions();
+    const logoutActions: ActionSheetAction[] = [
+        {
+            name: '退出登录',
+            color: '#FF3B30',
+            callback: () => {
+                showLogoutTransition.value = true;
+                setTimeout(() => {
+                    userStore.Logout();
+                }, 1800);
+            },
+        },
+    ];
 </script>

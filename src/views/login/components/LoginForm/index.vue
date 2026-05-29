@@ -29,6 +29,31 @@
             </template>
         </VanField>
 
+        <!-- 验证码 -->
+        <VanField
+            v-model="formData.captchaCode"
+            class="login-form__field"
+            name="captchaCode"
+            placeholder="验证码"
+            maxlength="6"
+            :rules="[{ required: true, message: '请输入验证码' }]"
+        >
+            <template #left-icon>
+                <i class="i-ph:shield-check-bold login-form__icon" />
+            </template>
+            <template #button>
+                <div class="login-form__captcha" @click="refreshCaptcha">
+                    <img
+                        v-if="captchaImage"
+                        :src="captchaImage"
+                        class="login-form__captcha-img"
+                        alt="验证码"
+                    />
+                    <span v-else class="login-form__captcha-loading">加载中</span>
+                </div>
+            </template>
+        </VanField>
+
         <div class="login-form__options">
             <div class="flex items-center gap-2">
                 <VanSwitch v-model="rememberMe" size="16px" />
@@ -65,6 +90,7 @@
     import { LoginStateEnum, useFormRules, useLoginState } from '../../useLogin';
     import { useUserStore } from '@/store/modules/user';
     import { PageEnum } from '@/enums/pageEnum';
+    import { getCaptcha } from '@/api/captcha';
     import LoginSuccess from '../LoginSuccess/index.vue';
 
     const { setLoginState, getLoginState } = useLoginState();
@@ -79,12 +105,32 @@
     const switchPassType = ref(true);
     const showSuccess = ref(false);
     const nickname = ref('');
+    const captchaImage = ref('');
+    const captchaId = ref('');
     const formData = reactive({
         username: 'admin',
         password: '123456',
+        captchaCode: '',
     });
 
     const getShow = computed(() => unref(getLoginState) === LoginStateEnum.LOGIN);
+
+    /** 获取验证码 */
+    async function refreshCaptcha() {
+        try {
+            const { data } = await getCaptcha();
+            captchaId.value = data.captchaId;
+            const img = data.image || '';
+            captchaImage.value = img.startsWith('data:') ? img : `data:image/png;base64,${img}`;
+        } catch {
+            console.warn('验证码加载失败');
+        }
+    }
+
+    // 初始化加载验证码
+    onMounted(() => {
+        refreshCaptcha();
+    });
 
     function handleSubmit() {
         formRef.value
@@ -110,6 +156,10 @@
                             router.replace(toPath);
                         }
                     }, 1800);
+                } catch {
+                    // 登录失败刷新验证码
+                    refreshCaptcha();
+                    formData.captchaCode = '';
                 } finally {
                     loading.value = false;
                 }
