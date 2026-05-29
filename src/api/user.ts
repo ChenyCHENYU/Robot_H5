@@ -1,8 +1,8 @@
-import { get, post, toast } from '@/utils/http';
+import { get, post } from '@/utils/http';
 
 /** 用户登录 */
 export const login = (data: { username: string; password: string }) =>
-    post('/login', data, toast('登录成功，即将进入系统'));
+    post('/login', data);
 
 /** 获取用户信息 */
 export const getUserInfo = () => get('/getUserInfo');

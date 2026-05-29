@@ -54,6 +54,9 @@
             创建账号
         </VanButton>
     </VanForm>
+
+    <!-- 登录成功过渡动画 -->
+    <LoginSuccess :visible="showSuccess" :nickname="nickname" />
 </template>
 
 <script setup lang="ts">
@@ -62,6 +65,7 @@
     import { LoginStateEnum, useFormRules, useLoginState } from '../../useLogin';
     import { useUserStore } from '@/store/modules/user';
     import { PageEnum } from '@/enums/pageEnum';
+    import LoginSuccess from '../LoginSuccess/index.vue';
 
     const { setLoginState, getLoginState } = useLoginState();
     const { getFormRules } = useFormRules();
@@ -73,6 +77,8 @@
     const loading = ref(false);
     const rememberMe = ref(false);
     const switchPassType = ref(true);
+    const showSuccess = ref(false);
+    const nickname = ref('');
     const formData = reactive({
         username: 'admin',
         password: '123456',
@@ -90,12 +96,20 @@
                         username: formData.username,
                         password: formData.password,
                     });
-                    const toPath = decodeURIComponent((route.query?.redirect || '/') as string);
-                    if (route.name === PageEnum.BASE_LOGIN_NAME) {
-                        router.replace('/');
-                    } else {
-                        router.replace(toPath);
-                    }
+
+                    // 显示登录成功过渡动画
+                    nickname.value = userStore.getUserInfo?.nickname || formData.username;
+                    showSuccess.value = true;
+
+                    // 延迟跳转，让动画完整展示
+                    setTimeout(() => {
+                        const toPath = decodeURIComponent((route.query?.redirect || '/') as string);
+                        if (route.name === PageEnum.BASE_LOGIN_NAME) {
+                            router.replace('/');
+                        } else {
+                            router.replace(toPath);
+                        }
+                    }, 1800);
                 } finally {
                     loading.value = false;
                 }

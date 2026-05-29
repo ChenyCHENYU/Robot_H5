@@ -4,6 +4,7 @@ import { useRouteStoreWidthOut } from '@/store/modules/route';
 import { useUserStore } from '@/store/modules/user';
 import { usePermissionStoreWidthOut } from '@/store/modules/permission';
 import { PageEnum } from '@/enums/pageEnum';
+import { isIntegratedMode, getMbaseToken, listenMbaseToken } from '@/utils/auth';
 
 NProgress.configure({ parent: '#app', showSpinner: false, minimum: 0.3, speed: 200 });
 
@@ -14,6 +15,57 @@ const whitePathList = [PageEnum.BASE_LOGIN];
 
 // 不再硬编码 systemPaths — 所有在 router 中注册的命名路由（modules.ts / menu.ts）
 // 只要已登录即可访问，权限系统仅控制 TabBar 菜单可见性
+
+/**
+ * 集成模式下尝试从 mbase 获取 token
+ * 支持同步方式（query / storage）和异步方式（postMessage）
+ */
+async function tryAcquireMbaseToken(userStore: ReturnType<typeof useUserStore>): Promise<boolean> {
+    // 先尝试同步获取（query 参数 / localStorage）
+    const syncToken = getMbaseToken();
+    if (syncToken) {
+        userStore.setToken(syncToken);
+        return true;
+    }
+
+    // 异步方式：监听 postMessage
+    const method = import.meta.env.VITE_MBASE_TOKEN_METHOD as string || 'query';
+    if (method === 'postMessage') {
+        return new Promise<boolean>((resolve) => {
+            listenMbaseToken((token) => {
+                if (token) {
+                    userStore.setToken(token);
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            }, 3000);
+        });
+    }
+
+    return false;
+}
+
+/**
+ * 处理未认证状态
+ * @returns true = token 已获取（集成模式成功），false = 需要跳转登录页
+ */
+async function handleUnauthenticated(userStore: ReturnType<typeof useUserStore>): Promise<boolean> {
+    if (!isIntegratedMode()) return false;
+    return tryAcquireMbaseToken(userStore);
+}
+
+/** 确保权限数据已加载（静默降级） */
+async function ensurePermissionsLoaded(): Promise<void> {
+    const permissionStore = usePermissionStoreWidthOut();
+    if (!permissionStore.isLoaded) {
+        try {
+            await permissionStore.loadPermissions();
+        } catch {
+            // 权限加载失败，继续放行（降级为无权限控制）
+        }
+    }
+}
 
 export function createRouterGuards(router: Router) {
     router.beforeEach(async (to, _from, next) => {
@@ -29,21 +81,17 @@ export function createRouterGuards(router: Router) {
 
         const userStore = useUserStore();
 
-        // 未登录 → 重定向到登录页
+        // 未登录时的处理逻辑
         if (!userStore.getToken) {
-            next(PageEnum.BASE_LOGIN);
-            return;
-        }
-
-        // 已登录 → 检查权限是否已加载
-        const permissionStore = usePermissionStoreWidthOut();
-        if (!permissionStore.isLoaded) {
-            try {
-                await permissionStore.loadPermissions();
-            } catch {
-                // 权限加载失败，继续放行（降级为无权限控制）
+            const resolved = await handleUnauthenticated(userStore);
+            if (!resolved) {
+                next(PageEnum.BASE_LOGIN);
+                return;
             }
         }
+
+        // 已登录 → 确保权限已加载
+        await ensurePermissionsLoaded();
 
         // 已注册的命名路由直接放行（modules.ts / menu.ts 中定义的页面）
         if (to.name && to.matched.length > 0) {

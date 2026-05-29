@@ -24,6 +24,7 @@
 - [工程规范](#工程规范)
 - [最佳实践](#最佳实践)
 - [@robot-h5/core 通用能力包](#robot-h5core-通用能力包)
+- [附录：mbase 集成指南](#附录mbase-集成指南)
 
 ---
 
@@ -831,19 +832,34 @@ if (import.meta.hot)
 
 ## 环境配置
 
-项目通过三个 `.env` 文件管理不同环境：
+项目通过多个 `.env` 文件管理不同环境，支持完整的 dev → sit → uat → prd 流水线：
 
-| 文件 | 环境 | Mock | 代理 | 用途 |
+| 文件 | 环境 | Mock | 模式 | 用途 |
 |------|------|------|------|------|
-| `.env.development` | 开发 | ✅ 开启 | ✅ localhost:8001 | 本地开发调试 |
-| `.env.test` | 测试 | ❌ 关闭 | ❌ 直连测试服 | 测试环境构建 |
-| `.env.production` | 生产 | ❌ 关闭 | ❌ 直连生产服 | 正式上线构建 |
+| `.env.development` | 开发 | ✅ 开启 | standalone | 本地开发调试（Mock 数据） |
+| `.env.test` | SIT 测试 | ❌ 关闭 | standalone | 对接测试环境后端 |
+| `.env.uat` | UAT 预发布 | ❌ 关闭 | standalone | 预发布验证 |
+| `.env.production` | 生产 | ❌ 关闭 | standalone | 正式上线 |
+| `.env.integrated` | 集成模式 | ❌ 关闭 | integrated | 作为 mbase 子应用构建 |
+| `.env.vercel` | 演示 | ✅ 开启 | standalone | Vercel 静态演示站 |
+
+### 构建命令
+
+| 命令 | 环境 | 说明 |
+|------|------|------|
+| `pnpm dev` | development | 本地开发（Mock + HMR） |
+| `pnpm dev:integrated` | integrated | 本地调试集成模式 |
+| `pnpm build:test` | SIT | 测试环境构建 |
+| `pnpm build:uat` | UAT | 预发布环境构建 |
+| `pnpm build:prod` | production | 生产环境构建 |
+| `pnpm build:integrated` | integrated | mbase 子应用构建 |
+| `pnpm build:vercel` | vercel | Vercel 演示站构建 |
 
 ### 关键变量说明
 
 | 变量 | 说明 | 示例 |
 |------|------|------|
-| `VITE_ENV` | 环境标识 | `development` / `test` / `production` |
+| `VITE_ENV` | 环境标识 | `development` / `test` / `uat` / `production` |
 | `VITE_GLOB_APP_TITLE` | 应用名称 | `CHENY` |
 | `VITE_PORT` | 开发端口 | `8888` |
 | `VITE_PUBLIC_PATH` | 部署路径 | `/robot-h5/` |
@@ -853,6 +869,32 @@ if (import.meta.hot)
 | `VITE_GLOB_API_URL_PREFIX` | 接口前缀 | `/api` |
 | `VITE_GLOB_APP_ID` | 移动端应用标识 | `robot-h5`（用于获取菜单权限） |
 | `VITE_HASH_ROUTE` | Hash 路由模式 | `false` |
+| `VITE_APP_MODE` | 应用运行模式 | `standalone` / `integrated` |
+| `VITE_MBASE_ORIGIN` | mbase 宿主 origin | `http://your-mbase-host.com` |
+| `VITE_MBASE_TOKEN_METHOD` | Token 传递方式 | `query` / `postMessage` / `storage` |
+
+### 双模式运行机制（standalone / integrated）
+
+项目支持两种运行模式，通过 `VITE_APP_MODE` 环境变量切换，互不干扰：
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        VITE_APP_MODE                             │
+├─────────────────────────────┬───────────────────────────────────┤
+│      standalone（默认）      │          integrated               │
+├─────────────────────────────┼───────────────────────────────────┤
+│  独立部署，自有登录页         │  作为 mbase 子应用嵌入            │
+│  自身 Token 管理             │  从 mbase 获取 Token              │
+│  独立域名 /robot-h5/        │  mbase 子路径 /mbase/robot-h5/   │
+│  自有后端网关                │  共用 mbase 网关                  │
+│  完整权限体系                │  权限由 mbase 统一管控            │
+└─────────────────────────────┴───────────────────────────────────┘
+```
+
+**核心设计原则**：
+- standalone 是默认模式，所有现有功能零改动
+- integrated 模式仅在路由守卫层做 Token 来源切换，不侵入业务代码
+- 两种模式通过环境变量隔离，构建产物完全独立
 
 ### 代理配置
 
@@ -881,12 +923,13 @@ if (import.meta.hot)
 ```bash
 # 开发
 pnpm dev                    # 开发服务器（Mock + HMR）
+pnpm dev:integrated         # 集成模式本地调试
 
-# 测试环境构建（含 Mock）
-pnpm build:test
-
-# 生产环境构建（无 Mock、类型检查、Gzip 压缩）
-pnpm build:prod
+# 各环境构建
+pnpm build:test             # SIT 测试环境
+pnpm build:uat              # UAT 预发布环境
+pnpm build:prod             # 生产环境（类型检查 + Gzip）
+pnpm build:integrated       # mbase 集成模式
 
 # 预览构建产物
 pnpm preview:dist
@@ -982,10 +1025,14 @@ pnpm type-check        # 运行 vue-tsc --noEmit，必须零错误
 
 | 命令 | 说明 |
 |------|------|
-| `pnpm dev` | 启动开发服务器 |
+| `pnpm dev` | 启动开发服务器（Mock + HMR） |
 | `pnpm dev:prod` | 以生产模式启动 dev server |
-| `pnpm build:prod` | 生产构建 |
-| `pnpm build:test` | 测试构建 |
+| `pnpm dev:integrated` | 以集成模式启动 dev server |
+| `pnpm build:test` | SIT 测试环境构建 |
+| `pnpm build:uat` | UAT 预发布环境构建 |
+| `pnpm build:prod` | 生产环境构建 |
+| `pnpm build:integrated` | mbase 集成模式构建 |
+| `pnpm build:vercel` | Vercel 演示站构建 |
 | `pnpm preview:dist` | 预览构建产物 |
 | `pnpm type-check` | TypeScript 类型检查 |
 | `pnpm lint` | ESLint 检查 + 自动修复 |
@@ -1240,6 +1287,176 @@ export default defineH5Config({
 ```
 
 > 完整 API 文档参见 [@robot-h5/core README](https://www.npmjs.com/package/@robot-h5/core)
+
+---
+
+## 附录：mbase 集成指南
+
+> 本项目默认以 standalone 模式独立运行。当需要作为子应用集成到 mbase 时，按以下步骤操作。
+>
+> **原则：集成不破坏独立性。** 两种模式通过环境变量隔离，代码层面零侵入。
+
+### 集成架构
+
+```
+┌─────────────────────────────────────────────────────┐
+│                    mbase 宿主应用                     │
+│                                                     │
+│  ┌─────────────────────────────────────────────┐    │
+│  │  mbase 统一登录 → Token                      │    │
+│  │  mbase 路由管理 → /mbase/robot-h5/*          │    │
+│  │  mbase 网关代理 → 统一 API 出口              │    │
+│  └─────────────────────────────────────────────┘    │
+│                        │                            │
+│                        │ Token 传递                  │
+│                        ▼                            │
+│  ┌─────────────────────────────────────────────┐    │
+│  │           Robot H5（integrated 模式）         │    │
+│  │                                             │    │
+│  │  · 跳过自身登录页                            │    │
+│  │  · 从 mbase 接收 Token                      │    │
+│  │  · 使用 mbase 网关地址                       │    │
+│  │  · 部署在 /mbase/robot-h5/ 子路径           │    │
+│  └─────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────┘
+```
+
+### Step 1：修改环境配置
+
+编辑 `.env.integrated`（已预置），根据实际情况修改：
+
+```bash
+# 部署子路径（必须与 mbase 路由配置一致）
+VITE_PUBLIC_PATH = /mbase/robot-h5/
+
+# 切换为集成模式
+VITE_APP_MODE = integrated
+
+# mbase 宿主 origin（安全校验用）
+VITE_MBASE_ORIGIN = https://mbase.yourcompany.com
+
+# Token 传递方式（与 mbase 团队约定）
+# query       — mbase 通过 URL ?token=xxx 传递（最简单）
+# postMessage — mbase 通过 window.postMessage 传递（更安全）
+# storage     — 同域下共享 localStorage（需同域部署）
+VITE_MBASE_TOKEN_METHOD = query
+
+# API 地址改为 mbase 统一网关
+VITE_GLOB_API_URL = https://mbase-gateway.yourcompany.com
+```
+
+### Step 2：构建集成产物
+
+```bash
+pnpm build:integrated
+```
+
+构建产物输出到 `dist/`，部署到 mbase 对应的子路径下。
+
+### Step 3：mbase 侧配置
+
+mbase 宿主应用需要做的事：
+
+| 配置项 | 说明 |
+|--------|------|
+| 路由注册 | 在 mbase 路由中注册 `/mbase/robot-h5/*` 指向 Robot H5 的 `index.html` |
+| Token 传递 | 根据约定的方式（query / postMessage / storage）将登录 Token 传给子应用 |
+| Nginx 配置 | 子路径 `/mbase/robot-h5/` 指向 Robot H5 构建产物，配置 `try_files` |
+| 网关代理 | mbase 网关需代理 Robot H5 的 `/api/*` 请求到对应后端服务 |
+
+### Step 4：Nginx 配置示例（集成模式）
+
+```nginx
+# mbase 主应用
+location /mbase/ {
+    try_files $uri $uri/ /mbase/index.html;
+}
+
+# Robot H5 子应用
+location /mbase/robot-h5/ {
+    alias /path/to/robot-h5/dist/;
+    try_files $uri $uri/ /mbase/robot-h5/index.html;
+}
+```
+
+### Token 传递方式详解
+
+#### 方式一：URL Query（推荐，最简单）
+
+mbase 跳转子应用时在 URL 中携带 token：
+
+```
+https://yourhost.com/mbase/robot-h5/?token=eyJhbGciOiJIUzI1NiJ9...
+```
+
+Robot H5 路由守卫自动从 URL 提取 token，无需额外代码。
+
+#### 方式二：postMessage（更安全）
+
+mbase 通过 iframe 或同窗口 postMessage 传递：
+
+```js
+// mbase 侧代码
+const robotFrame = document.getElementById('robot-h5-frame');
+robotFrame.contentWindow.postMessage(
+    { type: 'mbase:token', token: 'eyJhbGciOiJIUzI1NiJ9...' },
+    'https://yourhost.com'
+);
+```
+
+Robot H5 自动监听 `mbase:token` 消息并提取 token。
+
+#### 方式三：localStorage 共享（需同域）
+
+mbase 和 Robot H5 部署在同一域名下时，可共享 localStorage：
+
+```js
+// mbase 侧代码
+localStorage.setItem('mbase_token', 'eyJhbGciOiJIUzI1NiJ9...');
+```
+
+Robot H5 自动从 `localStorage.getItem('mbase_token')` 读取。
+
+### 集成 Checklist
+
+- [ ] `.env.integrated` 中 `VITE_APP_MODE` 设为 `integrated`
+- [ ] `VITE_PUBLIC_PATH` 与 mbase 路由子路径一致
+- [ ] `VITE_GLOB_API_URL` 改为 mbase 统一网关地址
+- [ ] `VITE_MBASE_ORIGIN` 填写 mbase 宿主的 origin
+- [ ] `VITE_MBASE_TOKEN_METHOD` 与 mbase 团队约定一致
+- [ ] mbase 侧注册子应用路由
+- [ ] mbase 侧实现 Token 传递逻辑
+- [ ] Nginx 配置子路径 + SPA 回退
+- [ ] 网关配置 API 代理规则
+- [ ] 联调验证：mbase 登录后能正常访问 Robot H5 页面
+
+### 集成模式下的行为差异
+
+| 行为 | standalone | integrated |
+|------|-----------|-----------|
+| 登录页 | 显示自有登录表单 | 跳过（从 mbase 获取 token） |
+| Token 来源 | 自身 `/login` 接口 | mbase 传递（query/postMessage/storage） |
+| Token 失效 | 跳转自身登录页 | 跳转自身登录页（兜底）或通知 mbase |
+| 部署路径 | `/robot-h5/` | `/mbase/robot-h5/` |
+| API 网关 | 自有后端网关 | mbase 统一网关 |
+| 权限数据 | 自身权限接口 | 可复用自身接口（appId 不变） |
+
+### 注意事项
+
+1. **不要修改 standalone 模式的任何代码** — 集成仅通过环境变量和构建命令切换
+2. **Token 获取失败时会兜底到登录页** — 即使在集成模式下，如果 mbase 未传递 token，用户仍可通过自身登录页登录
+3. **API 前缀不变** — 无论哪种模式，接口前缀都是 `/api`，只是 `VITE_GLOB_API_URL` 指向不同网关
+4. **权限体系独立** — Robot H5 的权限接口（`getAppMenus` / `getUserPermissions`）在两种模式下都正常工作，只要 token 有效
+5. **样式隔离** — Robot H5 使用 BEM + 唯一根类名隔离，不会与 mbase 样式冲突
+
+### 相关文件
+
+| 文件 | 职责 |
+|------|------|
+| `src/utils/auth/index.ts` | 认证适配器（模式判断 + Token 获取） |
+| `src/router/router-guards.ts` | 路由守卫（根据模式切换登录策略） |
+| `.env.integrated` | 集成模式环境变量 |
+| `types/global.d.ts` | 新增环境变量类型声明 |
 
 ---
 
