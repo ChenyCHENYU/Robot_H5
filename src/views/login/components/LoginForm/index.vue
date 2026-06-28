@@ -121,7 +121,7 @@
     async function refreshCaptcha() {
         try {
             captchaRefreshing.value = true;
-            const { data } = await getCaptcha();
+            const data = await getCaptcha();
             captchaId.value = data.captchaId;
             const img = data.image || '';
             captchaImage.value = img.startsWith('data:') ? img : `data:image/png;base64,${img}`;
