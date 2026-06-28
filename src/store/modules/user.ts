@@ -21,6 +21,8 @@ interface UserInfo {
 
 interface IUserState {
     token?: string;
+    // 集成模式下从 mbase 透传的公司 ID（后端权限校验必需）
+    companyId?: string;
     userInfo: UserInfo;
 }
 
@@ -43,14 +45,19 @@ export const useUserStore = defineStore('app-user-store', {
             phone: '',
         },
         token: '',
+        companyId: '',
     }),
     getters: {
         getUserInfo: state => state.userInfo,
         getToken: state => state.token,
+        getCompanyId: state => state.companyId || '',
     },
     actions: {
         setToken(token: string) {
             this.token = token || '';
+        },
+        setCompanyId(companyId: string) {
+            this.companyId = companyId || '';
         },
         setUserInfo(info: UserInfo) {
             this.userInfo = info;

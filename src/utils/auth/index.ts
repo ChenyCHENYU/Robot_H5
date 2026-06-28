@@ -6,6 +6,12 @@
  * - integrated 模式：作为 mbase 子应用时，从 mbase 获取 token，跳过自身登录
  *
  * 切换方式：通过环境变量 VITE_APP_MODE 控制，不侵入业务代码
+ *
+ * mbase 集成机制（对齐 wl-mbase 当前实现）：
+ * - mbase 打开子应用时通过 URL 透传认证参数（buildAppUrl 生成）：
+ *   ?portal_token=xxx&from=portal&user_id=xxx&companyId=xxx
+ * - 子应用读取的 token 参数名固定为 portal_token
+ * - companyId 为权限校验必需，缺失会被后端拒为"用户不属于所选公司"
  */
 
 export type AppMode = 'standalone' | 'integrated';
@@ -26,90 +32,49 @@ export function isStandaloneMode(): boolean {
     return getAppMode() === 'standalone';
 }
 
+/** 从 URL（含 hash query）读取指定参数 */
+function getUrlParam(name: string): string {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
+    return urlParams.get(name) || hashParams.get(name) || '';
+}
+
 /**
  * 集成模式下从 mbase 获取 Token
  *
- * 支持三种传递方式（通过 VITE_MBASE_TOKEN_METHOD 配置）：
- * 1. query   — mbase 通过 URL query 参数传递 token（如 ?token=xxx）
- * 2. postMessage — mbase 通过 window.postMessage 传递
- * 3. storage — mbase 与子应用共享同域 localStorage
+ * mbase 通过 URL query 透传 portal_token（buildAppUrl 生成），
+ * 子应用从 URL 读取，参数名固定为 portal_token。
  *
  * @returns token 字符串，获取失败返回空字符串
  */
 export function getMbaseToken(): string {
-    const method = import.meta.env.VITE_MBASE_TOKEN_METHOD as string || 'query';
-
-    switch (method) {
-        case 'query': {
-            // 从 URL 参数中获取 token
-            const urlParams = new URLSearchParams(window.location.search);
-            const hashParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
-            return urlParams.get('token') || hashParams.get('token') || '';
-        }
-        case 'storage': {
-            // 从 localStorage 获取（mbase 与子应用同域时可共享）
-            const MBASE_TOKEN_KEY = 'mbase_token';
-            return localStorage.getItem(MBASE_TOKEN_KEY) || '';
-        }
-        case 'postMessage':
-        default:
-            // postMessage 方式需要异步监听，这里返回空
-            // 实际通过 listenMbaseToken() 异步获取
-            return '';
-    }
+    return getUrlParam('portal_token');
 }
 
 /**
- * 监听 mbase 通过 postMessage 传递的 token（异步）
+ * 集成模式下从 mbase 获取当前公司 ID
  *
- * @param callback 收到 token 后的回调
- * @param timeout 超时时间（ms），超时后 callback 收到空字符串
+ * mbase 透传的 companyId 是后端权限校验的必需参数，
+ * 缺失会被拒为"用户不属于所选公司"。
+ *
+ * @returns companyId 字符串，获取失败返回空字符串
  */
-export function listenMbaseToken(
-    callback: (token: string) => void,
-    timeout = 5000,
-): () => void {
-    const mbaseOrigin = import.meta.env.VITE_MBASE_ORIGIN as string || '*';
-
-    let resolved = false;
-
-    const handler = (event: MessageEvent) => {
-        // 校验来源（安全性）
-        if (mbaseOrigin !== '*' && event.origin !== mbaseOrigin) return;
-
-        const { type, token } = event.data || {};
-        if (type === 'mbase:token' && token && !resolved) {
-            resolved = true;
-            window.removeEventListener('message', handler);
-            callback(token);
-        }
-    };
-
-    window.addEventListener('message', handler);
-
-    // 超时兜底
-    const timer = setTimeout(() => {
-        if (!resolved) {
-            resolved = true;
-            window.removeEventListener('message', handler);
-            callback('');
-        }
-    }, timeout);
-
-    // 返回清理函数
-    return () => {
-        resolved = true;
-        clearTimeout(timer);
-        window.removeEventListener('message', handler);
-    };
+export function getMbaseCompanyId(): string {
+    return getUrlParam('companyId');
 }
 
 /**
- * 通知 mbase 宿主应用（子应用 → 宿主通信）
+ * 集成模式下从 mbase 获取用户 ID（透传自基座登录态）
+ *
+ * @returns userId 字符串，获取失败返回空字符串
  */
-export function notifyMbase(type: string, payload?: Record<string, unknown>): void {
-    const mbaseOrigin = import.meta.env.VITE_MBASE_ORIGIN as string || '*';
-    if (window.parent && window.parent !== window) {
-        window.parent.postMessage({ type, ...payload }, mbaseOrigin);
-    }
+export function getMbaseUserId(): string {
+    return getUrlParam('user_id');
+}
+
+/**
+ * 是否来自 mbase 门户（URL 带 from=portal 标识）
+ */
+export function isFromPortal(): boolean {
+    return getUrlParam('from') === 'portal';
 }

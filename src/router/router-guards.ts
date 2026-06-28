@@ -4,7 +4,7 @@ import { useRouteStoreWidthOut } from '@/store/modules/route';
 import { useUserStore } from '@/store/modules/user';
 import { usePermissionStoreWidthOut } from '@/store/modules/permission';
 import { PageEnum } from '@/enums/pageEnum';
-import { isIntegratedMode, getMbaseToken, listenMbaseToken } from '@/utils/auth';
+import { isIntegratedMode, getMbaseToken, getMbaseCompanyId } from '@/utils/auth';
 
 NProgress.configure({ parent: '#app', showSpinner: false, minimum: 0.3, speed: 200 });
 
@@ -17,33 +17,19 @@ const whitePathList = [PageEnum.BASE_LOGIN];
 // 只要已登录即可访问，权限系统仅控制 TabBar 菜单可见性
 
 /**
- * 集成模式下尝试从 mbase 获取 token
- * 支持同步方式（query / storage）和异步方式（postMessage）
+ * 集成模式下从 mbase 获取 token 与 companyId
+ *
+ * mbase 通过 URL query 透传 portal_token + companyId（buildAppUrl 生成），
+ * 子应用同步读取并注入 userStore：token 用于请求头鉴权，
+ * companyId 为后端权限校验必需（缺失会被拒为"用户不属于所选公司"）。
  */
 async function tryAcquireMbaseToken(userStore: ReturnType<typeof useUserStore>): Promise<boolean> {
-    // 先尝试同步获取（query 参数 / localStorage）
-    const syncToken = getMbaseToken();
-    if (syncToken) {
-        userStore.setToken(syncToken);
-        return true;
-    }
-
-    // 异步方式：监听 postMessage
-    const method = import.meta.env.VITE_MBASE_TOKEN_METHOD as string || 'query';
-    if (method === 'postMessage') {
-        return new Promise<boolean>((resolve) => {
-            listenMbaseToken((token) => {
-                if (token) {
-                    userStore.setToken(token);
-                    resolve(true);
-                } else {
-                    resolve(false);
-                }
-            }, 3000);
-        });
-    }
-
-    return false;
+    const token = getMbaseToken();
+    if (!token) return false;
+    userStore.setToken(token);
+    // companyId 同步注入，供业务接口权限校验使用
+    userStore.setCompanyId(getMbaseCompanyId());
+    return true;
 }
 
 /**
