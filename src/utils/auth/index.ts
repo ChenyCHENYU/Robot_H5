@@ -108,7 +108,7 @@ export function cleanPortalParamsFromUrl(): void {
 
 // ─── 子应用 → 基座 通信 ───────────────────────────────────────────────
 /**
- * 通知 mbase 基座子应用登录态失效（token 过期/拒绝）。
+ * 通知 mbase 基座子应用登录态失效（token 过期/拒绝，被动失效）。
  *
  * 集成模式下 token 由基座统一签发，子应用不应在 iframe 内跳自身登录页，
  * 而是通知基座（postMessage {action:'logout'}），由基座重新签发 token 或
@@ -119,6 +119,21 @@ export function notifyPortalLogout(): void {
         window.parent?.postMessage({ action: 'logout' }, '*');
     } catch (e) {
         console.warn('[auth] notifyPortalLogout failed:', e);
+    }
+}
+
+/**
+ * 通知 mbase 基座用户主动退出登录（区别于 token 失效的被动退出）。
+ *
+ * 子应用"退出登录"按钮触发时调用。基座收到 {action:'user-logout'} 后
+ * 执行完整退出流程（调退出接口 + 跳登录页），避免子应用 iframe 退出后
+ * 基座会话残留。
+ */
+export function notifyPortalUserLogout(): void {
+    try {
+        window.parent?.postMessage({ action: 'user-logout' }, '*');
+    } catch (e) {
+        console.warn('[auth] notifyPortalUserLogout failed:', e);
     }
 }
 

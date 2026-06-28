@@ -6,6 +6,7 @@ import router from '@/router';
 import { encryptAES, decryptAES } from '@miracle-web/utils';
 import { useEnv } from '@/hooks/useEnv';
 import { usePermissionStoreWidthOut } from './permission';
+import { isIntegratedMode, isFromPortal, notifyPortalUserLogout } from '@/utils/auth';
 
 interface UserInfo {
     userId: string | number;
@@ -90,6 +91,11 @@ export const useUserStore = defineStore('app-user-store', {
         },
 
         async Logout() {
+            // 集成模式：用户主动退出时通知基座执行完整退出流程
+            // （避免子应用退出后基座会话残留），由基座统一跳登录页
+            if (isIntegratedMode() && isFromPortal()) {
+                notifyPortalUserLogout();
+            }
             if (this.getToken) {
                 try {
                     await doLogout();
