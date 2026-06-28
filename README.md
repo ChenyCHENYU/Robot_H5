@@ -865,13 +865,13 @@ if (import.meta.hot)
 | `VITE_PUBLIC_PATH` | 部署路径 | `/robot-h5/` |
 | `VITE_USE_MOCK` | Mock 开关 | `true` / `false` |
 | `VITE_PROXY` | 开发代理 | `[["/api","http://host"]]` |
-| `VITE_GLOB_API_URL` | 后端网关 Base URL | 生产：`http://172.28.99.172:9000` |
-| `VITE_GLOB_API_URL_PREFIX` | 接口前缀 | `/api` |
+| `VITE_GLOB_API_URL` | 后端网关 Base URL | 生产：`https://ytiop-prd.walsin.com.cn` |
+| `VITE_GLOB_API_URL_PREFIX` | 接口前缀 | 按环境：`/sit-api` / `/uat-api` / `/pre-api` / `/prd-api` |
 | `VITE_GLOB_APP_ID` | 移动端应用标识 | `robot-h5`（用于获取菜单权限） |
 | `VITE_HASH_ROUTE` | Hash 路由模式 | `false` |
 | `VITE_APP_MODE` | 应用运行模式 | `standalone` / `integrated` |
-| `VITE_MBASE_ORIGIN` | mbase 宿主 origin | `http://your-mbase-host.com` |
-| `VITE_MBASE_TOKEN_METHOD` | Token 传递方式 | `query` / `postMessage` / `storage` |
+| `VITE_MBASE_ORIGIN` | mbase 宿主 origin（postMessage 校验用） | 当前未启用 |
+| `VITE_MBASE_TOKEN_METHOD` | Token 传递方式 | `query`（mbase 当前仅支持，子应用读 `portal_token`） |
 
 ### 双模式运行机制（standalone / integrated）
 
@@ -1302,6 +1302,32 @@ export default defineH5Config({
 ┌─────────────────────────────────────────────────────┐
 │                    mbase 宿主应用                     │
 │                                                     │
+│  · mbase 统一登录 → 签发 portal_token                │
+│  · 选中/默认公司 → companyId                          │
+│  · 路由管理 → /mbase/{子应用}/*                       │
+│  · 网关代理 → 统一 API 出口（ytiop-xxx.walsin.com.cn）│
+│                                                     │
+│  打开子应用时（buildAppUrl）拼参：                     │
+│    ?portal_token=xxx&from=portal&user_id=xxx         │
+│    &companyId=xxx                                    │
+└──────────────────────┬──────────────────────────────┘
+                       │ URL 透传 portal_token + companyId
+                       ▼
+┌─────────────────────────────────────────────────────┐
+│           Robot H5（integrated 模式）                 │
+│                                                     │
+│  · 跳过自身登录页                                     │
+│  · 从 URL 读取 portal_token（参数名固定）              │
+│  · 所有请求头 Authorization: Bearer portal_token      │
+│  · 部署在 /mbase/{子应用}/ 子路径                     │
+│                                                     │
+│  钉钉消息通知入口（可选）：                            │
+│    relay.html 中转页 → 免登拼参 → 直达子应用页面       │
+└─────────────────────────────────────────────────────┘
+```
+┌─────────────────────────────────────────────────────┐
+│                    mbase 宿主应用                     │
+│                                                     │
 │  ┌─────────────────────────────────────────────┐    │
 │  │  mbase 统一登录 → Token                      │    │
 │  │  mbase 路由管理 → /mbase/robot-h5/*          │    │
@@ -1326,24 +1352,25 @@ export default defineH5Config({
 编辑 `.env.integrated`（已预置），根据实际情况修改：
 
 ```bash
-# 部署子路径（必须与 mbase 路由配置一致）
-VITE_PUBLIC_PATH = /mbase/robot-h5/
+# 部署子路径（必须与 mbase portal-apps 注册的 mpPath 一致）
+VITE_PUBLIC_PATH = /mbase/{子应用}/
 
 # 切换为集成模式
 VITE_APP_MODE = integrated
 
-# mbase 宿主 origin（安全校验用）
-VITE_MBASE_ORIGIN = https://mbase.yourcompany.com
-
-# Token 传递方式（与 mbase 团队约定）
-# query       — mbase 通过 URL ?token=xxx 传递（最简单）
-# postMessage — mbase 通过 window.postMessage 传递（更安全）
-# storage     — 同域下共享 localStorage（需同域部署）
+# Token 获取方式（mbase 当前仅支持 query，子应用从 URL 读 portal_token）
 VITE_MBASE_TOKEN_METHOD = query
 
-# API 地址改为 mbase 统一网关
-VITE_GLOB_API_URL = https://mbase-gateway.yourcompany.com
+# API 地址改为 mbase 统一网关（按环境替换域名与前缀）
+#   生产：https://ytiop-prd.walsin.com.cn/prd-api
+#   UAT： https://ytiop-uat.walsin.com.cn/uat-api
+VITE_GLOB_API_URL = https://ytiop-prd.walsin.com.cn
+VITE_GLOB_API_URL_PREFIX = /prd-api
 ```
+
+> mbase 打开子应用时通过 URL 透传认证参数（`buildAppUrl` 生成）：
+> `?portal_token=xxx&from=portal&user_id=xxx&companyId=xxx`
+> 子应用读取的参数名为 **`portal_token`**（非 `token`），且需同时接收 `companyId`（后端权限校验必需）。
 
 ### Step 2：构建集成产物
 
@@ -1359,10 +1386,11 @@ mbase 宿主应用需要做的事：
 
 | 配置项 | 说明 |
 |--------|------|
-| 路由注册 | 在 mbase 路由中注册 `/mbase/robot-h5/*` 指向 Robot H5 的 `index.html` |
-| Token 传递 | 根据约定的方式（query / postMessage / storage）将登录 Token 传给子应用 |
-| Nginx 配置 | 子路径 `/mbase/robot-h5/` 指向 Robot H5 构建产物，配置 `try_files` |
-| 网关代理 | mbase 网关需代理 Robot H5 的 `/api/*` 请求到对应后端服务 |
+| 子应用注册 | 在 `src/config/portal-apps.ts` 的 `PORTAL_APPS` 注册一条，`mpPath` 设为 `/mbase/{子应用}/` |
+| Token 透传 | 工作台打开子应用时 `buildAppUrl` 自动拼接 `portal_token + from=portal + user_id + companyId` |
+| Nginx 配置 | 子路径 `/mbase/{子应用}/` 指向 Robot H5 构建产物，配置 `try_files` |
+| 网关代理 | mbase 网关代理子应用的 `/xxx-api` 请求到对应后端 |
+| 消息通知（可选） | 钉钉消息跳转配置 `relay.html` 中转页地址，携带 `redirect_url` 参数 |
 
 ### Step 4：Nginx 配置示例（集成模式）
 
@@ -1381,71 +1409,63 @@ location /mbase/robot-h5/ {
 
 ### Token 传递方式详解
 
-#### 方式一：URL Query（推荐，最简单）
-
-mbase 跳转子应用时在 URL 中携带 token：
+mbase 当前统一采用 **URL Query 方式**，打开子应用时由 `buildAppUrl` 生成完整地址：
 
 ```
-https://yourhost.com/mbase/robot-h5/?token=eyJhbGciOiJIUzI1NiJ9...
+https://ytiop-prd.walsin.com.cn/mbase/{子应用}/
+  ?portal_token=<基座签发的OAuth token>
+  &from=portal
+  &user_id=<用户ID>
+  &companyId=<当前公司ID>
 ```
 
-Robot H5 路由守卫自动从 URL 提取 token，无需额外代码。
+子应用读取规则：
+- **`portal_token`**（必传）— 登录凭证，写入请求头 `Authorization: Bearer xxx`
+- **`companyId`**（必传）— 当前公司，业务接口权限校验依赖此值；缺失会被后端拒为"用户不属于所选公司"
+- `from=portal` — 标识来源为基座（子应用据此跳过自身登录页）
+- `user_id` — 用户 ID
 
-#### 方式二：postMessage（更安全）
+> 参数名固定为 `portal_token`（非 `token`）。子应用若使用旧名 `token` 读取将获取不到凭证。
 
-mbase 通过 iframe 或同窗口 postMessage 传递：
+### 钉钉消息通知直达（可选）
 
-```js
-// mbase 侧代码
-const robotFrame = document.getElementById('robot-h5-frame');
-robotFrame.contentWindow.postMessage(
-    { type: 'mbase:token', token: 'eyJhbGciOiJIUzI1NiJ9...' },
-    'https://yourhost.com'
-);
+mbase 提供 `relay.html` 免登中转页，支持钉钉工作通知点击直达子应用页面：
+
+```
+https://ytiop-prd.walsin.com.cn/mbase/relay.html?redirect_url=<子应用完整页面地址>
 ```
 
-Robot H5 自动监听 `mbase:token` 消息并提取 token。
-
-#### 方式三：localStorage 共享（需同域）
-
-mbase 和 Robot H5 部署在同一域名下时，可共享 localStorage：
-
-```js
-// mbase 侧代码
-localStorage.setItem('mbase_token', 'eyJhbGciOiJIUzI1NiJ9...');
-```
-
-Robot H5 自动从 `localStorage.getItem('mbase_token')` 读取。
+`relay.html` 自动从 localStorage 读取基座登录态，拼接 `portal_token + companyId` 后跳转，子应用无需额外适配。
 
 ### 集成 Checklist
 
 - [ ] `.env.integrated` 中 `VITE_APP_MODE` 设为 `integrated`
-- [ ] `VITE_PUBLIC_PATH` 与 mbase 路由子路径一致
-- [ ] `VITE_GLOB_API_URL` 改为 mbase 统一网关地址
-- [ ] `VITE_MBASE_ORIGIN` 填写 mbase 宿主的 origin
-- [ ] `VITE_MBASE_TOKEN_METHOD` 与 mbase 团队约定一致
-- [ ] mbase 侧注册子应用路由
-- [ ] mbase 侧实现 Token 传递逻辑
+- [ ] `VITE_PUBLIC_PATH` 与 mbase `portal-apps.ts` 注册的 `mpPath` 一致
+- [ ] `VITE_GLOB_API_URL` / `VITE_GLOB_API_URL_PREFIX` 改为对应环境的域名与 API 前缀
+- [ ] 子应用读取 token 参数名为 `portal_token`（非 `token`）
+- [ ] 子应用同时接收并透传 `companyId`
+- [ ] mbase `portal-apps.ts` 注册子应用条目
 - [ ] Nginx 配置子路径 + SPA 回退
 - [ ] 网关配置 API 代理规则
-- [ ] 联调验证：mbase 登录后能正常访问 Robot H5 页面
+- [ ] 联调验证：mbase 登录后能正常访问子应用页面
 
 ### 集成模式下的行为差异
 
 | 行为 | standalone | integrated |
 |------|-----------|-----------|
-| 登录页 | 显示自有登录表单 | 跳过（从 mbase 获取 token） |
-| Token 来源 | 自身 `/login` 接口 | mbase 传递（query/postMessage/storage） |
-| Token 失效 | 跳转自身登录页 | 跳转自身登录页（兜底）或通知 mbase |
-| 部署路径 | `/robot-h5/` | `/mbase/robot-h5/` |
-| API 网关 | 自有后端网关 | mbase 统一网关 |
-| 权限数据 | 自身权限接口 | 可复用自身接口（appId 不变） |
+| 登录页 | 显示自有登录表单 | 跳过（从 URL 读取 portal_token） |
+| Token 来源 | 自身 `/login` 接口 | mbase URL 透传 `portal_token` |
+| companyId | 无 / 自选 | mbase 透传 `companyId`（必需） |
+| Token 失效 | 跳转自身登录页 | 通知 mbase / 跳转自身登录页（兜底） |
+| 部署路径 | `/robot-h5/` | `/mbase/{子应用}/` |
+| API 网关 | 自有后端网关 | mbase 统一网关（ytiop-xxx 域名） |
+| 消息直达 | — | 可用 relay.html 中转页 |
 
 ### 注意事项
 
 1. **不要修改 standalone 模式的任何代码** — 集成仅通过环境变量和构建命令切换
 2. **Token 获取失败时会兜底到登录页** — 即使在集成模式下，如果 mbase 未传递 token，用户仍可通过自身登录页登录
-3. **API 前缀不变** — 无论哪种模式，接口前缀都是 `/api`，只是 `VITE_GLOB_API_URL` 指向不同网关
+3. **API 前缀随环境变化** — 集成模式下接口前缀需与 mbase 网关一致（sit/uat/pre/prd 对应 sit-api/uat-api/pre-api/prd-api），通过 `VITE_GLOB_API_URL_PREFIX` 配置
 4. **权限体系独立** — Robot H5 的权限接口（`getAppMenus` / `getUserPermissions`）在两种模式下都正常工作，只要 token 有效
 5. **样式隔离** — Robot H5 使用 BEM + 唯一根类名隔离，不会与 mbase 样式冲突
 
