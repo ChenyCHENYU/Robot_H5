@@ -870,8 +870,7 @@ if (import.meta.hot)
 | `VITE_GLOB_APP_ID` | 移动端应用标识 | `robot-h5`（用于获取菜单权限） |
 | `VITE_HASH_ROUTE` | Hash 路由模式 | `false` |
 | `VITE_APP_MODE` | 应用运行模式 | `standalone` / `integrated` |
-| `VITE_MBASE_ORIGIN` | mbase 宿主 origin（postMessage 校验用） | 当前未启用 |
-| `VITE_MBASE_TOKEN_METHOD` | Token 传递方式 | `query`（mbase 当前仅支持，子应用读 `portal_token`） |
+| — 集成 Token | mbase 透传 URL 参数 | `portal_token` / `companyId` / `user_id` / `from`（固定，无需配置） |
 
 ### 双模式运行机制（standalone / integrated）
 

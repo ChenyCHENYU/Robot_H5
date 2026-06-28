@@ -76,9 +76,5 @@ declare global {
         VITE_PROXY: [string, string][];
         /** 应用运行模式：standalone（独立）| integrated（集成到 mbase） */
         VITE_APP_MODE: 'standalone' | 'integrated';
-        /** mbase 宿主 origin（集成模式下用于 postMessage 安全校验） */
-        VITE_MBASE_ORIGIN: string;
-        /** mbase Token 传递方式：query | postMessage | storage */
-        VITE_MBASE_TOKEN_METHOD: 'query' | 'postMessage' | 'storage';
     }
 }
