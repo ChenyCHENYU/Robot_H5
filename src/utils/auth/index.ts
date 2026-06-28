@@ -72,9 +72,53 @@ export function getMbaseUserId(): string {
     return getUrlParam('user_id');
 }
 
-/**
- * 是否来自 mbase 门户（URL 带 from=portal 标识）
- */
-export function isFromPortal(): boolean {
-    return getUrlParam('from') === 'portal';
+// ─── 门户来源标记（sessionStorage）───────────────────────────────────
+// 清除地址栏 portal 参数后仍可判断是否来自 mbase 门户，
+// 用于 token 失效等场景决定是否通知基座（而非跳自身登录页）。
+const PORTAL_FROM_KEY = 'h5_login_from';
+const PORTAL_FROM_VALUE = 'portal';
+
+/** 标记当前访问来源为 mbase 门户 */
+export function markPortalSource(): void {
+    sessionStorage.setItem(PORTAL_FROM_KEY, PORTAL_FROM_VALUE);
 }
+
+/** 清除门户来源标记 */
+export function clearPortalSource(): void {
+    sessionStorage.removeItem(PORTAL_FROM_KEY);
+}
+
+/** 是否由 mbase 门户嵌入（from=portal） */
+export function isFromPortal(): boolean {
+    return sessionStorage.getItem(PORTAL_FROM_KEY) === PORTAL_FROM_VALUE;
+}
+
+// ─── URL 参数清理 ─────────────────────────────────────────────────────
+/**
+ * 从地址栏移除 portal_token、from，避免 token 残留在 URL 暴露。
+ * 调用时机：子应用读取并应用 portal_token 之后。
+ */
+export function cleanPortalParamsFromUrl(): void {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('portal_token');
+    url.searchParams.delete('from');
+    const search = url.searchParams.toString();
+    window.history.replaceState(null, '', url.pathname + (search ? `?${search}` : '') + url.hash);
+}
+
+// ─── 子应用 → 基座 通信 ───────────────────────────────────────────────
+/**
+ * 通知 mbase 基座子应用登录态失效（token 过期/拒绝）。
+ *
+ * 集成模式下 token 由基座统一签发，子应用不应在 iframe 内跳自身登录页，
+ * 而是通知基座（postMessage {action:'logout'}），由基座重新签发 token 或
+ * 跳转登录页。基座 webview 页的 onMessage 会消费此消息。
+ */
+export function notifyPortalLogout(): void {
+    try {
+        window.parent?.postMessage({ action: 'logout' }, '*');
+    } catch (e) {
+        console.warn('[auth] notifyPortalLogout failed:', e);
+    }
+}
+

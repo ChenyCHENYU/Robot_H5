@@ -4,7 +4,7 @@ import { useRouteStoreWidthOut } from '@/store/modules/route';
 import { useUserStore } from '@/store/modules/user';
 import { usePermissionStoreWidthOut } from '@/store/modules/permission';
 import { PageEnum } from '@/enums/pageEnum';
-import { isIntegratedMode, getMbaseToken, getMbaseCompanyId } from '@/utils/auth';
+import { isIntegratedMode, getMbaseToken, getMbaseCompanyId, markPortalSource, cleanPortalParamsFromUrl } from '@/utils/auth';
 
 NProgress.configure({ parent: '#app', showSpinner: false, minimum: 0.3, speed: 200 });
 
@@ -22,6 +22,7 @@ const whitePathList = [PageEnum.BASE_LOGIN];
  * mbase 通过 URL query 透传 portal_token + companyId（buildAppUrl 生成），
  * 子应用同步读取并注入 userStore：token 用于请求头鉴权，
  * companyId 为后端权限校验必需（缺失会被拒为"用户不属于所选公司"）。
+ * 同时持久化门户来源标记并清除地址栏 token，避免暴露。
  */
 async function tryAcquireMbaseToken(userStore: ReturnType<typeof useUserStore>): Promise<boolean> {
     const token = getMbaseToken();
@@ -29,6 +30,9 @@ async function tryAcquireMbaseToken(userStore: ReturnType<typeof useUserStore>):
     userStore.setToken(token);
     // companyId 同步注入，供业务接口权限校验使用
     userStore.setCompanyId(getMbaseCompanyId());
+    // 标记门户来源（清 URL 后仍可识别），并立即清除地址栏 token
+    markPortalSource();
+    cleanPortalParamsFromUrl();
     return true;
 }
 

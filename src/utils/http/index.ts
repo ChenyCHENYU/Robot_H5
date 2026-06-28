@@ -2,6 +2,7 @@
 import { showDialog, showFailToast, showSuccessToast } from 'vant';
 import { MAxios, axios, formatRequestDate, joinTimestamp } from '@miracle-web/utils';
 import { setObjToUrlParams, deepMerge, urlReg, isString, BrowserType } from '@miracle-web/utils';
+import { isIntegratedMode, isFromPortal, notifyPortalLogout } from '@/utils/auth';
 import type {
     AxiosResponse,
     InternalAxiosRequestConfig,
@@ -171,6 +172,12 @@ const transform: AxiosTransform = {
         }
 
         if (code === ResultEnum.TOKEN_EXPIRED) {
+            // 集成模式（mbase 子应用）：token 由基座签发，失效时通知基座重新登录，
+            // 不在 iframe 内跳自身登录页（避免与基座会话脱节）。
+            if (isIntegratedMode() && isFromPortal()) {
+                notifyPortalLogout();
+                return response;
+            }
             showDialog({
                 title: '提示',
                 message: '登录身份已失效，请重新登录!',
