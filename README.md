@@ -1422,7 +1422,7 @@ https://ytiop-prd.walsin.com.cn/mbase/{子应用}/
 - **`portal_token`**（必传）— 登录凭证，写入请求头 `Authorization: Bearer xxx`
 - **`companyId`**（必传）— 当前公司，业务接口权限校验依赖此值；缺失会被后端拒为"用户不属于所选公司"
 - `from=portal` — 标识来源为基座（子应用据此跳过自身登录页）
-- `user_id` — 用户 ID
+- `user_id` — 基座透传的用户 ID（仅透传，不消费）；用户信息（昵称/头像等）由 `getUserInfo` 接口以 portal_token 获取
 
 > 参数名固定为 `portal_token`（非 `token`）。子应用若使用旧名 `token` 读取将获取不到凭证。
 

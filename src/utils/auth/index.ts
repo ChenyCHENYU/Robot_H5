@@ -63,15 +63,6 @@ export function getMbaseCompanyId(): string {
     return getUrlParam('companyId');
 }
 
-/**
- * 集成模式下从 mbase 获取用户 ID（透传自基座登录态）
- *
- * @returns userId 字符串，获取失败返回空字符串
- */
-export function getMbaseUserId(): string {
-    return getUrlParam('user_id');
-}
-
 // ─── 门户来源标记（sessionStorage）───────────────────────────────────
 // 清除地址栏 portal 参数后仍可判断是否来自 mbase 门户，
 // 用于 token 失效等场景决定是否通知基座（而非跳自身登录页）。
