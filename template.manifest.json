@@ -1,0 +1,47 @@
+{
+  "$schema": "./template-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "mobile.robot-h5",
+  "name": "JH4J 移动端 H5 模板",
+  "description": "基于 Vue 3、Vite 7、Vant 4 和 TypeScript 的企业级移动端 H5 模板",
+  "version": "1.6.0",
+  "category": "mobile",
+  "runtime": {
+    "node": "^22.12.0 || ^24.0.0",
+    "recommendedNode": "24",
+    "packageManager": "pnpm@11.8.0"
+  },
+  "defaults": {
+    "projectName": "jh4j-mobile-app",
+    "moduleName": "app",
+    "title": "JH4J Mobile",
+    "devServerPort": 8888,
+    "localBackendUrl": "http://localhost:10010",
+    "localPublicUrl": "http://localhost:8888",
+    "npmRegistry": "https://registry.npmmirror.com",
+    "jhlcRegistry": "https://registry.npmmirror.com"
+  },
+  "features": [
+    {
+      "id": "git-standards",
+      "name": "完整 Git 与代码质量规范",
+      "description": "Commitizen、Commitlint、Husky、ESLint 与 lint-staged",
+      "defaultEnabled": true,
+      "required": false,
+      "package": "@robot-admin/git-standards"
+    }
+  ],
+  "parameters": [
+    { "name": "projectName", "type": "string", "required": true },
+    { "name": "title", "type": "string", "required": true },
+    { "name": "devServerPort", "type": "number", "required": true, "minimum": 1024, "maximum": 65535 },
+    { "name": "localBackendUrl", "type": "string", "required": true, "format": "uri" },
+    { "name": "npmRegistry", "type": "string", "required": true },
+    { "name": "jhlcRegistry", "type": "string", "required": true }
+  ],
+  "entry": {
+    "interactive": "node scripts/setup-project.mjs",
+    "nonInteractive": "node scripts/setup-project.mjs --yes"
+  },
+  "generatedMetadata": ".jhlc/project.json"
+}

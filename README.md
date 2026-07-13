@@ -9,6 +9,7 @@
 ## 目录
 
 - [快速开始](#快速开始)
+- [作为项目模板使用](#作为项目模板使用)
 - [五大模块](#五大模块)
 - [技术栈](#技术栈)
 - [服务架构](#服务架构)
@@ -32,8 +33,8 @@
 
 ```bash
 # 环境要求
-node >= 20.0.0
-pnpm >= 10.0.0
+node 22.12+ 或 Node 24
+pnpm >= 11.8.0
 
 # 安装依赖
 pnpm install
@@ -46,6 +47,30 @@ pnpm build:prod
 ```
 
 **默认账号**：`admin` / `123456`
+
+---
+
+## 作为项目模板使用
+
+推荐通过 JH4J Cloud 脚手架创建，脚手架会依次尝试 GitHub 和 Gitee 模板源：
+
+```bash
+pnpm dlx @agile-team/jh4j-cloud-cli@latest create my-mobile-app \
+  --category mobile \
+  --template mobile.robot-h5
+```
+
+也可以直接 clone 后初始化，两种方式共用同一套模板参数和初始化脚本：
+
+```bash
+git clone https://github.com/ChenyCHENYU/Robot_H5.git my-mobile-app
+cd my-mobile-app
+pnpm setup
+pnpm install
+pnpm dev
+```
+
+初始化时可确认项目名称、应用标题、开发端口、本地 API 地址、npm registry，以及是否启用完整 Git 与代码质量规范。
 
 ---
 
