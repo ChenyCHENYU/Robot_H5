@@ -3,6 +3,13 @@
     ".": {
       "release-type": "node",
       "package-name": "robot-h5",
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "template.manifest.json",
+          "jsonpath": "$.version"
+        }
+      ],
       "changelog-types": [
         { "type": "feat",     "section": "🎯 新功能" },
         { "type": "fix",      "section": "🐛 Bug 修复" },
