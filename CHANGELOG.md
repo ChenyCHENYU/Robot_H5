@@ -2,6 +2,110 @@
 
 All notable changes to this project will be documented in this file. See [release-please](https://github.com/googleapis/release-please) for commit guidelines.
 
+## [2.0.0](https://github.com/ChenyCHENYU/Robot_H5/compare/robot-h5-v1.6.0...robot-h5-v2.0.0) (2026-07-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* **deploy:** release workflow changed from standard-version to release-please
+
+### Features
+
+* **auth:** 主动退出通知基座(user-logout)补齐双向闭环 ([87aa998](https://github.com/ChenyCHENYU/Robot_H5/commit/87aa99807b042e86defcc265758fb52aa4391303))
+* **auth:** 子应用集成闭环(门户标记+清URL+失效通知基座) ([ceed8b6](https://github.com/ChenyCHENYU/Robot_H5/commit/ceed8b6ec1e06ef70a23740039b3de975ab66d64))
+* **auth:** 集成双网关服务隔离与权限体系 ([934ca28](https://github.com/ChenyCHENYU/Robot_H5/commit/934ca28a2938f43ad38b529e5a203466014bd939))
+* **convention-audit:** 改为工作流自动终结步骤，代码变更后自动审计修复 ([e812f7c](https://github.com/ChenyCHENYU/Robot_H5/commit/e812f7cb1ebe570494cc4f08996294240d212ff2))
+* **convention-audit:** 新增 AI 可执行审计 prompt，补充 radius-full 令牌 ([206aaa2](https://github.com/ChenyCHENYU/Robot_H5/commit/206aaa27794594bb7f3e09920018ebada397f157))
+* **convention-audit:** 补充运行时安全+原型精细度审计，同步多 AI 编辑器规则 ([c8010a8](https://github.com/ChenyCHENYU/Robot_H5/commit/c8010a862492d9ec508a1479350d0d536aec693b))
+* **demo+docs:** 重写设备报修表单布局 + 移动端Skills方案文档 ([0f644b8](https://github.com/ChenyCHENYU/Robot_H5/commit/0f644b8000063d6aa6de48efd246bfb089251fc7))
+* **demo:** 修复表单校验重复 + 新增客户档案列表/详情/表单demo ([eb1edb0](https://github.com/ChenyCHENYU/Robot_H5/commit/eb1edb082e8ad75ecb7de46cef06f36e21e5dc4f))
+* **demo:** 新增弹出层/手势/骨架屏/表单/缓存 5 个示例页 ([cc4d6e1](https://github.com/ChenyCHENYU/Robot_H5/commit/cc4d6e10b33a6f277e9de2e4f0faf4a94a6eeb7d))
+* **demo:** 设备报修表单 Liquid Glass 质感重设计 ([60c803a](https://github.com/ChenyCHENYU/Robot_H5/commit/60c803af48c308105257f8fd0d0e752020f806c1))
+* **deploy:** add vercel demo mode with mock data ([a9fdb50](https://github.com/ChenyCHENYU/Robot_H5/commit/a9fdb5081ddfd7141d52c9e6f2b94ec5f542f051))
+* **hooks:** enhance location/watermark/push demos ([811f2d3](https://github.com/ChenyCHENYU/Robot_H5/commit/811f2d34ab66a6db6c02709371f18d1e462f6c47))
+* **login:** iOS液态玻璃登录页 + 圆形品牌Logo设计 ([560e252](https://github.com/ChenyCHENYU/Robot_H5/commit/560e252c7cf6c72ad4e676b6e45128d179d4fb87))
+* **login:** 底部版权信息 + 版本升级至1.5.0 ([e418fa8](https://github.com/ChenyCHENYU/Robot_H5/commit/e418fa87069b5b4d07803cef581e8406a680abc0))
+* **login:** 登录成功过渡动画 + 双模式认证架构 + 多环境配置 ([b5b75b1](https://github.com/ChenyCHENYU/Robot_H5/commit/b5b75b11a593c07e337aec5f5859e56b6b86953c))
+* **login:** 验证码功能 + 退出过渡动画 + 登录按钮品牌色统一 ([7e8f41b](https://github.com/ChenyCHENYU/Robot_H5/commit/7e8f41b5e89d5424528fc0defcff423fd0da25fb))
+* **logo:** 圆角方块高质感品牌Logo设计 ([7ae9fb5](https://github.com/ChenyCHENYU/Robot_H5/commit/7ae9fb50258e261fdea3f3b761a0c05ac285a198))
+* **perf+ui:** 优化首屏性能、重设导航栏返回按钮、新增 C_Form/C_Table 组件 ([d79bda6](https://github.com/ChenyCHENYU/Robot_H5/commit/d79bda6a9444339df5a42b93b0f9f9279d326de0))
+* **showcase:** 扩展5Tab布局、能力展示页、模板入口、加载屏优化 ([cef9aff](https://github.com/ChenyCHENYU/Robot_H5/commit/cef9aff1c1fb49631dfc8e8eeb198ebe44ef4142))
+* **showcase:** 重构能力页、修复图标、完善文档 ([624465e](https://github.com/ChenyCHENYU/Robot_H5/commit/624465e4fe148d32eba82bb70f800b89e810ee99))
+* **skills:** 新增 api-spec 技能，增强 mock-gen 端点模板，更新工作流 ([021f522](https://github.com/ChenyCHENYU/Robot_H5/commit/021f522424fd5f833e19650323a970c1cb273b33))
+* **skills:** 新增 Kiro/Trae/Claude/AGENTS 编辑器支持，同步 Skills 调度注册表 ([c967d47](https://github.com/ChenyCHENYU/Robot_H5/commit/c967d47e62a0d6719315d2f6ee7171193aff9997))
+* **skills:** 类型迁移 + Skills 指令集 + 自动发版 ([89d9f52](https://github.com/ChenyCHENYU/Robot_H5/commit/89d9f52f036ebbf2f9fae080bb5a93c634eb11fb))
+* **template:** 接入 JH4J 移动端脚手架 ([52a7fa3](https://github.com/ChenyCHENYU/Robot_H5/commit/52a7fa331bb1e44bd010610c5aa17f22dce24753))
+* **展示:** 水印平铺模式+头像上传+个人页重设计+SCSS警告修复 ([54adaed](https://github.com/ChenyCHENYU/Robot_H5/commit/54adaedaeb16d5930651f54c0d351603c63cb1df))
+* 新增 C_Icon 通用图标组件 ([37e3769](https://github.com/ChenyCHENYU/Robot_H5/commit/37e376913bb21bc9c1b3dee68296b9062bf2f262))
+* **首页:** 快捷入口改为玻璃卡片+替换为特色功能入口 ([242f0ed](https://github.com/ChenyCHENYU/Robot_H5/commit/242f0edc681168a0b811f618deefa336209e7431))
+
+
+### Bug Fixes
+
+* **auth:** 集成模式对齐mbase(portal_token+companyId,清理死代码) ([e0ac551](https://github.com/ChenyCHENYU/Robot_H5/commit/e0ac5518b2bfac09f01b67377b2970b9bb00bb53))
+* **build:** disable deleteOriginFile to prevent entry JS from being replaced by .gz ([2ac5da7](https://github.com/ChenyCHENYU/Robot_H5/commit/2ac5da78573bb3bafac0e14382b1c5f0420c9065))
+* **build:** pin packageManager and clean up stale docs ([4881a7d](https://github.com/ChenyCHENYU/Robot_H5/commit/4881a7d03a2caca01b3a55bd9165f13b76ecddc7))
+* **components:** 统一组件模板引用格式为 C_ 前缀 ([f3a95ed](https://github.com/ChenyCHENYU/Robot_H5/commit/f3a95edf29d7a075a521e38bee296da0a41a28ee))
+* **css:** 根治 [@layer](https://github.com/layer) 优先级体系 + 清理冗余代码 ([0cc4856](https://github.com/ChenyCHENYU/Robot_H5/commit/0cc4856a6d63bd2279470f7cdd34997275706f3d))
+* **deploy:** add framework null to vercel.json to prevent auto-detection conflict ([0302274](https://github.com/ChenyCHENYU/Robot_H5/commit/03022743c998c6bf3437daedbd6aeb974c7768bc))
+* **deploy:** add vercel.json to fix static asset 404 under /robot-h5/ base path ([27d9bce](https://github.com/ChenyCHENYU/Robot_H5/commit/27d9bcef92b78e0a25c58e0c26ffcaf683aa7d37))
+* **deploy:** disable PWA + unregister stale SW + switch to release-please ([cb52945](https://github.com/ChenyCHENYU/Robot_H5/commit/cb52945baf9d5431ad090462f2f4e16b72f58c3c))
+* **deploy:** fix vercel base path and add auto deploy workflow ([7952b1b](https://github.com/ChenyCHENYU/Robot_H5/commit/7952b1b703f34df4676f2ffd4755d5e6db348bf8))
+* **deploy:** set VITE_PUBLIC_PATH=/ for Vercel root deployment ([e299325](https://github.com/ChenyCHENYU/Robot_H5/commit/e299325f6360c923546309fdcdb84b3ec6d740ac))
+* **deploy:** update lockfile after removing standard-version and vite-plugin-pwa ([90c07a7](https://github.com/ChenyCHENYU/Robot_H5/commit/90c07a7ea0353cb5a0741bcee5d2255d4dc23214))
+* **hooks:** watermark canvas rendering, env guides for QR/NFC, file preview examples, permission UX ([cbaab24](https://github.com/ChenyCHENYU/Robot_H5/commit/cbaab245865aac4adb12b5fb61de6cf61be18540))
+* **login:** getCaptcha返回类型解包层级错误 ([31dd0da](https://github.com/ChenyCHENYU/Robot_H5/commit/31dd0da4eba050775f5bf21b0b534e5be4892949))
+* **login:** 修复 SCSS 括号不匹配语法错误 ([f9324ac](https://github.com/ChenyCHENYU/Robot_H5/commit/f9324acc4bb720d7f85615b34df071b77527712c))
+* **login:** 修复index.scss多余}导致的sass构建失败(删除重复损坏块) ([b2f6d08](https://github.com/ChenyCHENYU/Robot_H5/commit/b2f6d089a8cd9512433297338be3bb7706d8748f))
+* **login:** 修复scss语法+居中布局+注册可滚动+去掉英文 ([a218f19](https://github.com/ChenyCHENYU/Robot_H5/commit/a218f19c8848ffe1e20af984247fe1c2fa93f7e0))
+* **login:** 修复内容靠右偏移 - 恢复 row flex 居中 ([9126988](https://github.com/ChenyCHENYU/Robot_H5/commit/9126988ec279b3cbd5357050ba9a9eb9d2e0bc13))
+* **login:** 修复样式格式+居中布局+注册可滚动 ([c0e6b7b](https://github.com/ChenyCHENYU/Robot_H5/commit/c0e6b7b6efc7d4383c81847bf8d7a5247737ec47))
+* **login:** 修复登录页内容水平偏移 ([d5594ec](https://github.com/ChenyCHENYU/Robot_H5/commit/d5594ec842c60d2fecd3a6ec633a0b8564c0b5dd))
+* **login:** 修复验证码图标垂直居中(覆盖Vant left-icon) ([dfaa8a1](https://github.com/ChenyCHENYU/Robot_H5/commit/dfaa8a19fa16ce47ea199a970585e2ccd78a6b5b))
+* **login:** 修复验证码随机数字+图标居中 ([c8f9a13](https://github.com/ChenyCHENYU/Robot_H5/commit/c8f9a13a40f88aae0a4d52d29a0cf3e55f44829f))
+* **login:** 回退到已验证可用的居中布局参数 ([b6bbc46](https://github.com/ChenyCHENYU/Robot_H5/commit/b6bbc463bd3f80e3630b4b9d22b1903a35a7a6ca))
+* **login:** 根治登录页右偏与右侧裁切 ([68f4bb7](https://github.com/ChenyCHENYU/Robot_H5/commit/68f4bb78835f8ce38476e7cee951a3b771c80570))
+* **login:** 注册页可滚动+顶部留白保证logo可见 ([3ac5bee](https://github.com/ChenyCHENYU/Robot_H5/commit/3ac5beed3f76cd4b1100da661999eef201da7cbf))
+* **login:** 间距优化 + 记住我/忘记密码精简 ([044d947](https://github.com/ChenyCHENYU/Robot_H5/commit/044d947453957a330f49e1332b71d77340370dda))
+* **login:** 验证码纯数字随机+图标垂直居中+按钮品牌色 ([878a057](https://github.com/ChenyCHENYU/Robot_H5/commit/878a057ff240326d050de1a24771c700325f64e0))
+* **login:** 验证码随机生成+点击刷新动画 ([2b4a21d](https://github.com/ChenyCHENYU/Robot_H5/commit/2b4a21d90e9cfbb28025f97de4e815273879f5e1))
+* **mock:** 验证码改为随机数字生成 ([7239d16](https://github.com/ChenyCHENYU/Robot_H5/commit/7239d16100becfd47ac2cfb309bf8548db358bee))
+* **perf+ui:** 修复页面导航刷新bug、精简图标集、重设计表单表格组件 ([6927c70](https://github.com/ChenyCHENYU/Robot_H5/commit/6927c70033a8aaa5668c53d811d2af15ab31849b))
+* **pwa:** exclude index.html from SW precache to prevent MIME error on SW update ([1f33045](https://github.com/ChenyCHENYU/Robot_H5/commit/1f33045a2489b2987380e68029dd2543b1c50591))
+* **pwa:** restore index.html in globPatterns and add navigateFallback ([84c67c9](https://github.com/ChenyCHENYU/Robot_H5/commit/84c67c98168f1b1cafd9f8212b7ce44c94e3cb42))
+* **release:** 修正模板自动发版版本轨道 ([9a12423](https://github.com/ChenyCHENYU/Robot_H5/commit/9a12423da84ddcf3f4f48209829285bc59f5a142))
+* **release:** 迁移版本清单至根目录 ([0c19267](https://github.com/ChenyCHENYU/Robot_H5/commit/0c192677fafbe995e2f30f9a0bb27ddf71863c72))
+* **router:** allow all registered routes for logged-in users ([8aa76b6](https://github.com/ChenyCHENYU/Robot_H5/commit/8aa76b69adb17264997a7ea65551c1fde7bd0d49))
+* **scss:** fix dashboard unmatched brace and hooks [@use](https://github.com/use) error ([bd87544](https://github.com/ChenyCHENYU/Robot_H5/commit/bd8754491d2fb2c62a3fd94431c7b903e56b9094))
+* **ui:** 修复样式穿透与 TypeScript 类型错误 ([47a53a7](https://github.com/ChenyCHENYU/Robot_H5/commit/47a53a747045eb24fc44bf77d4cc9c805436bef8))
+* **ui:** 修复虚拟状态栏在桌面预览时不显示的问题 ([8060693](https://github.com/ChenyCHENYU/Robot_H5/commit/80606930eb277589c9ac7ab16a475b703b330f24))
+* **ui:** 完善外壳状态栏组件名称及文档迁移 ([648f368](https://github.com/ChenyCHENYU/Robot_H5/commit/648f3684dcc3d70e33238890469a0d616beeaf50))
+* **ui:** 彻底修复虚拟状态栏不显示 ([634d67c](https://github.com/ChenyCHENYU/Robot_H5/commit/634d67c186713244fcc0738f7857cfe74487144f))
+* **unocss:** 启用 outputToCssLayers 修复工具类被组件SCSS覆盖问题 ([8be88bd](https://github.com/ChenyCHENYU/Robot_H5/commit/8be88bd33620c52dedc941057c6af99c768d464e))
+* **unocss:** 用 [@layer](https://github.com/layer) 彻底解决工具类被组件SCSS覆盖 ([9009852](https://github.com/ChenyCHENYU/Robot_H5/commit/90098528f0aa436aaf7ce7b18af9adbf71381688))
+* 修复代理配置断裂 + API快捷方法封装 ([aaca9bb](https://github.com/ChenyCHENYU/Robot_H5/commit/aaca9bba09da242c75c028f0c938cac50e1ef03c))
+* 修复多项 UI 交互问题及优化体验 ([70e6591](https://github.com/ChenyCHENYU/Robot_H5/commit/70e6591ef2a55e912d49d1974b22dc36658b31b2))
+* 修复桌面预览状态栏不显示及导入路径错误 ([509f3af](https://github.com/ChenyCHENYU/Robot_H5/commit/509f3af8607cf722905e8c89f61edfdb5cfb12f1))
+* 修复注册/找回密码页截断无法滚动 & 提取表单到data.ts ([f7de023](https://github.com/ChenyCHENYU/Robot_H5/commit/f7de023380c52eaeebf1e3a8c7685cc54a90fd32))
+* 修复登录/注册页无法滚动的根本原因 ([2aa13f3](https://github.com/ChenyCHENYU/Robot_H5/commit/2aa13f39ff540405c2bfcbd5895da7a9f69fc90d))
+* 修复虚拟状态栏不显示及首次加载刷新问题 ([3c799e6](https://github.com/ChenyCHENYU/Robot_H5/commit/3c799e688f006483b085711ac61d08ad93630477))
+* 彻底还原虚拟状态栏原始实现方案 ([9b02abe](https://github.com/ChenyCHENYU/Robot_H5/commit/9b02abe3cb115cb33fa837ea9edbc446753cf194))
+* **构建:** 升级core到1.0.3修复mode类型+修正engines配置 ([bd6962a](https://github.com/ChenyCHENYU/Robot_H5/commit/bd6962a1a21cc4c32512c81da08c3405dac93713))
+* **样式:** 统一设计令牌+提取style块+修正文档 ([efb1dc8](https://github.com/ChenyCHENYU/Robot_H5/commit/efb1dc8d5643bce824679306ab457c6f134517ba))
+* **首页:** 修复卡片图标显示+统计数字配色 ([e14a124](https://github.com/ChenyCHENYU/Robot_H5/commit/e14a124874688c2d3ab0ba31c7409062fc1b5398))
+* **首页:** 快捷入口图标改用C_Icon组件修复不显示问题 ([feb8992](https://github.com/ChenyCHENYU/Robot_H5/commit/feb89920b6303b6bbf6ef9811483079b3f697615))
+
+
+### Performance Improvements
+
+* **build:** SASS 循环依赖修复 + 构建优化 + legacy 插件移除 ([d4b6461](https://github.com/ChenyCHENYU/Robot_H5/commit/d4b646160b2f08c5c82812ca5117f2c08c675747))
+* **ui:** 页面过渡动画接入+滚动修复+体验增强 ([21fdcb9](https://github.com/ChenyCHENYU/Robot_H5/commit/21fdcb93bacb20a33f60939c09e865bce37851e4))
+
+
+### Reverts
+
+* **login:** 回退到舒适版本(a37e1da) ([884cfcd](https://github.com/ChenyCHENYU/Robot_H5/commit/884cfcdf463e9164e6e0326d4dfe134bcaba8a17))
+
 ### [1.3.9](https://git.yourcompany.com/robot/robot-h5/compare/v1.3.8...v1.3.9) (2026-04-20)
 
 
