@@ -1129,9 +1129,11 @@ pnpm type-check        # 运行 vue-tsc --noEmit，必须零错误
 
 本项目已安装并配置好 `@robot-h5/core`：
 
-- 安装：`pnpm add @robot-h5/core@^1.0.0`（已在 `package.json` 中）
+- 安装：`pnpm add @robot-h5/core@^1.1.1`（已在 `package.json` 中）
 - 配置文件：`src/h5.config.ts`
 - 注册方式：`main.ts` 中 `app.use(h5Core, h5Config)` 一行完成
+
+依赖更新采用“兼容版本范围 + 锁文件 + 自动更新 PR”：`^1.1.1` 允许升级到后续兼容的 `1.x` 版本，`pnpm-lock.yaml` 保证相同源码可重复构建；GitHub 每周检查新版本并提交可审查的更新。
 
 ### 配置文件
 

@@ -1,4 +1,6 @@
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - core-js
-  - esbuild
+minimumReleaseAgeExclude:
+  - '@robot-h5/core'
+allowBuilds:
+  '@parcel/watcher': true
+  core-js: true
+  esbuild: true
