@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [release-please](https://github.com/googleapis/release-please) for commit guidelines.
 
+## [1.6.1](https://github.com/ChenyCHENYU/Robot_H5/compare/v1.6.0...v1.6.1) (2026-07-14)
+
+
+### 🐛 Bug 修复
+
+* **release:** 修正变更日志配置字段 ([933d32f](https://github.com/ChenyCHENYU/Robot_H5/commit/933d32f988103763b4d1db37a9bc71f663e280db))
+* **release:** 修正模板自动发版版本轨道 ([9a12423](https://github.com/ChenyCHENYU/Robot_H5/commit/9a12423da84ddcf3f4f48209829285bc59f5a142))
+* **release:** 固定1.6.0发版起点 ([5a36e9c](https://github.com/ChenyCHENYU/Robot_H5/commit/5a36e9c78ff64351b633e9c480c9f2872e10caea))
+* **release:** 延续v版本标签格式 ([33e36b6](https://github.com/ChenyCHENYU/Robot_H5/commit/33e36b6f1a07d44ccb558b216b80c64275fd1b91))
+* **release:** 迁移版本清单至根目录 ([0c19267](https://github.com/ChenyCHENYU/Robot_H5/commit/0c192677fafbe995e2f30f9a0bb27ddf71863c72))
+
+
+### 📦 依赖更新
+
+* **core:** 升级至1.1.1并完善更新机制 ([d980133](https://github.com/ChenyCHENYU/Robot_H5/commit/d98013388576a6eaa6c780dd3ea34d25925bcc7a))
+
 ### [1.3.9](https://git.yourcompany.com/robot/robot-h5/compare/v1.3.8...v1.3.9) (2026-04-20)
 
 
