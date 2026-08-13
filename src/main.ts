@@ -5,11 +5,15 @@ import { setupStore } from '@/store';
 import { setupPlugins } from '@/plugins';
 import { h5Core } from '@robot-h5/core';
 import h5Config from './h5.config';
+import { applyMbaseHostClass, installMbaseNavigation } from '@/platform/mbase';
 
 async function bootstrap() {
+    applyMbaseHostClass();
     const app = createApp(App);
     // 挂载状态管理
     setupStore(app);
+    // 在首个路由完成前安装：返回缓存页时也会重新上报标题和导航状态。
+    installMbaseNavigation(router);
     // 挂载路由
     setupRouter(app);
     // 挂载插件

@@ -1,16 +1,23 @@
 // axios配置  可自行根据项目进行更改，只需更改该文件即可，其他文件可以不动
 import { showDialog, showFailToast, showSuccessToast } from 'vant';
-import { MAxios, axios, formatRequestDate, joinTimestamp } from '@miracle-web/utils';
-import { setObjToUrlParams, deepMerge, urlReg, isString, BrowserType } from '@miracle-web/utils';
-import { isIntegratedMode, isFromPortal, notifyPortalLogout } from '@/utils/auth';
-import type {
-    AxiosResponse,
-    InternalAxiosRequestConfig,
-    AxiosTransform,
-    CreateAxiosOptions,
-    RequestOptions,
-    Result,
+import {
+    MAxios,
+    axios,
+    formatRequestDate,
+    joinTimestamp,
+    setObjToUrlParams,
+    deepMerge,
+    urlReg,
+    isString,
+    BrowserType,
+    type AxiosResponse,
+    type InternalAxiosRequestConfig,
+    type AxiosTransform,
+    type CreateAxiosOptions,
+    type RequestOptions,
+    type Result,
 } from '@miracle-web/utils';
+import { isIntegratedMode, isFromPortal, notifyPortalLogout } from '@/utils/auth';
 import { ContentTypeEnum, RequestEnum, ResultEnum } from '@/utils/http/httpEnum';
 import { PageEnum } from '@/enums/pageEnum';
 
@@ -175,7 +182,8 @@ const transform: AxiosTransform = {
             // 集成模式（mbase 子应用）：token 由基座签发，失效时通知基座重新登录，
             // 不在 iframe 内跳自身登录页（避免与基座会话脱节）。
             if (isIntegratedMode() && isFromPortal()) {
-                notifyPortalLogout();
+                // 被动失效只通知宿主；通信失败已记录诊断信息，不产生未处理 Promise。
+                void notifyPortalLogout().catch(() => undefined);
                 return response;
             }
             showDialog({

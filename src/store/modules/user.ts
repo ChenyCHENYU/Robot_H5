@@ -6,7 +6,12 @@ import router from '@/router';
 import { encryptAES, decryptAES } from '@miracle-web/utils';
 import { useEnv } from '@/hooks/useEnv';
 import { usePermissionStoreWidthOut } from './permission';
-import { isIntegratedMode, isFromPortal, notifyPortalUserLogout } from '@/utils/auth';
+import {
+    clearPortalSource,
+    isIntegratedMode,
+    isFromPortal,
+    notifyPortalUserLogout,
+} from '@/utils/auth';
 
 interface UserInfo {
     userId: string | number;
@@ -34,17 +39,19 @@ interface LoginParams {
 
 const { isProdMode } = useEnv();
 
+const createEmptyUserInfo = (): UserInfo => ({
+    userId: '',
+    username: '',
+    nickname: '',
+    avatar: '',
+    cover: '',
+    gender: 0,
+    phone: '',
+});
+
 export const useUserStore = defineStore('app-user-store', {
     state: (): IUserState => ({
-        userInfo: {
-            userId: '',
-            username: '',
-            nickname: '',
-            avatar: '',
-            cover: '',
-            gender: 0,
-            phone: '',
-        },
+        userInfo: createEmptyUserInfo(),
         token: '',
         companyId: '',
     }),
@@ -62,6 +69,13 @@ export const useUserStore = defineStore('app-user-store', {
         },
         setUserInfo(info: UserInfo) {
             this.userInfo = info;
+        },
+        clearLocalSession() {
+            this.setToken('');
+            this.setCompanyId('');
+            this.setUserInfo(createEmptyUserInfo());
+            usePermissionStoreWidthOut().resetPermissions();
+            clearPortalSource();
         },
 
         async Login(params: LoginParams) {
@@ -94,7 +108,15 @@ export const useUserStore = defineStore('app-user-store', {
             // 集成模式：用户主动退出时通知基座执行完整退出流程
             // （避免子应用退出后基座会话残留），由基座统一跳登录页
             if (isIntegratedMode() && isFromPortal()) {
-                notifyPortalUserLogout();
+                try {
+                    await notifyPortalUserLogout();
+                    // 基座负责退出和跳转；子应用仍须清理自身持久化状态，
+                    // 避免 WebView 被复用或下次换号进入时短暂展示旧用户。
+                    this.clearLocalSession();
+                    return;
+                } catch {
+                    // 宿主通信失败才执行本地退出兜底，避免成功通知后继续刷新 iframe。
+                }
             }
             if (this.getToken) {
                 try {
@@ -103,11 +125,7 @@ export const useUserStore = defineStore('app-user-store', {
                     console.error('注销Token失败');
                 }
             }
-            this.setToken('');
-            this.setUserInfo({} as UserInfo);
-            // 重置权限数据
-            const permissionStore = usePermissionStoreWidthOut();
-            permissionStore.resetPermissions();
+            this.clearLocalSession();
             router.push(PageEnum.BASE_LOGIN);
             location.reload();
         },

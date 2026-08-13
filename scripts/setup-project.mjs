@@ -132,7 +132,17 @@ function apiPrefix(value) {
   return `/${String(value || "api").replace(/^\/+|\/+$/g, "")}`;
 }
 
-async function updateEnvironmentFiles(config, projectName, title, port, localBackendUrl) {
+function mbasePath(moduleName, projectName) {
+  const explicitModule = moduleName && !new Set(["app", "robot-h5"]).has(moduleName)
+    ? moduleName
+    : projectName.replace(/^wl-app-/, "");
+  const segment = String(explicitModule)
+    .trim()
+    .replace(/^\/+|\/+$/g, "");
+  return `/mbase/${segment}/`;
+}
+
+async function updateEnvironmentFiles(config, projectName, moduleName, title, port, localBackendUrl) {
   for (const [fileName, environmentName] of ENVIRONMENTS) {
     const file = path.join(root, fileName);
     if (!existsSync(file)) continue;
@@ -159,6 +169,10 @@ async function updateEnvironmentFiles(config, projectName, title, port, localBac
     } else {
       content = setEnvValue(content, "VITE_GLOB_API_URL", backendUrl);
       content = setEnvValue(content, "VITE_GLOB_UPLOAD_URL", `${backendUrl}/upload`);
+    }
+    if (fileName === ".env.integrated") {
+      content = setEnvValue(content, "VITE_PUBLIC_PATH", mbasePath(moduleName, projectName));
+      content = setEnvValue(content, "VITE_MBASE_ORIGIN", new URL(backendUrl).origin);
     }
     await writeFile(file, content, "utf8");
   }
@@ -279,7 +293,7 @@ async function main() {
       writeJson(projectConfigPath, nextConfig),
       writeJson(packagePath, nextPackage),
       writeFile(path.join(root, ".npmrc"), npmrc(npmRegistry, jhlcRegistry), "utf8"),
-      updateEnvironmentFiles(nextConfig, projectName, title, port, localBackendUrl)
+      updateEnvironmentFiles(nextConfig, projectName, nextConfig.moduleName, title, port, localBackendUrl)
     ]);
 
     const indexPath = path.join(root, "index.html");

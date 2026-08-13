@@ -2,7 +2,7 @@
 
 > **Vue 3 + Vite 7 + TypeScript** 移动端 H5 应用框架
 >
-> 设计语言：Apple HIG Liquid Glass · 暗黑模式 · CSS Cascade Layers · 响应式 viewport 适配
+> 设计语言：Apple HIG Liquid Glass · 暗黑模式 · PDA 旧 WebView 兼容 · 响应式 viewport 适配
 
 ---
 
@@ -26,6 +26,7 @@
 - [最佳实践](#最佳实践)
 - [@robot-h5/core 通用能力包](#robot-h5core-通用能力包)
 - [附录：mbase 集成指南](#附录mbase-集成指南)
+- [PDA 兼容与 mbase 专项文档](#pda-兼容与-mbase-专项文档)
 
 ---
 
@@ -71,6 +72,8 @@ pnpm dev
 ```
 
 初始化时可确认项目名称、应用标题、开发端口、本地 API 地址、npm registry，以及是否启用完整 Git 与代码质量规范。
+
+模板从 `v1.7.0` 起默认内置 PDA 兼容构建、wl-mbase 宿主识别、各宿主单头部与动态标题，并为 App/PDA 提供双向返回导航。新项目无需复制业务项目的适配代码。
 
 ---
 
@@ -378,7 +381,7 @@ const tabBarMenus = apiMenus.length > 0 ? apiMenus : localMenus;
 │   ├── router/                 # 路由（守卫 + 菜单 + 子页面）
 │   │   ├── menu.ts            #   TabBar 主导航（5 Tab）
 │   │   └── modules.ts         #   子页面路由（~40 条）
-│   ├── services/               # 原生桥接（JSBridge）
+│   ├── platform/mbase/         # 基座宿主、导航协议与扩展能力桥
 │   ├── store/                  # Pinia 状态管理
 │   │   └── modules/
 │   │       ├── permission.ts  #   权限状态（菜单树 + 按钮码）
@@ -418,7 +421,7 @@ const tabBarMenus = apiMenus.length > 0 ? apiMenus : localMenus;
 ├── .env.development            # 开发环境变量
 ├── .env.test                   # 测试环境变量
 ├── .env.production             # 生产环境变量
-├── index.html                  # HTML 入口（@layer 声明 + 加载屏）
+├── index.html                  # HTML 入口（主题、加载屏 + App/PDA WebView SDK）
 ├── DESIGN_SYSTEM.md            # 设计系统规范
 ├── vite.config.ts              # Vite 配置
 └── uno.config.ts               # UnoCSS 配置
@@ -746,21 +749,15 @@ border-radius: 16px;
 | `--ds-glass-border` | rgba(255,255,255,0.82) | 毛玻璃边框 |
 | `--ds-radius-sm/md/lg/xl` | 8/12/16/20px | 圆角 |
 
-### CSS @layer 优先级体系
+### PDA 兼容的样式优先级
 
-```
-@layer base         ← UnoCSS preflight（reset），最低
-@layer components   ← 组件 SCSS（vite.config.ts 自动包裹），中
-@layer utilities    ← UnoCSS 工具类（flex / mb-4），最高
-```
-
-层顺序在 `index.html` 中声明：`<style>@layer base, components, utilities;</style>`
+模板不使用 CSS Cascade Layers：部分工业 PDA 的旧 WebView 不识别 `@layer`，会丢弃整个组件规则块。UnoCSS 使用 `#app` 选择器提升工具类优先级，组件 SCSS 继续按正常 CSS 顺序加载。
 
 | 配置文件 | 作用 |
 |----------|------|
-| `index.html` | 声明 @layer 顺序 |
-| `uno.config.ts` | `outputToCssLayers`：preflight → base，工具类 → utilities |
-| `vite.config.ts` | `additionalData`：src/ 下 SCSS 自动包进 @layer components |
+| `index.html` | 主题和首屏加载壳；App/PDA 条件加载自托管 SDK |
+| `uno.config.ts` | `important: '#app'` 提升工具类优先级，不输出 `@layer` |
+| `vite.config.ts` | 注入设计令牌，并按旧 WebView 目标补前缀和转换尺寸 |
 
 ### BEM 命名约定
 
@@ -1318,191 +1315,31 @@ export default defineH5Config({
 
 ## 附录：mbase 集成指南
 
-> 本项目默认以 standalone 模式独立运行。当需要作为子应用集成到 mbase 时，按以下步骤操作。
->
-> **原则：集成不破坏独立性。** 两种模式通过环境变量隔离，代码层面零侵入。
+本项目默认以 standalone 模式独立运行，`pnpm build:integrated` 才启用 wl-mbase 集成配置。模板已经内置：
 
-### 集成架构
+- `portal_token + companyId` 免登参数接收与地址栏敏感参数清理；
+- App/PDA 与 iframe 宿主识别；
+- 路由进入、返回时的动态标题同步；
+- App/PDA 单头部和原生返回协议；
+- `@robot-h5/core` 拍照、扫码、定位桥及扩展能力调用入口。
 
-```
-┌─────────────────────────────────────────────────────┐
-│                    mbase 宿主应用                     │
-│                                                     │
-│  · mbase 统一登录 → 签发 portal_token                │
-│  · 选中/默认公司 → companyId                          │
-│  · 路由管理 → /mbase/{子应用}/*                       │
-│  · 网关代理 → 统一 API 出口（ytiop-xxx.walsin.com.cn）│
-│                                                     │
-│  打开子应用时（buildAppUrl）拼参：                     │
-│    ?portal_token=xxx&from=portal&user_id=xxx         │
-│    &companyId=xxx                                    │
-└──────────────────────┬──────────────────────────────┘
-                       │ URL 透传 portal_token + companyId
-                       ▼
-┌─────────────────────────────────────────────────────┐
-│           Robot H5（integrated 模式）                 │
-│                                                     │
-│  · 跳过自身登录页                                     │
-│  · 从 URL 读取 portal_token（参数名固定）              │
-│  · 所有请求头 Authorization: Bearer portal_token      │
-│  · 部署在 /mbase/{子应用}/ 子路径                     │
-│                                                     │
-│  钉钉消息通知入口（可选）：                            │
-│    relay.html 中转页 → 免登拼参 → 直达子应用页面       │
-└─────────────────────────────────────────────────────┘
-```
-┌─────────────────────────────────────────────────────┐
-│                    mbase 宿主应用                     │
-│                                                     │
-│  ┌─────────────────────────────────────────────┐    │
-│  │  mbase 统一登录 → Token                      │    │
-│  │  mbase 路由管理 → /mbase/robot-h5/*          │    │
-│  │  mbase 网关代理 → 统一 API 出口              │    │
-│  └─────────────────────────────────────────────┘    │
-│                        │                            │
-│                        │ Token 传递                  │
-│                        ▼                            │
-│  ┌─────────────────────────────────────────────┐    │
-│  │           Robot H5（integrated 模式）         │    │
-│  │                                             │    │
-│  │  · 跳过自身登录页                            │    │
-│  │  · 从 mbase 接收 Token                      │    │
-│  │  · 使用 mbase 网关地址                       │    │
-│  │  · 部署在 /mbase/robot-h5/ 子路径           │    │
-│  └─────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────┘
-```
+完整配置、代码示例、错误排查和验收清单见 [wl-mbase 子应用集成指南](./docs/mbase-integration.md)。基座侧协议、相册、无 ID 暂存和断点续传契约，以 wl-mbase 项目中的《集成文档》为准。
 
-### Step 1：修改环境配置
+## PDA 兼容与 mbase 专项文档
 
-编辑 `.env.integrated`（已预置），根据实际情况修改：
+| 文档 | 面向场景 |
+| --- | --- |
+| [PDA 与旧 WebView 兼容规范](./docs/pda-compatibility.md) | 构建目标、禁用语法、渐进增强、真机验证 |
+| [wl-mbase 子应用集成指南](./docs/mbase-integration.md) | 免登、单头部、动态标题、能力桥和排障 |
+
+提交或发布前至少执行：
 
 ```bash
-# 部署子路径（必须与 mbase portal-apps 注册的 mpPath 一致）
-VITE_PUBLIC_PATH = /mbase/{子应用}/
-
-# 切换为集成模式
-VITE_APP_MODE = integrated
-
-# Token 获取方式（mbase 当前仅支持 query，子应用从 URL 读 portal_token）
-VITE_MBASE_TOKEN_METHOD = query
-
-# API 地址改为 mbase 统一网关（按环境替换域名与前缀）
-#   生产：https://ytiop-prd.walsin.com.cn/prd-api
-#   UAT： https://ytiop-uat.walsin.com.cn/uat-api
-VITE_GLOB_API_URL = https://ytiop-prd.walsin.com.cn
-VITE_GLOB_API_URL_PREFIX = /prd-api
-```
-
-> mbase 打开子应用时通过 URL 透传认证参数（`buildAppUrl` 生成）：
-> `?portal_token=xxx&from=portal&user_id=xxx&companyId=xxx`
-> 子应用读取的参数名为 **`portal_token`**（非 `token`），且需同时接收 `companyId`（后端权限校验必需）。
-
-### Step 2：构建集成产物
-
-```bash
+pnpm template:validate
+pnpm type-check
 pnpm build:integrated
+pnpm test:compat
 ```
-
-构建产物输出到 `dist/`，部署到 mbase 对应的子路径下。
-
-### Step 3：mbase 侧配置
-
-mbase 宿主应用需要做的事：
-
-| 配置项 | 说明 |
-|--------|------|
-| 子应用注册 | 在 `src/config/portal-apps.ts` 的 `PORTAL_APPS` 注册一条，`mpPath` 设为 `/mbase/{子应用}/` |
-| Token 透传 | 工作台打开子应用时 `buildAppUrl` 自动拼接 `portal_token + from=portal + user_id + companyId` |
-| Nginx 配置 | 子路径 `/mbase/{子应用}/` 指向 Robot H5 构建产物，配置 `try_files` |
-| 网关代理 | mbase 网关代理子应用的 `/xxx-api` 请求到对应后端 |
-| 消息通知（可选） | 钉钉消息跳转配置 `relay.html` 中转页地址，携带 `redirect_url` 参数 |
-
-### Step 4：Nginx 配置示例（集成模式）
-
-```nginx
-# mbase 主应用
-location /mbase/ {
-    try_files $uri $uri/ /mbase/index.html;
-}
-
-# Robot H5 子应用
-location /mbase/robot-h5/ {
-    alias /path/to/robot-h5/dist/;
-    try_files $uri $uri/ /mbase/robot-h5/index.html;
-}
-```
-
-### Token 传递方式详解
-
-mbase 当前统一采用 **URL Query 方式**，打开子应用时由 `buildAppUrl` 生成完整地址：
-
-```
-https://ytiop-prd.walsin.com.cn/mbase/{子应用}/
-  ?portal_token=<基座签发的OAuth token>
-  &from=portal
-  &user_id=<用户ID>
-  &companyId=<当前公司ID>
-```
-
-子应用读取规则：
-- **`portal_token`**（必传）— 登录凭证，写入请求头 `Authorization: Bearer xxx`
-- **`companyId`**（必传）— 当前公司，业务接口权限校验依赖此值；缺失会被后端拒为"用户不属于所选公司"
-- `from=portal` — 标识来源为基座（子应用据此跳过自身登录页）
-- `user_id` — 基座透传的用户 ID（仅透传，不消费）；用户信息（昵称/头像等）由 `getUserInfo` 接口以 portal_token 获取
-
-> 参数名固定为 `portal_token`（非 `token`）。子应用若使用旧名 `token` 读取将获取不到凭证。
-
-### 钉钉消息通知直达（可选）
-
-mbase 提供 `relay.html` 免登中转页，支持钉钉工作通知点击直达子应用页面：
-
-```
-https://ytiop-prd.walsin.com.cn/mbase/relay.html?redirect_url=<子应用完整页面地址>
-```
-
-`relay.html` 自动从 localStorage 读取基座登录态，拼接 `portal_token + companyId` 后跳转，子应用无需额外适配。
-
-### 集成 Checklist
-
-- [ ] `.env.integrated` 中 `VITE_APP_MODE` 设为 `integrated`
-- [ ] `VITE_PUBLIC_PATH` 与 mbase `portal-apps.ts` 注册的 `mpPath` 一致
-- [ ] `VITE_GLOB_API_URL` / `VITE_GLOB_API_URL_PREFIX` 改为对应环境的域名与 API 前缀
-- [ ] 子应用读取 token 参数名为 `portal_token`（非 `token`）
-- [ ] 子应用同时接收并透传 `companyId`
-- [ ] mbase `portal-apps.ts` 注册子应用条目
-- [ ] Nginx 配置子路径 + SPA 回退
-- [ ] 网关配置 API 代理规则
-- [ ] 联调验证：mbase 登录后能正常访问子应用页面
-
-### 集成模式下的行为差异
-
-| 行为 | standalone | integrated |
-|------|-----------|-----------|
-| 登录页 | 显示自有登录表单 | 跳过（从 URL 读取 portal_token） |
-| Token 来源 | 自身 `/login` 接口 | mbase URL 透传 `portal_token` |
-| companyId | 无 / 自选 | mbase 透传 `companyId`（必需） |
-| Token 失效 | 跳转自身登录页 | 通知 mbase / 跳转自身登录页（兜底） |
-| 部署路径 | `/robot-h5/` | `/mbase/{子应用}/` |
-| API 网关 | 自有后端网关 | mbase 统一网关（ytiop-xxx 域名） |
-| 消息直达 | — | 可用 relay.html 中转页 |
-
-### 注意事项
-
-1. **不要修改 standalone 模式的任何代码** — 集成仅通过环境变量和构建命令切换
-2. **Token 获取失败时会兜底到登录页** — 即使在集成模式下，如果 mbase 未传递 token，用户仍可通过自身登录页登录
-3. **API 前缀随环境变化** — 集成模式下接口前缀需与 mbase 网关一致（sit/uat/pre/prd 对应 sit-api/uat-api/pre-api/prd-api），通过 `VITE_GLOB_API_URL_PREFIX` 配置
-4. **权限体系独立** — Robot H5 的权限接口（`getAppMenus` / `getUserPermissions`）在两种模式下都正常工作，只要 token 有效
-5. **样式隔离** — Robot H5 使用 BEM + 唯一根类名隔离，不会与 mbase 样式冲突
-
-### 相关文件
-
-| 文件 | 职责 |
-|------|------|
-| `src/utils/auth/index.ts` | 认证适配器（模式判断 + Token 获取） |
-| `src/router/router-guards.ts` | 路由守卫（根据模式切换登录策略） |
-| `.env.integrated` | 集成模式环境变量 |
-| `types/global.d.ts` | 新增环境变量类型声明 |
 
 ---
 

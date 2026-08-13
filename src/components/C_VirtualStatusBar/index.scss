@@ -1,7 +1,6 @@
 .virtual-status-bar {
   // 默认隐藏（移动端）
-  // "桌面端显示" 规则放在 common.scss 的 @media 块中（unlayered），
-  // 避免被 @layer components 包裹后优先级低于 unlayered CSS 而失效
+  // "桌面端显示" 规则放在 common.scss 的 @media 块中统一控制。
   flex-shrink: 0;
   display: none;
   height: 30px;

@@ -37,6 +37,18 @@ async function main() {
   if (!existsSync(path.join(root, "scripts", "setup-project.mjs"))) {
     errors.push("缺少模板初始化脚本");
   }
+  for (const requiredFile of [
+    "scripts/verify-mobile-compat.mjs",
+    "src/platform/mbase/index.ts",
+    "src/platform/mbase/navigation.ts",
+    "public/vendor/uni.webview.1.5.8.js",
+    "docs/mbase-integration.md",
+    "docs/pda-compatibility.md"
+  ]) {
+    if (!existsSync(path.join(root, requiredFile))) {
+      errors.push(`缺少模板基础能力文件: ${requiredFile}`);
+    }
+  }
   for (const feature of manifest.features ?? []) {
     if (feature.defaultEnabled && !config.features?.includes(feature.id)) {
       errors.push(`默认能力未写入 project.config.json: ${feature.id}`);

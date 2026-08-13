@@ -18,6 +18,7 @@ export const LoginRoute: RouteRecordRaw = {
     component: () => import('@/views/login/index.vue'),
     meta: {
         title: '登录',
+        mbaseRoot: true,
     },
 };
 

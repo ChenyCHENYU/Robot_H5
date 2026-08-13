@@ -1,4 +1,4 @@
-// 引入uno全局样式（含 preflight reset，在 @layer base 中）
+// 引入 UnoCSS 全局样式；使用 #app 选择器提升优先级，兼容旧 WebView。
 import 'virtual:uno.css';
 // 引入 svg-icons
 import 'virtual:svg-icons-register';
@@ -7,7 +7,6 @@ import 'nprogress/nprogress.css';
 // 引入全局样式
 import '@/styles/common.scss';
 
-import NativeCallJs from '@/services/nativeCallJs';
 import { vantPlugins } from './miracleComponents';
 
 import { useDirectives } from '@miracle-web/utils';
@@ -15,8 +14,6 @@ import { useDevtool } from './devtool';
 import { useUpdater } from './updater';
 import { setupIconify } from './iconify';
 import { setupPermissionDirective } from '@/hooks/usePermission';
-
-window.NativeCallJs = NativeCallJs;
 
 import inputTop from '@/utils/inputTop';
 

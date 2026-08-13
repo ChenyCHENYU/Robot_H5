@@ -40,6 +40,9 @@ UI 库 Vant 4（自动导入），原子 CSS 为 UnoCSS，状态管理 Pinia。
 - BEM 命名：`.{page-name}__{element}--{modifier}`
 - 间距 4px 网格：4 / 8 / 12 / 16 / 20 / 24 / 32
 - 字号梯度：11 / 12 / 13 / 14 / 15 / 16 / 17 / 20 / 22 / 28 / 34
+- 禁止使用 `@layer` 包裹业务样式；PDA 旧 WebView 会丢弃整个规则块
+- `dvh`、`color-mix()` 等现代 CSS 必须在前一行提供 `vh`、设计令牌等旧值回退
+- 毛玻璃等增强效果失效时仍须有基础背景、边框和可读文字
 - 底部安全区：`padding-bottom: calc(Xpx + env(safe-area-inset-bottom))`
 - 毛玻璃：`background: var(--ds-glass-bg); backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate))`
 
@@ -72,8 +75,18 @@ export const MOCK_CUSTOMERS: Customer[] = [ ... ];
 
 - 路由 `name` 必须与 `defineOptions({ name })` **完全一致**
 - 子页面注册在 `src/router/modules.ts`
+- 所有页面配置 `meta.title`；wl-mbase 业务根页配置 `meta.mbaseRoot: true`
+- 标题只由 `router.afterEach` 统一上报，禁止仅在组件 `mounted` 时同步
 - TabBar 主页注册在 `src/router/menu.ts`
 - keepAlive 规则：列表页建议 `true`，详情/表单页 `false`
+
+### 7.1 wl-mbase 集成
+
+- 使用 `src/platform/mbase/` 识别宿主、同步导航和调用扩展能力
+- 拍照、扫码、定位优先使用 `@robot-h5/core`，不得重复实现平台判断
+- 禁止直接调用 `window.android`、`window.webkit`、`plus.webview` 或使用 `postMessage('*')`
+- `C_NavBar` 在基座托管时自动隐藏；独立访问时保持正常
+- 修改平台层或构建配置后必须运行 `pnpm test:compat`
 
 ### 8. 接口规范
 

@@ -27,12 +27,23 @@ const whitePathList = [PageEnum.BASE_LOGIN];
 async function tryAcquireMbaseToken(userStore: ReturnType<typeof useUserStore>): Promise<boolean> {
     const token = getMbaseToken();
     if (!token) return false;
+
+    // 门户 URL 是本次会话的权威来源。即使 Pinia 中仍有上次账号的持久化 token，
+    // 也必须先清空旧用户和权限，再接收新身份，防止换号后展示旧账号信息。
+    userStore.clearLocalSession();
     userStore.setToken(token);
     // companyId 同步注入，供业务接口权限校验使用
     userStore.setCompanyId(getMbaseCompanyId());
     // 标记门户来源（清 URL 后仍可识别），并立即清除地址栏 token
     markPortalSource();
     cleanPortalParamsFromUrl();
+
+    // 用户信息失败不阻断页面打开；至少保证不会回显上一账号的数据。
+    try {
+        await userStore.GetUserInfo();
+    } catch (error) {
+        console.warn('[auth] 门户用户信息加载失败，已保留空用户态', error);
+    }
     return true;
 }
 
@@ -63,13 +74,19 @@ export function createRouterGuards(router: Router) {
         clearTimeout(npTimer);
         npTimer = setTimeout(() => NProgress.start(), 80);
 
+        const userStore = useUserStore();
+
+        // 只要 URL 携带门户 token 就先消费。不能仅在本地无 token 时处理，
+        // 否则 App/PDA WebView 复用或浏览器未清缓存时会继续使用上一账号。
+        if (isIntegratedMode() && getMbaseToken()) {
+            await tryAcquireMbaseToken(userStore);
+        }
+
         // 白名单页面直接放行
         if (whitePathList.includes(to.path as PageEnum)) {
             next();
             return;
         }
-
-        const userStore = useUserStore();
 
         // 未登录时的处理逻辑
         if (!userStore.getToken) {

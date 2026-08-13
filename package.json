@@ -1,6 +1,6 @@
 {
   "name": "robot-h5",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "Vue 3 + Vite 7 + TypeScript 企业级移动端 H5 应用框架",
   "private": true,
   "type": "module",
@@ -23,7 +23,8 @@
   ],
   "scripts": {
     "setup": "node scripts/setup-project.mjs",
-    "template:validate": "node scripts/validate-template.mjs",
+    "template:validate": "node scripts/validate-template.mjs && node scripts/verify-mobile-compat.mjs",
+    "test:compat": "node scripts/verify-mobile-compat.mjs",
     "prepare": "husky",
     "dev": "vite --mode development",
     "dev:prod": "vite --mode production",

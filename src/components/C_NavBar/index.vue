@@ -1,5 +1,5 @@
 <template>
-    <VanNavBar @click-left="onBack()" placeholder fixed>
+    <VanNavBar v-if="!isMbaseHosted()" @click-left="onBack" placeholder fixed>
         <template #title>
             {{ getTitle }}
         </template>
@@ -18,7 +18,9 @@
 
 <script setup lang="ts">
     import './index.scss';
-    import JsCallNative from '@/services/jsCallNative';
+    import { isMbaseHosted } from '@/platform/mbase';
+
+    defineOptions({ name: 'CNavBar' });
 
     const props = defineProps({
         title: {
@@ -31,5 +33,6 @@
 
     const getTitle = computed(() => props.title || (route.meta.title as string));
 
-    const onBack = () => JsCallNative.back();
+    const router = useRouter();
+    const onBack = () => router.back();
 </script>

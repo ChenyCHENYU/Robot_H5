@@ -70,8 +70,7 @@ body {
         --vbar-h: 30px;
     }
 
-    // 虚拟状态栏：放在 unlayered CSS 中控制显示，
-    // 确保优先级高于被 @layer components 包裹的组件 SCSS
+    // 虚拟状态栏仅用于桌面端预览手机外框。
     .virtual-status-bar {
         display: block;
     }

@@ -12,10 +12,20 @@ declare global {
         lastBuildTime: string;
     };
 
+    interface UniWebViewBridge {
+        postMessage(options: { data: unknown }): void;
+    }
+
     declare interface Window {
-        webkit: any;
-        NativeCallJs: any;
         eruda: any;
+        uni?: UniWebViewBridge;
+        plus?: unknown;
+        UniAppJSBridge?: unknown;
+        __dcloud_weex_postMessage?: unknown;
+        __dcloud_weex_?: unknown;
+        __MBASE_BRIDGE_HOST__?: 'app';
+        __ROBOT_H5_MBASE_HOST__?: 'app' | 'iframe';
+        [key: string]: any;
     }
 
     // vue
@@ -76,5 +86,17 @@ declare global {
         VITE_PROXY: [string, string][];
         /** 应用运行模式：standalone（独立）| integrated（集成到 mbase） */
         VITE_APP_MODE: 'standalone' | 'integrated';
+        /** wl-mbase 门户完整来源，例如 https://ytiop-sit.walsin.com.cn */
+        VITE_MBASE_ORIGIN?: string;
+    }
+}
+
+declare module 'vue-router' {
+    interface RouteMeta {
+        title?: string;
+        icon?: string;
+        keepAlive?: boolean;
+        /** App/PDA 返回键在这些业务根页退出子应用，而不是继续回退 H5 历史。 */
+        mbaseRoot?: boolean;
     }
 }

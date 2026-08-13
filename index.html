@@ -20,8 +20,6 @@
         <meta http-equiv="Cache" content="no-cache" />
         <meta name="full-screen" content="yes" />
         <title> <%= title %> </title>
-        <!-- CSS @layer 优先级声明：base(reset) < components(SCSS) < utilities(UnoCSS) -->
-        <style>@layer base, components, utilities;</style>
         <!-- 同步初始化主题（不等 DOMContentLoaded） -->
         <script>
             (function() {
@@ -44,6 +42,10 @@
             /* ===== Shell 全屏覆盖层 ===== */
             #app-shell {
                 position: fixed;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
                 inset: 0;
                 z-index: 9999;
                 display: flex;
@@ -68,6 +70,10 @@
             /* ===== Ambient 漂浮光晕 ===== */
             .shell-ambient {
                 position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
                 inset: 0;
                 overflow: hidden;
                 pointer-events: none;
@@ -271,6 +277,17 @@
         </div>
 
         <div id="app"></div>
+        <!-- 仅 App/PDA WebView 加载官方 SDK；文件由业务域名自托管，不依赖公共 CDN。 -->
+        <script>
+            (function() {
+                try {
+                    var isAppHost = new URLSearchParams(window.location.search).get('mbase_host') === 'app'
+                        || window.__MBASE_BRIDGE_HOST__ === 'app';
+                    if (!isAppHost) return;
+                    document.write('<script src="%VITE_PUBLIC_PATH%vendor/uni.webview.1.5.8.js"><\/script>');
+                } catch (error) {}
+            })();
+        </script>
         <script type="module" src="/src/main.ts"></script>
     </body>
 </html>

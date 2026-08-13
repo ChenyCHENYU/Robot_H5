@@ -10,17 +10,9 @@ import transformerDirectives from '@unocss/transformer-directives';
  * @see https://unocss-cn.pages.dev/
  */
 export default defineConfig({
-    // 将工具类输出到 @layer utilities；preflights 不包层（用于输出 @layer 顺序声明）
-    // vite.config.ts 中组件 SCSS 被包裹进 @layer components
-    // @layer components, utilities → utilities 排后 = 优先级更高 → 工具类覆盖组件SCSS ✅
-    // important: '#app' 额外提升选择器优先级，双重保障
-    // preflights(reset) → @layer base（最低）
-    // 组件SCSS → @layer components（中）（vite.config.ts additionalData 包裹）
-    // 工具类 → @layer utilities（最高）
-    // 层顺序声明在 index.html <style>@layer base, components, utilities;</style>
-    outputToCssLayers: {
-        cssLayerName: (layer) => (layer === 'preflights' ? 'base' : 'utilities'),
-    },
+    // 不输出 CSS Cascade Layers：部分 PDA 的旧 WebView 会丢弃整个 @layer 规则块。
+    // 通过 #app 提升 UnoCSS 选择器优先级，仍能覆盖组件默认样式。
+    important: '#app',
     presets: [
     /**
      * UnoCSS 预设
@@ -75,8 +67,7 @@ export default defineConfig({
     transformerDirectives(),
   ],
 
-  // 层顺序声明已移至 index.html，不再需要自定义 preflight
-  // presetWind3 自带 preflight（normalize/reset），会进入 @layer base
+  // 项目使用 common.scss 管理全局基础样式，避免额外 reset 改变存量页面。
   preflights: [],
 
   // 一些实用的自定义组合

@@ -14,6 +14,8 @@
  * - companyId 为权限校验必需，缺失会被后端拒为"用户不属于所选公司"
  */
 
+import { postMbaseMessage } from '@/platform/mbase/transport';
+
 export type AppMode = 'standalone' | 'integrated';
 
 /** 获取当前应用运行模式 */
@@ -93,6 +95,14 @@ export function cleanPortalParamsFromUrl(): void {
     const url = new URL(window.location.href);
     url.searchParams.delete('portal_token');
     url.searchParams.delete('from');
+    const [hashPath, hashQuery = ''] = url.hash.split('?');
+    if (hashQuery) {
+        const hashParams = new URLSearchParams(hashQuery);
+        hashParams.delete('portal_token');
+        hashParams.delete('from');
+        const cleanHashQuery = hashParams.toString();
+        url.hash = `${hashPath}${cleanHashQuery ? `?${cleanHashQuery}` : ''}`;
+    }
     const search = url.searchParams.toString();
     window.history.replaceState(null, '', url.pathname + (search ? `?${search}` : '') + url.hash);
 }
@@ -105,12 +115,11 @@ export function cleanPortalParamsFromUrl(): void {
  * 而是通知基座（postMessage {action:'logout'}），由基座重新签发 token 或
  * 跳转登录页。基座 webview 页的 onMessage 会消费此消息。
  */
-export function notifyPortalLogout(): void {
-    try {
-        window.parent?.postMessage({ action: 'logout' }, '*');
-    } catch (e) {
+export async function notifyPortalLogout(): Promise<void> {
+    await postMbaseMessage({ action: 'logout' }).catch(e => {
         console.warn('[auth] notifyPortalLogout failed:', e);
-    }
+        throw e;
+    });
 }
 
 /**
@@ -120,11 +129,10 @@ export function notifyPortalLogout(): void {
  * 执行完整退出流程（调退出接口 + 跳登录页），避免子应用 iframe 退出后
  * 基座会话残留。
  */
-export function notifyPortalUserLogout(): void {
-    try {
-        window.parent?.postMessage({ action: 'user-logout' }, '*');
-    } catch (e) {
+export async function notifyPortalUserLogout(): Promise<void> {
+    await postMbaseMessage({ action: 'user-logout' }).catch(e => {
         console.warn('[auth] notifyPortalUserLogout failed:', e);
-    }
+        throw e;
+    });
 }
 

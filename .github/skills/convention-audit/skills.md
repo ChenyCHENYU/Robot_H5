@@ -43,6 +43,9 @@
 | 响应式正确 | `ref()` / `reactive()` 使用正确，模板中不出现 `.value` |
 | 路由存在 | `router.push` / `<router-link :to>` 的目标路由必须已在 `modules.ts` 或 `menu.ts` 注册 |
 | API 端点一致 | `src/api/*.ts` 中请求路径必须与 `mock/*.ts` 端点 url 一致 |
+| PDA 兼容 | 禁止 `@layer`；`dvh` / `color-mix()` 必须有旧值回退；构建产物不得含 `@layer` |
+| 宿主通信 | 禁止 `postMessage('*')`、`window.android`、`window.webkit`、`plus.webview` 直调 |
+| 动态标题 | 页面必须有 `meta.title`，业务根页有 `meta.mbaseRoot`，标题同步必须绑定路由完成事件 |
 
 ### 🟡 Warning（建议修复 — P1）
 
@@ -97,7 +100,8 @@
 4. **P1（Warning）→ 自动修复 + 在回复末尾简报**
 5. **P2（Info）→ 仅报告**，不自动修改
 6. 运行 `pnpm type-check` 确认零错误
-7. 交付代码
+7. 修改平台层、路由或样式构建时运行 `pnpm test:compat`
+8. 交付代码
 
 ### 令牌速查
 

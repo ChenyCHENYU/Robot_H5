@@ -87,6 +87,7 @@
         code {
             padding: 1px 6px;
             border-radius: 4px;
+            background: var(--ds-accent-light);
             background: color-mix(in srgb, var(--ds-accent) 10%, transparent);
             color: var(--ds-accent);
             font-size: 12px;

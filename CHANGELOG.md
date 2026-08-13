@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [release-please](https://github.com/googleapis/release-please) for commit guidelines.
 
+## [1.7.0] - 2026-08-13
+
+### ✨ 新功能
+
+- 内置 wl-mbase 宿主识别、各宿主单头部/动态标题、App/PDA 双向返回导航与通用能力调用入口。
+- 自托管官方 `uni.webview.1.5.8.js`，App/PDA 导航不再依赖首次业务能力调用。
+- 门户新 token 会覆盖并清理子应用旧账号状态，退出时同步清除本地用户、公司与权限缓存。
+
+### 🐛 兼容修复
+
+- 移除 CSS Cascade Layers，构建目标调整为 ES2018 / Chrome 61 CSS，视口适配改用媒体查询。
+- 为 `dvh`、`color-mix()` 和加载壳定位补充旧 WebView 回退值。
+- 删除已废弃的 `window.android/window.webkit` 猜测式返回桥。
+
 ## [1.6.1](https://github.com/ChenyCHENYU/Robot_H5/compare/v1.6.0...v1.6.1) (2026-07-14)
 
 

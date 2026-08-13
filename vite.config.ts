@@ -5,6 +5,7 @@ import { createProxy } from './build/vite/proxy';
 import { createBuild } from './build/vite/build';
 import autoprefixer from 'autoprefixer';
 import { postcssPxToViewProtConfig } from './build/vite/plugin/postcssPxToView';
+import { postcssLegacyFallbacks } from './build/vite/plugin/postcssLegacyFallbacks';
 import pkg from './package.json';
 
 // 应用信息
@@ -49,26 +50,23 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
                     // @ts-expect-error
                     api: 'modern-compiler',
                     silenceDeprecations: ['import'],
-                    // src/ 下的组件 SCSS 自动包裹进 @layer components
-                    // UnoCSS 工具类在 @layer utilities（后声明 = 高优先级）
-                    // 这样工具类能覆盖组件 SCSS，彻底修复级联冲突
+                    // 只注入设计系统变量；禁止使用 @layer 包裹组件样式。
+                    // 老旧 Android WebView 不识别 @layer 时会丢弃整个规则块。
                     additionalData: (content: string, id: string) => {
                         // src/styles/ 本身就是样式模块树，不注入 @use 以避免循环依赖
                         if (id.includes('/src/styles/')) {
                             return content;
                         }
                         const use = `@use "@/styles/index.scss" as *;\n`;
-                        if (id.includes('/src/') && id.endsWith('.scss')) {
-                            return `${use}@layer components {\n${content}\n}`;
-                        }
                         return `${use}${content}`;
                     },
                 },
             },
             postcss: {
                 plugins: [
+                    postcssLegacyFallbacks(),
                     autoprefixer({
-                        overrideBrowserslist: ['Chrome >= 87', 'Firefox >= 78', 'Safari >= 14', 'Edge >= 88'],
+                        overrideBrowserslist: ['Chrome >= 69', 'Android >= 7', 'Safari >= 12', 'Edge >= 79'],
                     }),
                     postcssPxToViewProtConfig(),
                 ],

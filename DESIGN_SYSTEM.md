@@ -162,11 +162,18 @@ font-family: var(--ds-font);
 | `src/styles/variables.scss` | 所有 CSS 自定义属性声明（:root + html.dark） |
 | `src/styles/theme.scss` | 主题系统 + getVar() 兼容函数 |
 | `src/hooks/useTheme/index.ts` | 主题切换 Hook（亮/暗模式 + Vant 变量同步） |
-| `uno.config.ts` | UnoCSS 快捷方式 + @layer 映射 |
+| `uno.config.ts` | UnoCSS 快捷方式 + `#app` 优先级（不使用旧 PDA 不识别的 `@layer`） |
 
 ---
 
 ## 使用规范
+
+### PDA 渐进增强
+
+- 禁止用 `@layer` 包裹业务规则；旧 WebView 可能丢弃整个规则块。
+- `100dvh`、`color-mix()` 等现代能力必须先写 `100vh`、设计令牌等旧值回退。
+- 毛玻璃、渐变和动画属于增强效果，基础背景、边框、字号和布局必须在不支持增强语法时仍可用。
+- 构建后运行 `pnpm test:compat`，确保产物不含 `@layer`，导航桥和自托管 SDK 完整。
 
 ### 正确
 

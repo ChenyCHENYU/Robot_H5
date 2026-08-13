@@ -14,8 +14,10 @@ export function createBuild(viteEnv: ViteEnv): BuildOptions {
         outDir: VITE_OUTPUT_DIR,
         // 启用 CSS 代码拆分，每个异步 chunk 独立 CSS 文件，减少首屏关键 CSS 体积
         cssCodeSplit: true,
-        // 移除或修改 target 配置
-        target: 'esnext',
+        // Android PDA 可能长期停留在旧 WebView；降低语法目标，避免现代语法直接白屏。
+        target: 'es2018',
+        // Vite 官方建议 Android WebView 使用 chrome61，避免压缩成旧内核不识别的 #RGBA。
+        cssTarget: 'chrome61',
         // 指定使用的压缩器，'esbuild' 比 'terser' 构建速度更快但打包体积略大
         minify: 'esbuild',
         // 静态资源在编码为 base64 字符串之前的最小大小（以字节为单位），小于此大小的资源将内联为 base64
