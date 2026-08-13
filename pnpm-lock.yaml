@@ -15,8 +15,8 @@ importers:
         specifier: ^0.0.6
         version: 0.0.6(vue@3.5.32(typescript@5.9.3))
       '@robot-h5/core':
-        specifier: ^1.1.1
-        version: 1.1.1(vue@3.5.32(typescript@5.9.3))
+        specifier: ^1.1.4
+        version: 1.1.4(vue@3.5.32(typescript@5.9.3))
       '@unocss/reset':
         specifier: ^66.5.1
         version: 66.6.8
@@ -1096,8 +1096,8 @@ packages:
     resolution: {integrity: sha512-Cwd8m8fxmU4UWsesHjPipEvghbrltOTKtJOPIiNgu6/W9l4xC5xk89buJhuxBUWf1ZolkTfiCmT42wmDQ+un9w==}
     hasBin: true
 
-  '@robot-h5/core@1.1.1':
-    resolution: {integrity: sha512-dahud8rhPvAlEzMuPGxBREKzZcrN/5lJGle6W5Crt8/TwTlVe86z4BeGXkgX/ukWshiESaXaCZt9dLe/4SXqvQ==}
+  '@robot-h5/core@1.1.4':
+    resolution: {integrity: sha512-EKhjZcmQc6VC/U89wSTZsZDerX7TMHsGRLkUzMmGqMHmwYNb5r6LmEUv/+Gyq0kbD68loy8n5gCKCVrTcKWX0Q==}
     peerDependencies:
       vue: ^3.3.0
 
@@ -5676,7 +5676,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@robot-h5/core@1.1.1(vue@3.5.32(typescript@5.9.3))':
+  '@robot-h5/core@1.1.4(vue@3.5.32(typescript@5.9.3))':
     dependencies:
       vue: 3.5.32(typescript@5.9.3)
 

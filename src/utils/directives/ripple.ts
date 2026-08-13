@@ -80,7 +80,7 @@ function createRipple(event: MouseEvent | TouchEvent, el: HTMLElement, backgroun
     const maxY = Math.max(dy, height - dy);
     const radius = Math.sqrt(maxX * maxX + maxY * maxY);
     const border = Math.max(Number.parseInt(getComputedStyle(el).borderWidth.replace('px', '')), 0);
-    const zIndex = options.zIndex;
+    const {zIndex} = options;
 
     const ripple = createRippleElement(dx, dy, radius, options.transition, background, zIndex);
     const rippleContainer = createRippleContainer(width, height, border, getComputedStyle(el));

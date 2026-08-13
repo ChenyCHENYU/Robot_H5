@@ -8,6 +8,17 @@ import { useUserStoreWidthOut } from '@/store/modules/user';
  * 所有 Hook（useCamera / useLocation / useFileUpload 等）自动读取此配置。
  */
 export default defineH5Config({
+    bridge: {
+        platform: 'auto',
+        mbase: {
+            // iframe 消息只发往可信门户；普通 H5/App/PDA 不使用通配符降级。
+            origin: import.meta.env.VITE_MBASE_ORIGIN,
+            appBridgeTimeoutMs: 6000,
+            // 资源随模板部署，但仅 App/PDA 首次通信时动态插入；普通 H5 不下载、不执行。
+            appSdkUrl: `${import.meta.env.BASE_URL}vendor/uni.webview.1.5.8.js`,
+        },
+    },
+
     // 文件上传配置
     upload: {
         action: '/api/file/upload',

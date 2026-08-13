@@ -14,7 +14,7 @@
  * - companyId 为权限校验必需，缺失会被后端拒为"用户不属于所选公司"
  */
 
-import { postMbaseMessage } from '@/platform/mbase/transport';
+import { postMbaseMessage } from '@/platform/mbase';
 
 export type AppMode = 'standalone' | 'integrated';
 

@@ -1,6 +1,5 @@
 import type { MockMethod } from 'vite-plugin-mock';
-import type { requestParams } from '../_util';
-import { getRequestToken, resultError, resultSuccess } from '../_util';
+import { getRequestToken, resultError, resultSuccess, type requestParams } from '../_util';
 import { ResultEnum } from '@/utils/http/httpEnum';
 
 const fakeUserList = [

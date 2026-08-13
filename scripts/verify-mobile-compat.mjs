@@ -15,6 +15,8 @@ const [
   htmlSource,
   navigationSource,
   hostSource,
+  mbaseEntrySource,
+  h5ConfigSource,
   navBarSource,
   menuSource,
   routerGuardSource,
@@ -27,6 +29,8 @@ const [
   read('index.html'),
   read('src/platform/mbase/navigation.ts'),
   read('src/platform/mbase/host.ts'),
+  read('src/platform/mbase/index.ts'),
+  read('src/h5.config.ts'),
   read('src/components/C_NavBar/index.vue'),
   read('src/router/menu.ts'),
   read('src/router/router-guards.ts'),
@@ -42,12 +46,17 @@ assert.doesNotMatch(viteSource, /return `\$\{use\}@layer components/);
 assert.doesNotMatch(unoSource, /outputToCssLayers\s*:/);
 assert.match(unoSource, /important:\s*'#app'/);
 assert.doesNotMatch(htmlSource, /<style>\s*@layer/);
-assert.match(htmlSource, /vendor\/uni\.webview\.1\.5\.8\.js/);
+assert.doesNotMatch(htmlSource, /uni\.webview/);
 assert.ok(existsSync(path.join(root, 'public/vendor/uni.webview.1.5.8.js')));
 
-assert.match(hostSource, /mbase_host/);
+assert.match(hostSource, /detectMbaseHost/);
 assert.match(hostSource, /VITE_APP_MODE !== 'integrated'/);
+assert.match(mbaseEntrySource, /@robot-h5\/core\/bridge/);
+assert.match(h5ConfigSource, /mbase:\s*\{/);
+assert.match(h5ConfigSource, /VITE_MBASE_ORIGIN/);
+assert.match(h5ConfigSource, /appSdkUrl/);
 assert.match(navigationSource, /router\.afterEach/);
+assert.match(navigationSource, /@robot-h5\/core\/bridge/);
 assert.match(navigationSource, /navigation:state/);
 assert.match(navigationSource, /mbase:navigation-command/);
 assert.match(navBarSource, /v-if="!isMbaseHosted\(\)"/);
@@ -69,6 +78,15 @@ if (existsSync(distDirectory)) {
   await collectCss(distDirectory);
   const css = (await Promise.all(cssFiles.map(file => readFile(file, 'utf8')))).join('\n');
   assert.doesNotMatch(css, /@layer\b/);
+
+  const jsDirectory = path.join(distDirectory, 'static', 'js');
+  if (existsSync(jsDirectory)) {
+    const jsFiles = (await readdir(jsDirectory, { withFileTypes: true }))
+      .filter(entry => entry.isFile() && entry.name.endsWith('.js'))
+      .map(entry => path.join(jsDirectory, entry.name));
+    const javascript = (await Promise.all(jsFiles.map(file => readFile(file, 'utf8')))).join('\n');
+    assert.doesNotMatch(javascript, /WEB_INVOKE_APPSERVICE/);
+  }
 }
 
 const sourceFiles = [];
@@ -84,5 +102,7 @@ const source = (await Promise.all(sourceFiles.map(file => readFile(file, 'utf8')
 assert.doesNotMatch(source, /window\.(?:android|webkit)\b/);
 assert.doesNotMatch(source, /plus\.webview\b/);
 assert.doesNotMatch(source, /postMessage\([^\n]*['"]\*['"]/);
+assert.ok(!existsSync(path.join(root, 'src/platform/mbase/transport.ts')));
+assert.ok(!existsSync(path.join(root, 'src/platform/mbase/capability.ts')));
 
 console.log('移动端兼容与 mbase 集成校验通过：PDA 样式、宿主识别、动态标题和单头部协议均已固化');

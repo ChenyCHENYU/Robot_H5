@@ -47,7 +47,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
         css: {
             preprocessorOptions: {
                 scss: {
-                    // @ts-expect-error
+                    // @ts-expect-error Vite 的 Sass 类型尚未包含 modern-compiler API
                     api: 'modern-compiler',
                     silenceDeprecations: ['import'],
                     // 只注入设计系统变量；禁止使用 @layer 包裹组件样式。
@@ -57,7 +57,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
                         if (id.includes('/src/styles/')) {
                             return content;
                         }
-                        const use = `@use "@/styles/index.scss" as *;\n`;
+                        const use = '@use "@/styles/index.scss" as *;\n';
                         return `${use}${content}`;
                     },
                 },

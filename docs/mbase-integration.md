@@ -1,6 +1,6 @@
 # wl-mbase 子应用集成指南
 
-Robot_H5 `v1.7.0+` 已内置免登参数接收、宿主识别、各宿主单头部、动态标题、App/PDA 返回导航和通用能力桥。业务项目只负责环境配置、路由元数据与业务交互。
+Robot_H5 `v1.7.1+` 已内置免登参数接收、宿主识别、各宿主单头部、动态标题、App/PDA 返回导航和 `@robot-h5/core@^1.1.4` 通用能力桥。业务项目只负责环境配置、路由元数据与业务交互。
 
 ## 1. 配置 integrated 环境
 
@@ -13,6 +13,21 @@ VITE_GLOB_API_URL_PREFIX = /sit-api
 ```
 
 `pnpm setup` 会按项目名自动写入 `/mbase/{应用缩写}/` 和网关 origin；部署其他环境时仍需核对。`VITE_MBASE_ORIGIN` 用于严格校验 iframe 消息，禁止配置 `*`。
+
+模板已在 `src/h5.config.ts` 将它传入 Core：
+
+```ts
+bridge: {
+  platform: 'auto',
+  mbase: {
+    origin: import.meta.env.VITE_MBASE_ORIGIN,
+    appBridgeTimeoutMs: 6000,
+    appSdkUrl: `${import.meta.env.BASE_URL}vendor/uni.webview.1.5.8.js`,
+  },
+},
+```
+
+Core 同时校验响应的父窗口引用和 origin；可信 origin 缺失时返回 `mbase_origin_missing`，不会用 `*` 静默放宽。
 
 ## 2. 路由即导航契约
 
@@ -50,10 +65,10 @@ core 已负责 `takePhoto`、`scan`、`getLocation` 的平台适配。不要在�
 
 ## 4. 扩展基座能力
 
-core 尚未封装的基座 v1 能力使用模板统一入口：
+Core 尚未封装成 Hook 的基座 v1 能力使用公共桥接入口：
 
 ```ts
-import { invokeMbaseCapability, MbaseBridgeError } from '@/platform/mbase';
+import { invokeMbaseCapability, MbaseBridgeError } from '@robot-h5/core/bridge';
 
 try {
   const data = await invokeMbaseCapability<{ source: string; files: unknown[] }>(
@@ -72,12 +87,22 @@ try {
 ## 5. 调试信息
 
 ```ts
-import { getMbaseTransportStatus } from '@/platform/mbase';
+import { getMbaseTransportStatus } from '@robot-h5/core/bridge';
 
 console.table(getMbaseTransportStatus());
 ```
 
 重点字段：`host` 应为 `app/iframe`，App/PDA 的 `sdkPostMessage/nativeBridge` 应为 `true`，iframe 的 `portalOrigin` 应与基座地址一致。能力异常保留 `error.code/message/details`，不要统一吞成“操作失败”。
+
+常见错误：
+
+| code | 含义 | 排查 |
+|------|------|------|
+| `unsupported` | 当前不在 wl-mbase 宿主 | 检查构建模式及 `from=portal` / `mbase_host=app` |
+| `mbase_origin_missing` | 未取得可信门户来源 | 检查 `VITE_MBASE_ORIGIN` 是否进入当前构建环境 |
+| `app_bridge_not_ready` | PDA/App 原生桥未就绪 | 查看宿主版本与 `sdkPostMessage/nativeBridge`，稍后重试 |
+| `app_sdk_url_missing` | 未配置 App SDK 自托管地址 | 检查 `appSdkUrl` 和部署目录下 vendor 文件 |
+| `timeout` | 请求已发出但基座未回传 | 用请求 api、错误 details 和基座日志联合定位 |
 
 ## 6. 验收清单
 

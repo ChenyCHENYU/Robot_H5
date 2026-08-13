@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [release-please](https://github.com/googleapis/release-please) for commit guidelines.
 
+## [1.7.1] - 2026-08-13
+
+### ♻️ 架构优化
+
+- 升级 `@robot-h5/core` 至 `^1.1.4`，宿主识别、严格 origin、安全回传校验、App SDK 按需加载和扩展能力调用统一下沉 Core，并校验公共子路径真实运行时导出。
+- 删除模板重复的 `transport.ts`、`capability.ts`；官方 SDK 仅作为自托管静态资源保留，不再由 HTML 注入，路由标题、返回栈和宿主样式策略继续留在模板。
+
+### 🛡️ 稳定性
+
+- Core 初始化提前到首路由导航上报之前，确保可信门户 origin 已配置。
+- 普通第三方 iframe 不再误判为基座；普通 H5、微信、钉钉顶层页不执行 App/PDA 专属加载路径。
+- 集成文档补充扩展能力、诊断字段、稳定错误码和排查步骤。
+
 ## [1.7.0] - 2026-08-13
 
 ### ✨ 新功能

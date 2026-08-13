@@ -25,6 +25,9 @@ async function main() {
   if (pkg.version !== manifest.version) {
     errors.push("package.json 与模板清单版本不一致");
   }
+  if (pkg.dependencies?.["@robot-h5/core"] !== "^1.1.4") {
+    errors.push("@robot-h5/core 必须使用已验证的 ^1.1.4");
+  }
   if (pkg.engines?.node !== manifest.runtime?.node) {
     errors.push("Node 版本约束未与模板清单对齐");
   }
@@ -56,6 +59,22 @@ async function main() {
     if (feature.package && !pkg.devDependencies?.[feature.package]) {
       errors.push(`能力 ${feature.id} 缺少依赖 ${feature.package}`);
     }
+  }
+
+  try {
+    const bridge = await import("@robot-h5/core/bridge");
+    for (const api of [
+      "invokeMbaseCapability",
+      "postMbaseMessage",
+      "waitForMbaseAppBridge",
+      "getMbaseTransportStatus"
+    ]) {
+      if (typeof bridge[api] !== "function") {
+        errors.push(`Core bridge 缺少运行时导出: ${api}`);
+      }
+    }
+  } catch (error) {
+    errors.push(`Core bridge 运行时导入失败: ${error.message}`);
   }
 
   if (errors.length) {

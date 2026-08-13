@@ -12,15 +12,14 @@ async function bootstrap() {
     const app = createApp(App);
     // 挂载状态管理
     setupStore(app);
+    // 先初始化通用能力与可信门户 origin，再安装首路由导航上报。
+    app.use(h5Core, h5Config);
     // 在首个路由完成前安装：返回缓存页时也会重新上报标题和导航状态。
     installMbaseNavigation(router);
     // 挂载路由
     setupRouter(app);
     // 挂载插件
     setupPlugins(app);
-    // 挂载 H5 通用能力（拍照/定位/上传/签名等）
-    app.use(h5Core, h5Config);
-
     await router.isReady();
     // 路由准备就绪后挂载APP实例
     app.mount('#app', true);

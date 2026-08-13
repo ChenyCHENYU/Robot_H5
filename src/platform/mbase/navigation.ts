@@ -1,6 +1,6 @@
 import type { RouteLocationNormalizedLoaded, Router } from 'vue-router';
+import { postMbaseMessage, waitForMbaseAppBridge } from '@robot-h5/core/bridge';
 import { getMbaseHost, isMbaseAppHost, isMbaseHosted } from './host';
-import { postMbaseMessage, waitForMbaseAppBridge } from './transport';
 
 const SOURCE = 'mbase-navigation';
 const PROTOCOL = 1;

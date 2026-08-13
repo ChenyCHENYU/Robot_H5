@@ -1,6 +1,5 @@
 import type { App } from 'vue';
-import type { RouteRecordRaw } from 'vue-router';
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory, createWebHistory, type RouteRecordRaw } from 'vue-router';
 import { createRouterGuards } from './router-guards';
 import routeModuleList from './modules';
 import { ErrorPageRoute, LoginRoute, RootRoute } from '@/router/base';

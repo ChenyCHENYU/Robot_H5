@@ -23,6 +23,8 @@ export default defineConfigWithVueTs(
       '**/dist/**',
       '**/dist-ssr/**',
       '**/coverage/**',
+      // 官方压缩 SDK 原样自托管，禁止格式化或参与项目源码规则检查。
+      '**/public/vendor/**',
     ],
   },
 

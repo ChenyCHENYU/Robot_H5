@@ -8,5 +8,6 @@ import 'vant/es/image-preview/style';
 import '@vant/touch-emulator';
 
 export const vantPlugins = (_app: ReturnType<typeof import('vue').createApp>) => {
+    void _app;
     // Vant 组件通过 auto-import-resolver 按需引入，无需手动注册
 };

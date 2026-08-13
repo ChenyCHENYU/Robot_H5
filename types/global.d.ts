@@ -12,19 +12,8 @@ declare global {
         lastBuildTime: string;
     };
 
-    interface UniWebViewBridge {
-        postMessage(options: { data: unknown }): void;
-    }
-
     declare interface Window {
         eruda: any;
-        uni?: UniWebViewBridge;
-        plus?: unknown;
-        UniAppJSBridge?: unknown;
-        __dcloud_weex_postMessage?: unknown;
-        __dcloud_weex_?: unknown;
-        __MBASE_BRIDGE_HOST__?: 'app';
-        __ROBOT_H5_MBASE_HOST__?: 'app' | 'iframe';
         [key: string]: any;
     }
 

@@ -73,7 +73,7 @@ pnpm dev
 
 初始化时可确认项目名称、应用标题、开发端口、本地 API 地址、npm registry，以及是否启用完整 Git 与代码质量规范。
 
-模板从 `v1.7.0` 起默认内置 PDA 兼容构建、wl-mbase 宿主识别、各宿主单头部与动态标题，并为 App/PDA 提供双向返回导航。新项目无需复制业务项目的适配代码。
+模板从 `v1.7.0` 起默认内置 PDA 兼容构建、wl-mbase 宿主识别、各宿主单头部与动态标题，并为 App/PDA 提供双向返回导航；`v1.7.1` 起桥接传输统一由 `@robot-h5/core` 维护。新项目无需复制业务项目的适配代码。
 
 ---
 
@@ -421,7 +421,7 @@ const tabBarMenus = apiMenus.length > 0 ? apiMenus : localMenus;
 ├── .env.development            # 开发环境变量
 ├── .env.test                   # 测试环境变量
 ├── .env.production             # 生产环境变量
-├── index.html                  # HTML 入口（主题、加载屏 + App/PDA WebView SDK）
+├── index.html                  # HTML 入口（主题与首屏加载壳）
 ├── DESIGN_SYSTEM.md            # 设计系统规范
 ├── vite.config.ts              # Vite 配置
 └── uno.config.ts               # UnoCSS 配置
@@ -755,9 +755,11 @@ border-radius: 16px;
 
 | 配置文件 | 作用 |
 |----------|------|
-| `index.html` | 主题和首屏加载壳；App/PDA 条件加载自托管 SDK |
+| `index.html` | 主题和首屏加载壳；不静态注入 App 专属 SDK |
 | `uno.config.ts` | `important: '#app'` 提升工具类优先级，不输出 `@layer` |
 | `vite.config.ts` | 注入设计令牌，并按旧 WebView 目标补前缀和转换尺寸 |
+
+App/PDA 所需的官方 `uni.webview` SDK 位于 `public/vendor/`，由业务域名自托管；Core 仅在识别到 `mbase_host=app` 且首次通信时动态插入。普通 H5、微信和钉钉 iframe 不下载、不执行，主 JS 也不含 SDK 源码。
 
 ### BEM 命名约定
 
@@ -1126,11 +1128,11 @@ pnpm type-check        # 运行 vue-tsc --noEmit，必须零错误
 
 本项目已安装并配置好 `@robot-h5/core`：
 
-- 安装：`pnpm add @robot-h5/core@^1.1.1`（已在 `package.json` 中）
+- 安装：`pnpm add @robot-h5/core@^1.1.4`（已在 `package.json` 中）
 - 配置文件：`src/h5.config.ts`
 - 注册方式：`main.ts` 中 `app.use(h5Core, h5Config)` 一行完成
 
-依赖更新采用“兼容版本范围 + 锁文件 + 自动更新 PR”：`^1.1.1` 允许升级到后续兼容的 `1.x` 版本，`pnpm-lock.yaml` 保证相同源码可重复构建；GitHub 每周检查新版本并提交可审查的更新。
+依赖更新采用“兼容版本范围 + 锁文件 + 自动更新 PR”：`^1.1.4` 允许升级到后续兼容的 `1.x` 版本，`pnpm-lock.yaml` 保证相同源码可重复构建；GitHub 每周检查新版本并提交可审查的更新。
 
 ### 配置文件
 
@@ -1140,6 +1142,14 @@ import { defineH5Config } from '@robot-h5/core';
 import { useUserStoreWidthOut } from '@/store/modules/user';
 
 export default defineH5Config({
+    bridge: {
+        platform: 'auto',
+        mbase: {
+            origin: import.meta.env.VITE_MBASE_ORIGIN,
+            appBridgeTimeoutMs: 6000,
+            appSdkUrl: `${import.meta.env.BASE_URL}vendor/uni.webview.1.5.8.js`,
+        },
+    },
     upload: {
         action: '/api/file/upload',
         headers: (): Record<string, string> => {
@@ -1193,7 +1203,10 @@ export default defineH5Config({
 | `BrowserBridge` | 浏览器 | 完整实现，Web 标准 API 降级 |
 | `NativeBridge` | APP WebView | 通过 overrides 注入原生 SDK |
 | `DingtalkBridge` | 钉钉 | 通过 overrides 注入 dingtalk-jsapi |
+| `MbaseBridge` | wl-mbase | 钉钉 iframe 与 App/PDA 共用严格来源校验的能力协议 |
 | `WechatBridge` | 微信/企微 | 通过 overrides 注入 weixin-js-sdk |
+
+`src/platform/mbase/` 只保留模板路由导航和宿主样式策略；宿主检测、安全传输、超时、错误码、App SDK 与扩展能力调用全部由 Core 维护，避免每个子应用复制一份桥接实现。
 
 ### 使用示例
 
@@ -1322,6 +1335,8 @@ export default defineH5Config({
 - 路由进入、返回时的动态标题同步；
 - App/PDA 单头部和原生返回协议；
 - `@robot-h5/core` 拍照、扫码、定位桥及扩展能力调用入口。
+
+相册等扩展能力请直接使用 `@robot-h5/core/bridge` 的 `invokeMbaseCapability`；异常调试使用 `MbaseBridgeError` 与 `getMbaseTransportStatus`。模板的 `@/platform/mbase` 继续兼容转出这些 API，但新业务推荐依赖 Core 的公共出口。
 
 完整配置、代码示例、错误排查和验收清单见 [wl-mbase 子应用集成指南](./docs/mbase-integration.md)。基座侧协议、相册、无 ID 暂存和断点续传契约，以 wl-mbase 项目中的《集成文档》为准。
 
