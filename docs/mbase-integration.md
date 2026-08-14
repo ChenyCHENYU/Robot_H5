@@ -110,5 +110,6 @@ console.table(getMbaseTransportStatus());
 - 普通 H5/钉钉：只显示宿主头部，进入二级页和返回时标题均正确。
 - App/PDA：只有基座原生头部；详情返回子应用上一页，根页返回门户。
 - 换号复用 WebView/未清缓存：必须使用新 `portal_token`，不能闪现或继续使用上一账号资料。
+- 长会话中基座重新注入更新后的 `portal_token` 时，即使本地仍有旧 token，也必须再次清空旧用户/权限并以本次 URL 为权威来源；Robot_H5 `v1.7.0+` 已内置该行为。
 - 拍照、扫码、定位失败时能看到稳定错误码和桥接状态，不出现 60 秒无提示假死。
 - `pnpm build:integrated && pnpm test:compat` 通过。

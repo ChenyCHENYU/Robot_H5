@@ -1330,7 +1330,7 @@ export default defineH5Config({
 
 本项目默认以 standalone 模式独立运行，`pnpm build:integrated` 才启用 wl-mbase 集成配置。模板已经内置：
 
-- `portal_token + companyId` 免登参数接收与地址栏敏感参数清理；
+- `portal_token + companyId` 免登参数接收与地址栏敏感参数清理；每次收到基座 token 都以本次 URL 为权威来源，覆盖本地旧会话，支持换号进入和基座长会话续期后的重新注入；
 - App/PDA 与 iframe 宿主识别；
 - 路由进入、返回时的动态标题同步；
 - App/PDA 单头部和原生返回协议；
