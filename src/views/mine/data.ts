@@ -14,7 +14,11 @@ export interface SettingCell {
 
 export const settingsGroups: SettingCell[][] = [
     [
-        { title: '修改密码', icon: 'ph:key-bold', color: '#5856d6', to: '/updatePassword' },
+        { title: '账号与安全', icon: 'ph:shield-check-bold', color: '#5856d6', to: '/accountSetting' },
+        { title: '主题与外观', icon: 'ph:palette-bold', color: '#34c759', to: '/themeSetting' },
+    ],
+    [
+        { title: '关于', icon: 'ph:info-bold', color: '#8e8e93', to: '/about' },
     ],
     [
         { title: '退出登录', icon: 'ph:sign-out-bold', color: '#ff3b30', danger: true, action: 'logout' },

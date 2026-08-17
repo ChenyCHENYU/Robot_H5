@@ -1,0 +1,195 @@
+.skel-page {
+    min-height: 100%;
+    background: var(--ds-bg);
+    padding-bottom: 40px;
+
+    &__body {
+        padding: 16px 20px 0;
+    }
+
+    &__section {
+        margin-bottom: 24px;
+    }
+
+    &__section-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+
+    &__section-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 3px 10px rgba(0, 0, 0, 0.12);
+
+        i {
+            font-size: 17px;
+            color: #fff;
+        }
+    }
+
+    &__section-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--ds-text-primary);
+        margin: 0 0 2px;
+    }
+
+    &__section-desc {
+        font-size: 12px;
+        color: var(--ds-text-tertiary);
+        margin: 0;
+    }
+
+    &__toggle {
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    &__card {
+        position: relative;
+        overflow: hidden;
+        background: var(--ds-glass-bg);
+        backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        border: 1px solid var(--ds-glass-border);
+        border-radius: var(--ds-radius-lg);
+        box-shadow: var(--ds-glass-shine), var(--ds-glass-shadow);
+        padding: 16px;
+    }
+
+    &__card-shine {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 50%;
+        background: var(--ds-glass-gradient);
+        pointer-events: none;
+    }
+
+    &__basic-content {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        position: relative;
+        z-index: 1;
+    }
+
+    &__basic-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--ds-text-primary);
+        margin: 0 0 6px;
+    }
+
+    &__basic-desc {
+        font-size: 13px;
+        color: var(--ds-text-secondary);
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    // 商品卡片网格
+    &__card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    &__product-card {
+        overflow: hidden;
+        background: var(--ds-glass-bg);
+        backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        border: 1px solid var(--ds-glass-border);
+        border-radius: var(--ds-radius-md);
+        box-shadow: var(--ds-glass-shine), var(--ds-glass-shadow);
+    }
+
+    &__product-img {
+        width: 100%;
+        height: 120px;
+        display: block;
+    }
+
+    &__product-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ds-text-primary);
+        margin: 0 0 4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__product-price {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--ds-danger);
+        margin: 0;
+    }
+
+    // 列表卡片
+    &__list-card {
+        position: relative;
+        overflow: hidden;
+        background: var(--ds-glass-bg);
+        backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        border: 1px solid var(--ds-glass-border);
+        border-radius: var(--ds-radius-lg);
+        box-shadow: var(--ds-glass-shine), var(--ds-glass-shadow);
+    }
+
+    &__list-card-shine {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 50%;
+        background: var(--ds-glass-gradient);
+        pointer-events: none;
+    }
+
+    &__list-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        position: relative;
+        z-index: 1;
+
+        &:not(:last-child) {
+            border-bottom: 0.5px solid var(--ds-divider);
+        }
+    }
+
+    &__list-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
+    }
+
+    &__list-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ds-text-primary);
+    }
+
+    &__list-desc {
+        font-size: 12px;
+        color: var(--ds-text-tertiary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}

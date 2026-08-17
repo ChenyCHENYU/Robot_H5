@@ -1,0 +1,105 @@
+.form-demo {
+    min-height: 100%;
+    background: var(--ds-bg);
+    display: flex;
+    flex-direction: column;
+
+    &__steps {
+        padding: 20px 16px 8px;
+
+        :deep(.van-steps) {
+            background: transparent;
+        }
+    }
+
+    &__body {
+        flex: 1;
+        padding: 0 16px 32px;
+    }
+
+    &__section {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    &__card {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--ds-radius-lg);
+        background: var(--ds-glass-bg);
+        border: 1px solid var(--ds-glass-border);
+        backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        box-shadow: var(--ds-glass-shine), var(--ds-glass-shadow);
+
+        &-shine {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.6) 40%,
+                    rgba(255, 255, 255, 0.6) 60%,
+                    transparent 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        :deep(.van-form) {
+            background: transparent;
+        }
+    }
+
+    &__field {
+        background: transparent !important;
+
+        :deep(.van-field__label) {
+            color: var(--ds-text-secondary);
+            width: 5em;
+        }
+
+        :deep(.van-field__control) {
+            color: var(--ds-text-primary);
+        }
+
+        :deep(.van-field__error-message) {
+            font-size: 12px;
+        }
+    }
+
+    &__hint {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: var(--ds-text-tertiary);
+        padding: 0 4px;
+
+        i {
+            font-size: 16px;
+            color: var(--ds-accent);
+            flex-shrink: 0;
+        }
+
+        code {
+            padding: 1px 6px;
+            border-radius: 4px;
+            background: color-mix(in srgb, var(--ds-accent) 10%, transparent);
+            color: var(--ds-accent);
+            font-size: 12px;
+            font-family: 'SF Mono', monospace;
+        }
+    }
+
+    &__btn-row {
+        display: flex;
+        gap: 12px;
+
+        .van-button {
+            flex: 1;
+        }
+    }
+}

@@ -9,7 +9,6 @@ declare global {
   const EffectScope: typeof import('vue').EffectScope
   const asyncComputed: typeof import('@vueuse/core').asyncComputed
   const autoResetRef: typeof import('@vueuse/core').autoResetRef
-  const compareCodeByPhone: typeof import('../src/api/auth').compareCodeByPhone
   const computed: typeof import('vue').computed
   const computedAsync: typeof import('@vueuse/core').computedAsync
   const computedEager: typeof import('@vueuse/core').computedEager
@@ -30,36 +29,19 @@ declare global {
   const customRef: typeof import('vue').customRef
   const debouncedRef: typeof import('@vueuse/core').debouncedRef
   const debouncedWatch: typeof import('@vueuse/core').debouncedWatch
-  const deductImpurity: typeof import('../src/api/trans-weight-ticket').deductImpurity
   const defineAsyncComponent: typeof import('vue').defineAsyncComponent
   const defineComponent: typeof import('vue').defineComponent
-  const doLogout: typeof import('../src/api/auth').doLogout
+  const doLogout: typeof import('../src/api/user').doLogout
   const eagerComputed: typeof import('@vueuse/core').eagerComputed
   const effectScope: typeof import('vue').effectScope
   const extendRef: typeof import('@vueuse/core').extendRef
-  const generateWeighQr: typeof import('../src/api/deploy-plan').generateWeighQr
   const getAppMenus: typeof import('../src/api/permission').getAppMenus
-  const getCalibrationTaskById: typeof import('../src/api/weight-verify').getCalibrationTaskById
-  const getCalibrationTaskList: typeof import('../src/api/weight-verify').getCalibrationTaskList
-  const getCaptcha: typeof import('../src/api/auth').getCaptcha
+  const getCaptcha: typeof import('../src/api/captcha').getCaptcha
   const getCurrentInstance: typeof import('vue').getCurrentInstance
   const getCurrentScope: typeof import('vue').getCurrentScope
   const getCurrentWatcher: typeof import('vue').getCurrentWatcher
-  const getDeployPlanList: typeof import('../src/api/deploy-plan').getDeployPlanList
-  const getInspectionTaskDetail: typeof import('../src/api/scale-inspection').getInspectionTaskDetail
-  const getInspectionTaskList: typeof import('../src/api/scale-inspection').getInspectionTaskList
-  const getMapByDicSn: typeof import('../src/api/weight-verify').getMapByDicSn
-  const getMsgCode: typeof import('../src/api/auth').getMsgCode
-  const getStandardWeightsById: typeof import('../src/api/weight-verify').getStandardWeightsById
-  const getStandardWeightsNoPage: typeof import('../src/api/weight-verify').getStandardWeightsNoPage
-  const getUserInfo: typeof import('../src/api/auth').getUserInfo
-  const getUserListWithDept: typeof import('../src/api/hrms-user').getUserListWithDept
-  const getUserMap: typeof import('../src/api/hrms-user').getUserMap
-  const getUserNoByPhone: typeof import('../src/api/auth').getUserNoByPhone
+  const getUserInfo: typeof import('../src/api/user').getUserInfo
   const getUserPermissions: typeof import('../src/api/permission').getUserPermissions
-  const getWeighTicketDetail: typeof import('../src/api/trans-weight-ticket').getWeighTicketDetail
-  const getWeighTicketList: typeof import('../src/api/trans-weight-ticket').getWeighTicketList
-  const getWeightSiteListNoPage: typeof import('../src/api/weight-verify').getWeightSiteListNoPage
   const h: typeof import('vue').h
   const ignorableWatch: typeof import('@vueuse/core').ignorableWatch
   const inject: typeof import('vue').inject
@@ -70,7 +52,7 @@ declare global {
   const isReadonly: typeof import('vue').isReadonly
   const isRef: typeof import('vue').isRef
   const isShallow: typeof import('vue').isShallow
-  const login: typeof import('../src/api/auth').login
+  const login: typeof import('../src/api/user').login
   const makeDestructurable: typeof import('@vueuse/core').makeDestructurable
   const markRaw: typeof import('vue').markRaw
   const nextTick: typeof import('vue').nextTick
@@ -114,17 +96,9 @@ declare global {
   const resolveComponent: typeof import('vue').resolveComponent
   const resolveRef: typeof import('@vueuse/core').resolveRef
   const resolveUnref: typeof import('@vueuse/core').resolveUnref
-  const saveDeployPlan: typeof import('../src/api/deploy-plan').saveDeployPlan
-  const setPriority: typeof import('../src/api/deploy-plan').setPriority
   const shallowReactive: typeof import('vue').shallowReactive
   const shallowReadonly: typeof import('vue').shallowReadonly
   const shallowRef: typeof import('vue').shallowRef
-  const startCalibrationTask: typeof import('../src/api/weight-verify').startCalibrationTask
-  const startInspectionTask: typeof import('../src/api/scale-inspection').startInspectionTask
-  const submitCalibrationTask: typeof import('../src/api/weight-verify').submitCalibrationTask
-  const submitInspectionTask: typeof import('../src/api/scale-inspection').submitInspectionTask
-  const suspendCalibrationTask: typeof import('../src/api/weight-verify').suspendCalibrationTask
-  const suspendInspectionTask: typeof import('../src/api/scale-inspection').suspendInspectionTask
   const syncRef: typeof import('@vueuse/core').syncRef
   const syncRefs: typeof import('@vueuse/core').syncRefs
   const templateRef: typeof import('@vueuse/core').templateRef
@@ -144,7 +118,6 @@ declare global {
   const unref: typeof import('vue').unref
   const unrefElement: typeof import('@vueuse/core').unrefElement
   const until: typeof import('@vueuse/core').until
-  const updatePwd: typeof import('../src/api/auth').updatePwd
   const useActiveElement: typeof import('@vueuse/core').useActiveElement
   const useAnimate: typeof import('@vueuse/core').useAnimate
   const useArrayDifference: typeof import('@vueuse/core').useArrayDifference
@@ -336,6 +309,6 @@ declare global {
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
-  export type { LoginParams } from '../src/api/auth'
-  import('../src/api/auth')
+  export type { CaptchaResult } from '../src/api/captcha'
+  import('../src/api/captcha')
 }

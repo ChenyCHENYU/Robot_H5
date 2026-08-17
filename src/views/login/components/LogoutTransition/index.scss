@@ -1,0 +1,206 @@
+.logout-transition {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ds-bg);
+    overflow: hidden;
+
+    // ── 背景光晕 ──
+    &__orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        pointer-events: none;
+        animation: ltOrbFloat 4s ease-in-out infinite;
+
+        &--1 {
+            width: 280px;
+            height: 280px;
+            top: -12%;
+            left: -10%;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            opacity: 0.25;
+        }
+
+        &--2 {
+            width: 220px;
+            height: 220px;
+            bottom: -8%;
+            right: -12%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            opacity: 0.2;
+            animation-delay: -2s;
+        }
+    }
+
+    // ── 主体内容 ──
+    &__content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        animation: ltContentIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+    }
+
+    // ── 图标 ──
+    &__icon {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__icon-ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: conic-gradient(
+            from 0deg,
+            #f59e0b,
+            #ef4444,
+            #ec4899,
+            #8b5cf6,
+            #f59e0b
+        );
+        padding: 3px;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        -webkit-mask-composite: xor;
+        animation: ltRingSpin 4s linear infinite;
+
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 50%;
+            background: var(--ds-bg);
+        }
+    }
+
+    &__wave {
+        font-size: 32px;
+        position: relative;
+        z-index: 1;
+        animation: ltWave 1s ease-in-out 0.3s both;
+        transform-origin: 70% 70%;
+    }
+
+    // ── 文字 ──
+    &__text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    &__title {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        background: linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #ec4899 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: ltTitleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+    }
+
+    &__subtitle {
+        font-size: 14px;
+        color: var(--ds-text-secondary);
+        opacity: 0;
+        animation: ltFadeIn 0.4s ease 0.6s forwards;
+    }
+
+    // ── 底部光束 ──
+    &__beam {
+        width: 120px;
+        height: 3px;
+        border-radius: 2px;
+        background: var(--ds-bg-secondary);
+        overflow: hidden;
+        opacity: 0;
+        animation: ltFadeIn 0.3s ease 0.8s forwards;
+    }
+
+    &__beam-fill {
+        height: 100%;
+        border-radius: 2px;
+        background: linear-gradient(90deg, #f59e0b, #ef4444, #ec4899);
+        background-size: 200% 100%;
+        animation: ltBeamFill 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.9s both,
+                   ltBeamShimmer 1.5s ease infinite;
+    }
+}
+
+// ── 过渡 ──
+.logout-transition-enter-active {
+    animation: ltFadeInFull 0.3s ease;
+}
+
+.logout-transition-leave-active {
+    animation: ltFadeOut 0.4s cubic-bezier(0.4, 0, 1, 1);
+}
+
+// ── Keyframes ──
+@keyframes ltOrbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-6px, 10px) scale(1.04); }
+}
+
+@keyframes ltContentIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes ltRingSpin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes ltWave {
+    0% { transform: rotate(0deg) scale(0.5); opacity: 0; }
+    30% { transform: rotate(20deg) scale(1); opacity: 1; }
+    50% { transform: rotate(-15deg); }
+    70% { transform: rotate(10deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes ltTitleIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ltFadeIn {
+    to { opacity: 1; }
+}
+
+@keyframes ltBeamFill {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes ltBeamShimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+
+@keyframes ltFadeInFull {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes ltFadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(1.05); filter: blur(8px); }
+}
+
+// ── 暗色模式 ──
+html.dark .logout-transition {
+    &__orb--1 { opacity: 0.15; }
+    &__orb--2 { opacity: 0.12; }
+}

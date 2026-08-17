@@ -7,12 +7,13 @@
         </div>
 
         <!-- Profile Card -->
-        <div class="mine-page__profile">
+        <div class="mine-page__profile" @click="$router.push('/editUserInfo')">
             <VanImage class="mine-page__avatar" round fit="cover" :src="avatarSrc" />
             <div class="mine-page__info">
-                <h2 class="mine-page__name">{{ userStore.getPersonName || userStore.getUserNo || '未登录' }}</h2>
-                <p class="mine-page__sign">{{ userStore.getDeptName || '企业计量移动平台' }}</p>
+                <h2 class="mine-page__name">{{ userStore.getUserInfo.nickname || 'CHENY' }}</h2>
+                <p class="mine-page__sign">{{ userStore.getUserInfo.sign || '把复杂的事做简单，把简单的事做极致。' }}</p>
             </div>
+            <i class="i-ph:caret-right-bold mine-page__arrow" />
         </div>
 
         <!-- Settings Groups -->
@@ -46,6 +47,9 @@
             description="确认退出当前账号？"
             close-on-click-action
         />
+
+        <!-- 退出过渡动画 -->
+        <LogoutTransition :visible="showLogoutTransition" />
     </div>
 </template>
 
@@ -53,20 +57,25 @@
     import './index.scss';
     import { settingsGroups, DEFAULT_AVATAR } from './data';
     import { useUserStore } from '@/store/modules/user';
+    import LogoutTransition from '@/views/login/components/LogoutTransition/index.vue';
     import type { ActionSheetAction } from 'vant';
 
     defineOptions({ name: 'MinePage' });
 
     const userStore = useUserStore();
     const showLogoutAction = ref(false);
-    const avatarSrc = computed(() => DEFAULT_AVATAR);
+    const showLogoutTransition = ref(false);
+    const avatarSrc = computed(() => userStore.getUserInfo.avatar || DEFAULT_AVATAR);
 
     const logoutActions: ActionSheetAction[] = [
         {
             name: '退出登录',
             color: '#FF3B30',
             callback: () => {
-                userStore.Logout();
+                showLogoutTransition.value = true;
+                setTimeout(() => {
+                    userStore.Logout();
+                }, 1800);
             },
         },
     ];

@@ -1,0 +1,242 @@
+.login-success {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ds-bg);
+    overflow: hidden;
+
+    // ── 背景光晕 ──
+    &__orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        pointer-events: none;
+        animation: lsOrbFloat 4s ease-in-out infinite;
+
+        &--1 {
+            width: 300px;
+            height: 300px;
+            top: -15%;
+            right: -10%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            opacity: 0.35;
+        }
+
+        &--2 {
+            width: 240px;
+            height: 240px;
+            bottom: -10%;
+            left: -15%;
+            background: linear-gradient(135deg, #0071e3, #5856d6);
+            opacity: 0.28;
+            animation-delay: -1.5s;
+        }
+
+        &--3 {
+            width: 160px;
+            height: 160px;
+            top: 40%;
+            left: 60%;
+            background: linear-gradient(135deg, #34c759, #30d158);
+            opacity: 0.15;
+            animation-delay: -3s;
+        }
+    }
+
+    // ── 主体内容 ──
+    &__content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        animation: lsContentIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+    }
+
+    // ── 成功图标 ──
+    &__icon {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__icon-ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: conic-gradient(
+            from 0deg,
+            #667eea,
+            #764ba2,
+            #0071e3,
+            #5856d6,
+            #667eea
+        );
+        padding: 3px;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        -webkit-mask-composite: xor;
+        animation: lsRingSpin 3s linear infinite;
+
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 50%;
+            background: var(--ds-bg);
+        }
+    }
+
+    &__check {
+        width: 36px;
+        height: 36px;
+        position: relative;
+        z-index: 1;
+    }
+
+    &__check-path {
+        stroke: url(#lsGradient);
+        stroke: #667eea;
+        stroke-width: 3.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 40;
+        stroke-dashoffset: 40;
+        animation: lsCheckDraw 0.5s cubic-bezier(0.65, 0, 0.35, 1) 0.4s forwards;
+    }
+
+    // ── 文字 ──
+    &__text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    &__title {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #0071e3 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: lsTitleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+    }
+
+    &__subtitle {
+        font-size: 14px;
+        color: var(--ds-text-secondary);
+        opacity: 0;
+        animation: lsSubtitleIn 0.4s ease 0.6s forwards;
+    }
+
+    // ── 底部进度光束 ──
+    &__beam {
+        width: 120px;
+        height: 3px;
+        border-radius: 2px;
+        background: var(--ds-bg-secondary);
+        overflow: hidden;
+        opacity: 0;
+        animation: lsSubtitleIn 0.3s ease 0.8s forwards;
+    }
+
+    &__beam-fill {
+        height: 100%;
+        border-radius: 2px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #0071e3);
+        background-size: 200% 100%;
+        animation: lsBeamFill 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.9s both,
+                   lsBeamShimmer 1.5s ease infinite;
+    }
+}
+
+// ── 过渡动画 ──
+.login-success-enter-active {
+    animation: lsFadeIn 0.3s ease;
+}
+
+.login-success-leave-active {
+    animation: lsFadeOut 0.4s cubic-bezier(0.4, 0, 1, 1);
+}
+
+// ── Keyframes ──
+@keyframes lsOrbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(8px, -12px) scale(1.05); }
+}
+
+@keyframes lsContentIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes lsRingSpin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes lsCheckDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes lsTitleIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes lsSubtitleIn {
+    to { opacity: 1; }
+}
+
+@keyframes lsBeamFill {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes lsBeamShimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+
+@keyframes lsFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes lsFadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(1.05);
+        filter: blur(8px);
+    }
+}
+
+// ── 暗色模式 ──
+html.dark .login-success {
+    &__orb--1 { opacity: 0.2; }
+    &__orb--2 { opacity: 0.15; }
+    &__orb--3 { opacity: 0.1; }
+}

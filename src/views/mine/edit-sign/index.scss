@@ -1,0 +1,70 @@
+.form-page {
+    min-height: 100%;
+    background: var(--ds-bg);
+    padding-bottom: 40px;
+
+    &__body { padding: 16px 20px; }
+
+    &__section { margin-bottom: 20px; }
+
+    &__section-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ds-text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin: 0 0 10px 2px;
+    }
+
+    &__group {
+        position: relative;
+        overflow: hidden;
+        background: var(--ds-glass-bg);
+        backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+        border: 1px solid var(--ds-glass-border);
+        border-radius: var(--ds-radius-lg);
+        box-shadow: var(--ds-glass-shine), var(--ds-glass-shadow);
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            background: var(--ds-glass-gradient);
+            pointer-events: none;
+        }
+    }
+
+    &__cell {
+
+        :deep(.van-field__label), :deep(.van-cell__title) {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--ds-text-primary);
+        }
+
+        :deep(.van-cell__value), :deep(.van-field__control) {
+            font-size: 14px;
+        }
+
+        &:not(:last-child) {
+            :deep(.van-cell__wrapper) {
+                border-bottom: 0.5px solid var(--ds-divider);
+            }
+        }
+    }
+
+    &__save {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ds-accent);
+    }
+
+    &__note {
+        font-size: 12px;
+        color: var(--ds-text-tertiary);
+        padding: 12px 16px 0;
+        line-height: 1.6;
+    }
+}
