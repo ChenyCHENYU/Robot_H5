@@ -1,3 +1,5 @@
+import Cookies from 'js-cookie';
+
 /**
  * 认证适配器 — 双模式登录机制
  *
@@ -126,5 +128,23 @@ export function notifyPortalUserLogout(): void {
     } catch (e) {
         console.warn('[auth] notifyPortalUserLogout failed:', e);
     }
+}
+
+// ─── jhlc 令牌存取（Cookie Admin-Token，与老计量系统契约一致）──────────
+const TokenKey = 'Admin-Token';
+
+/** 从 Cookie 读取令牌 */
+export function getToken(): string {
+    return Cookies.get(TokenKey) || '';
+}
+
+/** 令牌写入 Cookie */
+export function setToken(token: string): void {
+    Cookies.set(TokenKey, token);
+}
+
+/** 清除 Cookie 令牌 */
+export function removeToken(): void {
+    Cookies.remove(TokenKey);
 }
 

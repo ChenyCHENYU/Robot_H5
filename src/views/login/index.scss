@@ -169,3 +169,100 @@ html.dark .login-page__card {
         0 8px 40px rgba(0, 0, 0, 0.30),
         0 2px 10px rgba(0, 0, 0, 0.18);
 }
+
+// ---- 标题区 ----
+.login-page__title {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 24px;
+
+    &-text {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        color: var(--ds-text-primary);
+    }
+
+    &-sub {
+        margin: 8px 0 0;
+        font-size: 14px;
+        font-weight: 400;
+        color: var(--ds-text-secondary);
+        letter-spacing: 0.02em;
+    }
+
+    &-badge {
+        margin-top: 12px;
+        padding: 4px 10px;
+        font-size: 12px;
+        border-radius: var(--ds-radius-sm);
+        color: var(--ds-accent);
+        background: rgba(25, 137, 250, 0.08);
+    }
+
+    &-badge--dev {
+        color: var(--ds-warning);
+        background: rgba(255, 149, 0, 0.10);
+    }
+}
+
+// ---- 表单区 ----
+.login-page__hint {
+    margin: 0 0 12px;
+    font-size: 13px;
+    color: var(--ds-text-tertiary);
+    text-align: center;
+}
+
+.login-page__fields {
+    border-radius: var(--ds-radius-md);
+    overflow: hidden;
+}
+
+.login-page__captcha {
+    display: block;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+
+    &-img {
+        display: block;
+        width: 96px;
+        height: 40px;
+        border-radius: var(--ds-radius-sm);
+    }
+
+    &-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 96px;
+        height: 40px;
+        font-size: 12px;
+        color: var(--ds-text-tertiary);
+    }
+}
+
+.login-page__actions {
+    margin-top: 20px;
+}
+
+.login-page__submit {
+    border-radius: var(--ds-radius-md);
+}
+
+.login-page__footer {
+    position: relative;
+    z-index: 1;
+    margin-top: 16px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    text-align: center;
+    font-size: 12px;
+    color: var(--ds-text-tertiary);
+}

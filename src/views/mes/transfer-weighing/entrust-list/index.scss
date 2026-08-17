@@ -1,0 +1,278 @@
+.entrust-page {
+    min-height: 100vh;
+    background: var(--ds-bg-secondary);
+
+    // ---- 筛选区域 ----
+    &__filter {
+        padding: 12px 16px 14px;
+        background: var(--ds-surface);
+        margin-bottom: 10px;
+        box-shadow: var(--ds-shadow-1);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    &__tabs {
+        display: flex;
+        gap: 20px;
+        border-bottom: 1px solid var(--ds-divider);
+        padding-bottom: 8px;
+    }
+
+    &__tab {
+        font-size: 14px;
+        color: var(--ds-text-secondary);
+        padding-bottom: 6px;
+        cursor: pointer;
+        position: relative;
+
+        &--active {
+            color: var(--ds-accent);
+            font-weight: 600;
+
+            &::after {
+                content: '';
+                position: absolute;
+                left: 0;
+                bottom: -8px;
+                width: 100%;
+                height: 2px;
+                background: var(--ds-accent);
+                border-radius: 1px;
+            }
+        }
+    }
+
+    &__row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    &__search-box {
+        flex: 1;
+        border: 1px solid var(--ds-accent);
+        border-radius: 20px;
+        overflow: hidden;
+        background: var(--ds-surface);
+
+        :deep(.van-field__control) {
+            font-size: 13px;
+            color: var(--ds-text-primary);
+            &::placeholder {
+                color: var(--ds-accent);
+                opacity: 0.6;
+            }
+        }
+    }
+
+    &__search-input {
+        padding: 6px 14px;
+        background: transparent;
+    }
+
+    &__filter-item {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 0 12px;
+        background: var(--ds-bg-secondary);
+        border-radius: var(--ds-radius-sm);
+        font-size: 13px;
+        cursor: pointer;
+        min-height: 36px;
+        border: 1px solid var(--ds-border);
+    }
+
+    &__filter-label {
+        color: var(--ds-text-tertiary);
+        flex-shrink: 0;
+    }
+
+    &__filter-value {
+        color: var(--ds-text-primary);
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__filter-btn {
+        flex: 1;
+        height: 36px;
+        font-size: 14px;
+    }
+
+    // ---- 列表 ----
+    &__list {
+        padding: 0 12px 16px;
+    }
+
+    &__card {
+        background: var(--ds-surface);
+        border-radius: var(--ds-radius-sm);
+        margin-bottom: 12px;
+        overflow: hidden;
+        box-shadow: var(--ds-shadow-1);
+    }
+
+    // 卡片头部
+    &__card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 14px;
+    }
+
+    &__header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__blue-bar {
+        width: 3px;
+        height: 18px;
+        background: var(--ds-accent);
+        border-radius: 2px;
+        flex-shrink: 0;
+    }
+
+    &__header-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ds-text-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__header-right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        flex-shrink: 0;
+        max-width: 58%;
+    }
+
+    &__priority-tag {
+        font-weight: 600;
+        padding: 0 8px;
+        line-height: 22px;
+        border: none;
+        flex-shrink: 0;
+        animation: entrustPriorityPulse 2s ease-in-out infinite;
+    }
+
+    &__status-tag {
+        font-weight: 500;
+        padding: 0 8px;
+        line-height: 22px;
+        border: none;
+        flex-shrink: 0;
+    }
+
+    // 虚线分隔
+    &__divider {
+        margin: 0 14px;
+        border-top: 1px dashed var(--ds-border);
+    }
+
+    // 卡片内容
+    &__card-body {
+        padding: 10px 14px;
+    }
+
+    &__info-row {
+        display: flex;
+        font-size: 13px;
+        line-height: 2;
+    }
+
+    &__info-label {
+        color: var(--ds-text-secondary);
+        flex-shrink: 0;
+        width: 70px;
+        margin-right: 12px;
+    }
+
+    &__info-value {
+        color: var(--ds-text-primary);
+        flex: 1;
+    }
+
+    // 卡片底部
+    &__card-footer {
+        display: flex;
+        align-items: center;
+        padding: 10px 14px;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    &__footer-spacer {
+        flex: 1;
+    }
+
+    &__footer-btn {
+        min-width: 56px;
+        font-size: 13px;
+        font-weight: 500;
+        height: 32px;
+        padding: 0 12px;
+        border-radius: var(--ds-radius-sm);
+    }
+
+    &__footer-btn--outline {
+        background: var(--ds-surface);
+        box-shadow: var(--ds-shadow-1);
+    }
+
+    &__footer-btn--primary-border {
+        color: var(--ds-accent);
+        border-color: var(--ds-border);
+    }
+
+    &__footer-btn--solid {
+        border: none;
+        box-shadow: var(--ds-shadow-2);
+    }
+
+    // 条形码弹窗
+    &__barcode-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--ds-text-primary);
+        margin-bottom: 14px;
+    }
+
+    &__barcode-img {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        object-fit: contain;
+        image-rendering: pixelated;
+    }
+
+    &__barcode-empty {
+        color: var(--ds-text-tertiary);
+        font-size: 14px;
+        padding: 32px 0;
+    }
+}
+
+@keyframes entrustPriorityPulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}

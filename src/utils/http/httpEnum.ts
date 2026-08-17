@@ -2,8 +2,12 @@
  * @description: 请求结果集
  */
 export enum ResultEnum {
-    SUCCESS = 200,
+    // jhlc 后端成功码（老系统兼容 200）
+    SUCCESS = 2000,
     TOKEN_EXPIRED = 401,
+    TOKEN_EXPIRED_2 = 4001,
+    // license 过期（老系统跳 licenseRegister，新项目改为提示跳登录）
+    LICENSE_EXPIRED = 4103,
     ERROR = 300,
     TIMEOUT = 10042,
 }

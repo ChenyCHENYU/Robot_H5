@@ -1,0 +1,29 @@
+.update-pwd-page {
+    min-height: 100vh;
+    background: var(--ds-bg-secondary);
+
+    &__form-group {
+        box-shadow: var(--ds-shadow-1);
+    }
+
+    &__hints {
+        padding: 12px 16px;
+        font-size: 13px;
+        line-height: 20px;
+        color: var(--ds-danger);
+
+        p {
+            margin: 0 0 4px;
+        }
+    }
+
+    &__submit {
+        display: flex;
+        justify-content: center;
+        margin: 48px 0;
+    }
+
+    &__submit-btn {
+        width: 80%;
+    }
+}

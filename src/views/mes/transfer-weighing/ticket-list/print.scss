@@ -1,0 +1,201 @@
+.ticket-print-page {
+    min-height: 100vh;
+    background: var(--ds-bg-tertiary);
+    padding-bottom: 88px;
+
+    &__body {
+        padding: 12px 14px 20px;
+    }
+
+    &__loading-wrap,
+    &__empty-hint {
+        padding: 48px 0;
+    }
+
+    // 表格式过磅单（联单风格；单据为"纸面墨色"，圆角 2px 按纸面工艺保留）
+    &__sheet {
+        background: var(--ds-surface);
+        border: 1px solid var(--ds-text-primary);
+        border-radius: 2px;
+        padding: 16px 14px 20px;
+        color: var(--ds-text-primary);
+        max-width: 100%;
+        box-shadow: var(--ds-shadow-2);
+    }
+
+    &__header {
+        text-align: center;
+        border-bottom: 2px solid var(--ds-text-primary);
+        padding-bottom: 10px;
+        margin-bottom: 12px;
+    }
+
+    &__company {
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        margin: 0;
+        line-height: 1.35;
+        color: var(--ds-text-primary);
+    }
+
+    &__meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 14px;
+        margin-bottom: 10px;
+
+        strong {
+            font-size: 15px;
+            letter-spacing: 0.04em;
+        }
+    }
+
+    &__block-title {
+        font-size: 13px;
+        font-weight: 700;
+        margin: 14px 0 6px;
+        padding-left: 6px;
+        border-left: 3px solid var(--ds-text-primary);
+        line-height: 1.2;
+    }
+
+    &__table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        table-layout: fixed;
+
+        th,
+        td {
+            border: 1px solid var(--ds-text-primary);
+            padding: 6px 8px;
+            word-break: break-all;
+        }
+
+        th {
+            background: var(--ds-bg-secondary);
+            font-weight: 600;
+            text-align: left;
+        }
+
+        td {
+            background: var(--ds-surface);
+        }
+
+        .ticket-print-page__num {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+
+            &--strong {
+                font-weight: 800;
+            }
+        }
+    }
+
+    &__w20 {
+        width: 20%;
+    }
+
+    &__w25 {
+        width: 25%;
+    }
+
+    &__w30 {
+        width: 30%;
+    }
+
+    &__w33 {
+        width: 33.33%;
+    }
+
+    &__table--weight {
+        .ticket-print-page__row-net td {
+            background: var(--ds-bg-secondary);
+        }
+
+        .ticket-print-page__row-net .ticket-print-page__num {
+            color: var(--ds-success);
+            font-size: 13px;
+        }
+    }
+
+    &__remark {
+        margin-top: 12px;
+        font-size: 12px;
+        border: 1px solid var(--ds-text-tertiary);
+        padding: 8px 10px;
+        min-height: 40px;
+    }
+
+    &__remark-label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    &__remark-txt {
+        margin: 0;
+        line-height: 1.5;
+        color: var(--ds-text-primary);
+    }
+
+    &__footer {
+        margin-top: 16px;
+        padding-top: 10px;
+        border-top: 1px dashed var(--ds-text-tertiary);
+        font-size: 11px;
+        color: var(--ds-text-secondary);
+        line-height: 1.6;
+
+        p {
+            margin: 0 0 4px;
+        }
+    }
+
+    &__print-time {
+        text-align: right;
+        color: var(--ds-text-tertiary);
+    }
+
+    &__actions {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0));
+        background: linear-gradient(180deg, transparent 0%, var(--ds-bg-secondary) 20%);
+        box-shadow: var(--ds-shadow-2);
+        z-index: 100;
+
+        .ticket-print-page__print-btn {
+            height: 46px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+    }
+}
+
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    .ticket-print-page {
+        background: var(--ds-surface) !important;
+        padding-bottom: 0 !important;
+    }
+    .ticket-print-page__body {
+        padding: 0 !important;
+    }
+    .ticket-print-page__sheet {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+    }
+}
+
+@page {
+    size: A4;
+    margin: 12mm;
+}

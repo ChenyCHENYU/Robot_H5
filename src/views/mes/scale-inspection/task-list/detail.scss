@@ -1,0 +1,204 @@
+.scale-inspection-detail {
+    min-height: 100vh;
+    background: var(--ds-bg-secondary);
+
+    &__content {
+        padding: 12px 12px 24px;
+    }
+
+    // 蓝色竖条
+    &__blue-bar {
+        width: 3px;
+        height: 18px;
+        background: var(--ds-accent);
+        border-radius: 2px;
+        flex-shrink: 0;
+    }
+
+    // 虚线分隔
+    &__divider {
+        margin: 0 14px;
+        border-top: 1px dashed var(--ds-border);
+    }
+
+    // 通用卡片头部
+    &__card-header,
+    &__inspect-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 14px;
+    }
+
+    &__header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__header-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ds-text-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__result-btns {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    // 卡片内容
+    &__card-body,
+    &__inspect-card-body {
+        padding: 10px 14px;
+    }
+
+    &__info-row {
+        display: flex;
+        align-items: center;
+        font-size: 13px;
+        line-height: 2;
+    }
+
+    &__info-label {
+        color: var(--ds-text-secondary);
+        flex-shrink: 0;
+        width: 70px;
+        margin-right: 12px;
+    }
+
+    &__info-value {
+        color: var(--ds-text-primary);
+        flex: 1;
+    }
+
+    &__abnormal-text {
+        color: var(--ds-danger);
+    }
+
+    // 卡片底部操作
+    &__card-footer {
+        display: flex;
+        align-items: center;
+        padding: 10px 14px;
+        gap: 8px;
+    }
+
+    &__footer-spacer {
+        flex: 1;
+    }
+
+    &__action-btn {
+        min-width: 60px;
+        font-size: 12px;
+        height: 28px;
+    }
+
+    // 基础信息卡片
+    &__info-card {
+        background: var(--ds-surface);
+        border-radius: var(--ds-radius-sm);
+        overflow: hidden;
+        box-shadow: var(--ds-shadow-1);
+    }
+
+    // 巡检项列表容器
+    &__item-list-wrapper {
+        position: relative;
+        margin-top: 12px;
+
+        &--disabled &__item-list {
+            filter: blur(1px) grayscale(80%);
+            opacity: 0.7;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        &--readonly &__item-list {
+            opacity: 0.6;
+            pointer-events: none;
+            user-select: none;
+        }
+    }
+
+    // 停产遮罩层
+    &__stop-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        // 遮罩层为半透明黑蒙层，无对应设计令牌，保留字面量
+        background: rgba(150, 150, 150, 0.25);
+        backdrop-filter: blur(1px);
+    }
+
+    &__stop-overlay-text {
+        padding: 14px 32px;
+        background: rgba(0, 0, 0, 0.65);
+        color: var(--ds-surface);
+        font-size: 20px;
+        font-weight: 600;
+        border-radius: var(--ds-radius-md);
+        letter-spacing: 3px;
+        box-shadow: var(--ds-shadow-2);
+    }
+
+    // 巡检项卡片
+    &__inspect-card {
+        background: var(--ds-surface);
+        border-radius: var(--ds-radius-sm);
+        margin-bottom: 12px;
+        overflow: hidden;
+        box-shadow: var(--ds-shadow-1);
+    }
+
+    // 不合格原因输入
+    &__abnormal-input {
+        margin-top: 8px;
+
+        :deep(.van-field) {
+            padding: 8px 10px;
+            background: var(--ds-bg-secondary);
+            border-radius: var(--ds-radius-sm);
+        }
+    }
+
+    &__abnormal-label {
+        font-size: 13px;
+        color: var(--ds-danger);
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+
+    // 底部提交区域
+    &__submit-area {
+        margin-top: 16px;
+        padding: 0 4px;
+
+        :deep(.van-button) {
+            height: 44px;
+            font-size: 16px;
+        }
+    }
+
+    &__result-textarea {
+        border-radius: var(--ds-radius-sm);
+        margin-bottom: 14px;
+        overflow: hidden;
+
+        :deep(.van-field) {
+            background: var(--ds-surface);
+        }
+    }
+}

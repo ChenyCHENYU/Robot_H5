@@ -1,0 +1,303 @@
+.weight-verify-detail {
+    min-height: 100vh;
+    background: var(--ds-bg-secondary);
+
+    &__content {
+        padding: 12px 12px 24px;
+    }
+
+    // 通用卡片头部
+    &__card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 14px;
+    }
+
+    &__header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__header-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ds-text-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    // 蓝色竖条
+    &__blue-bar {
+        width: 3px;
+        height: 18px;
+        background: var(--ds-accent);
+        border-radius: 2px;
+        flex-shrink: 0;
+    }
+
+    // 虚线分隔
+    &__divider {
+        margin: 0 14px;
+        border-top: 1px dashed var(--ds-border);
+    }
+
+    // 卡片内容
+    &__card-body {
+        padding: 10px 14px;
+    }
+
+    &__info-row {
+        display: flex;
+        align-items: center;
+        font-size: 13px;
+        line-height: 2;
+    }
+
+    &__info-label {
+        color: var(--ds-text-secondary);
+        flex-shrink: 0;
+        width: 70px;
+        margin-right: 12px;
+    }
+
+    &__info-value {
+        color: var(--ds-text-primary);
+        flex: 1;
+    }
+
+    // 卡片底部操作
+    &__card-footer {
+        display: flex;
+        align-items: center;
+        padding: 10px 14px;
+        gap: 8px;
+    }
+
+    &__footer-spacer {
+        flex: 1;
+    }
+
+    &__action-btn {
+        min-width: 60px;
+        font-size: 12px;
+        height: 28px;
+    }
+
+    // 基础信息卡片
+    &__info-card {
+        background: var(--ds-surface);
+        border-radius: var(--ds-radius-sm);
+        overflow: hidden;
+        box-shadow: var(--ds-shadow-1);
+    }
+
+    // 校磅详情列表容器
+    &__item-list-wrapper {
+        position: relative;
+        margin-top: 12px;
+
+        &--disabled &__item-list {
+            filter: blur(1px) grayscale(80%);
+            opacity: 0.7;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        &--readonly &__item-list {
+            opacity: 0.6;
+            pointer-events: none;
+            user-select: none;
+        }
+    }
+
+    // 停产遮罩层
+    &__stop-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        // 遮罩层为半透明黑蒙层，无对应设计令牌，保留字面量
+        background: rgba(150, 150, 150, 0.25);
+        backdrop-filter: blur(1px);
+    }
+
+    &__stop-overlay-text {
+        padding: 14px 32px;
+        background: rgba(0, 0, 0, 0.65);
+        color: var(--ds-surface);
+        font-size: 20px;
+        font-weight: 600;
+        border-radius: var(--ds-radius-md);
+        letter-spacing: 3px;
+        box-shadow: var(--ds-shadow-2);
+    }
+
+    // 区域卡片
+    &__section-card {
+        background: var(--ds-surface);
+        border-radius: var(--ds-radius-sm);
+        overflow: hidden;
+        margin-bottom: 12px;
+        box-shadow: var(--ds-shadow-1);
+    }
+
+    &__section-card-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 14px;
+    }
+
+    &__section-card-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ds-text-primary);
+    }
+
+    // 表格样式
+    &__scale-table {
+        .weight-verify-detail__table-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--ds-bg-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ds-text-secondary);
+        }
+
+        .weight-verify-detail__table-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--ds-divider);
+            font-size: 13px;
+            color: var(--ds-text-primary);
+
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+
+        .weight-verify-detail__col-index {
+            width: 50px;
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .weight-verify-detail__col-name {
+            flex: 1;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .weight-verify-detail__col-value {
+            flex: 1;
+            text-align: center;
+        }
+    }
+
+    // 三点校磅输入区域
+    &__three-point-inputs {
+        padding: 6px 14px;
+
+        .weight-verify-detail__info-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--ds-divider);
+            font-size: 13px;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            .weight-verify-detail__info-label {
+                color: var(--ds-text-secondary);
+                width: 80px;
+                flex-shrink: 0;
+                margin-right: 12px;
+            }
+
+            .weight-verify-detail__info-value {
+                font-size: 14px;
+                color: var(--ds-text-primary);
+                font-weight: 500;
+            }
+        }
+    }
+
+    // 执行中：手工输入 + 取值
+    &__col-value--action {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex: 1.2;
+        min-width: 0;
+    }
+
+    // 过磅值输入（与「取值」并排）
+    &__weigh-input-field {
+        flex: 1;
+        min-width: 0;
+        padding: 0;
+        background: transparent;
+
+        :deep(.van-field__body) {
+            padding: 0;
+        }
+
+        :deep(.van-field__control) {
+            min-height: 28px;
+            line-height: 28px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ds-text-primary);
+        }
+    }
+
+    &__tp-weigh-input {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__take-btn {
+        flex-shrink: 0;
+        height: 28px;
+        padding: 0 10px;
+        font-size: 12px;
+    }
+
+    &__tp-value-row {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        min-width: 0;
+    }
+
+    // 底部提交区域
+    &__submit-area {
+        margin-top: 16px;
+        padding: 0 4px;
+
+        :deep(.van-button) {
+            height: 44px;
+            font-size: 16px;
+        }
+    }
+}

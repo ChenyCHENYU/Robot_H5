@@ -1,14 +1,13 @@
 import type { App } from 'vue';
-import type { RouteRecordRaw } from 'vue-router';
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory, createWebHistory, type RouteRecordRaw } from 'vue-router';
 import { createRouterGuards } from './router-guards';
 import routeModuleList from './modules';
-import { ErrorPageRoute, LoginRoute, RootRoute } from '@/router/base';
+import { ErrorPageRoute, GetCodeRoute, LoginRoute, RootRoute } from '@/router/base';
 import menuRouteList from './menu';
 import { useRouteStoreWidthOut } from '@/store/modules/route';
 
 // 普通路由
-export const baseRouter: RouteRecordRaw[] = [LoginRoute, RootRoute, ErrorPageRoute];
+export const baseRouter: RouteRecordRaw[] = [LoginRoute, GetCodeRoute, RootRoute, ErrorPageRoute];
 
 // 所有路由
 export const allRoutes = [...baseRouter, ...menuRouteList, ...routeModuleList];

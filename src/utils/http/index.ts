@@ -1,16 +1,23 @@
 // axios配置  可自行根据项目进行更改，只需更改该文件即可，其他文件可以不动
 import { showDialog, showFailToast, showSuccessToast } from 'vant';
-import { MAxios, axios, formatRequestDate, joinTimestamp } from '@miracle-web/utils';
-import { setObjToUrlParams, deepMerge, urlReg, isString, BrowserType } from '@miracle-web/utils';
-import { isIntegratedMode, isFromPortal, notifyPortalLogout } from '@/utils/auth';
-import type {
-    AxiosResponse,
-    InternalAxiosRequestConfig,
-    AxiosTransform,
-    CreateAxiosOptions,
-    RequestOptions,
-    Result,
+import {
+    MAxios,
+    axios,
+    formatRequestDate,
+    joinTimestamp,
+    setObjToUrlParams,
+    deepMerge,
+    urlReg,
+    isString,
+    BrowserType,
+    type AxiosResponse,
+    type InternalAxiosRequestConfig,
+    type AxiosTransform,
+    type CreateAxiosOptions,
+    type RequestOptions,
+    type Result,
 } from '@miracle-web/utils';
+import { isIntegratedMode, isFromPortal, notifyPortalLogout } from '@/utils/auth';
 import { ContentTypeEnum, RequestEnum, ResultEnum } from '@/utils/http/httpEnum';
 import { PageEnum } from '@/enums/pageEnum';
 
@@ -21,6 +28,9 @@ import { useUserStoreWidthOut } from '@/store/modules/user';
 const { getEnvConfig } = useEnv();
 
 const urlPrefix = getEnvConfig().urlPrefix || '';
+
+// 401/4001 弹窗防抖：页面并发请求 + 自动重试会多次触发，短时间只弹一次
+let isTokenExpiredDialogShown = false;
 
 const transform: AxiosTransform = {
     /**
@@ -100,7 +110,13 @@ const transform: AxiosTransform = {
 
         const { code, data, message } = response.data;
 
-        const hasSuccess = Reflect.has(response.data, 'code') && code === ResultEnum.SUCCESS;
+        // jhlc 后端契约：
+        // - 无 code 字段（如图形验证码接口返回 {image, captchaId}）→ 视为成功
+        // - code=2000 / 200 → 成功；code=5000 → 业务失败（如"验证码已失效或验证码错误"）
+        const hasSuccess =
+            !Reflect.has(response.data, 'code') ||
+            code === ResultEnum.SUCCESS ||
+            code === 200;
         // 消息处理
         if (isShowMessage) {
             // 自定义成功消息
@@ -121,6 +137,12 @@ const transform: AxiosTransform = {
 
         //  返回处理过后的数据
         if (isTransformResponse) {
+            // 业务失败（code=5000 等）时提示后端 message 并抛出，
+            // 让调用方（如登录页）能捕获真实错误原因，避免静默失败
+            if (!hasSuccess && message) {
+                showFailToast(message);
+                throw new Error(message);
+            }
             return response.data;
         }
 
@@ -139,11 +161,10 @@ const transform: AxiosTransform = {
     requestInterceptors: (config: InternalAxiosRequestConfig, options: CreateAxiosOptions) => {
         const userStore = useUserStoreWidthOut();
         const token = userStore.getToken;
-        // jwt token
-        if (token && config.requestOptions?.withToken) {
-            config.headers.Authorization = options.authenticationScheme
-                ? `${options.authenticationScheme} ${token}`
-                : token;
+        // jwt token（对齐 wl-app-tms：RFC 6750 Bearer 前缀，网关 ServerBearerTokenAuthenticationConverter 校验）
+        if (token && config.requestOptions?.withToken !== false) {
+            const scheme = options.authenticationScheme || 'Bearer';
+            config.headers.Authorization = `${scheme} ${token}`;
         }
 
         // platform
@@ -171,16 +192,42 @@ const transform: AxiosTransform = {
             showFailToast(message);
         }
 
-        if (code === ResultEnum.TOKEN_EXPIRED) {
+        // jhlc 后端 token 失效（401 / 4001）
+        const isTokenExpired = code === ResultEnum.TOKEN_EXPIRED || code === ResultEnum.TOKEN_EXPIRED_2;
+        if (isTokenExpired) {
             // 集成模式（mbase 子应用）：token 由基座签发，失效时通知基座重新登录，
             // 不在 iframe 内跳自身登录页（避免与基座会话脱节）。
             if (isIntegratedMode() && isFromPortal()) {
                 notifyPortalLogout();
                 return response;
             }
+            // 清空 store token（对齐 wl-app-tms 的 handleUnauthorized）
+            useUserStoreWidthOut().setToken('');
+            // 防抖：同一时刻的并发请求/重试只弹一次
+            if (!isTokenExpiredDialogShown) {
+                isTokenExpiredDialogShown = true;
+                showDialog({
+                    title: '提示',
+                    message: '登录身份已失效，请重新登录!',
+                })
+                    .then(() => {
+                        window.location.href = PageEnum.BASE_LOGIN;
+                    })
+                    .catch(() => {
+                        // on cancel
+                    });
+                setTimeout(() => {
+                    isTokenExpiredDialogShown = false;
+                }, 3000);
+            }
+        }
+
+        // license 过期（老系统跳 /licenseRegister，新项目直接提示并跳登录）
+        if (code === ResultEnum.LICENSE_EXPIRED) {
+            useUserStoreWidthOut().setToken('');
             showDialog({
                 title: '提示',
-                message: '登录身份已失效，请重新登录!',
+                message: message || '系统授权已过期，请联系管理员!',
             })
                 .then(() => {
                     window.location.href = PageEnum.BASE_LOGIN;
@@ -225,8 +272,8 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
         deepMerge(
             {
                 timeout: 10 * 1000,
-                // token 前缀 Bearer
-                authenticationScheme: '',
+                // RFC 6750 Bearer（与网关 ServerBearerTokenAuthenticationConverter 一致，对齐 wl-app-tms）
+                authenticationScheme: 'Bearer',
                 // 接口前缀
                 prefixUrl: urlPrefix,
 

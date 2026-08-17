@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "template": {
+    "id": "mobile.robot-h5",
+    "version": "1.6.1"
+  },
+  "platformVersion": null,
+  "createdAt": "2026-08-14T08:04:43.336Z",
+  "createdBy": "git-clone",
+  "parameters": {
+    "projectName": "wl-app-mes",
+    "title": "华新计量",
+    "devServerPort": 8021,
+    "localBackendUrl": "http://localhost:9001",
+    "features": [
+      "git-standards"
+    ]
+  }
+}

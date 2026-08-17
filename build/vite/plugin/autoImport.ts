@@ -17,7 +17,8 @@ export function configAutoImportPlugin() {
         ],
         imports: ['vue', 'vue-router', '@vueuse/core'],
         // 项目中自定义的导入
-        dirs: ['src/hooks', 'src/api'],
+        // 注意：不包含 src/api——业务 API 必须显式 import，避免同名导出（如 getMapByDicSnApi）自动导入冲突
+        dirs: ['src/hooks'],
         // 可以选择auto-import.d.ts生成的位置，使用ts建议设置为'src/auto-import.d.ts'
         dts: 'types/auto-import.d.ts',
         // eslint globals Docs - https://eslint.org/docs/user-guide/configuring/language-options#specifying-globals

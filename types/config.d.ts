@@ -28,4 +28,6 @@ export interface GlobEnvConfig {
     VITE_GLOB_IMG_URL?: string;
     // 生产环境开启mock
     VITE_GLOB_PROD_MOCK: boolean;
+    // 地磅实时重量 WebSocket 地址
+    VITE_SCALE_WS_URL?: string;
 }

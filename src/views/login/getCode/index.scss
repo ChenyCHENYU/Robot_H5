@@ -1,0 +1,54 @@
+.get-code-page {
+    min-height: 100vh;
+    background: var(--ds-bg);
+
+    &__content {
+        padding: 40px 20px;
+    }
+
+    &__title {
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--ds-text-primary);
+        margin-bottom: 8px;
+    }
+
+    &__message {
+        font-size: 13px;
+        color: var(--ds-text-secondary);
+        margin-bottom: 20px;
+    }
+
+    &__input-content {
+        display: flex;
+        align-items: center;
+        background: var(--ds-surface);
+        border-radius: var(--ds-radius-md);
+        margin: 20px 0;
+        overflow: hidden;
+    }
+
+    &__field {
+        flex: 1;
+        background: transparent;
+    }
+
+    &__send {
+        width: 30%;
+        text-align: center;
+        line-height: 40px;
+        font-size: 13px;
+        color: var(--ds-text-secondary);
+        cursor: pointer;
+
+        &--active {
+            background: var(--ds-danger);
+            color: var(--ds-surface);
+        }
+    }
+
+    &__submit {
+        border-radius: var(--ds-radius-md);
+        margin-top: 24px;
+    }
+}

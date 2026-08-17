@@ -14,7 +14,6 @@ import { useDirectives } from '@miracle-web/utils';
 import { useDevtool } from './devtool';
 import { useUpdater } from './updater';
 import { setupIconify } from './iconify';
-import { setupPermissionDirective } from '@/hooks/usePermission';
 
 window.NativeCallJs = NativeCallJs;
 
@@ -28,7 +27,6 @@ setupIconify();
 export const setupPlugins = (app: import('vue').App) => {
   vantPlugins(app); // UI组件
   useDirectives(app); // 指令
-  setupPermissionDirective(app); // v-permission 按钮权限指令
   useDevtool(); // 禁止开发工具
   useUpdater(); // 检测更新
 };
