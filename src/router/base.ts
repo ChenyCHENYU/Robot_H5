@@ -21,15 +21,6 @@ export const LoginRoute: RouteRecordRaw = {
     },
 };
 
-export const GetCodeRoute: RouteRecordRaw = {
-    path: '/getCode',
-    name: 'GetCode',
-    component: () => import('@/views/login/getCode/index.vue'),
-    meta: {
-        title: '获取验证码',
-    },
-};
-
 export const ErrorPageRoute: RouteRecordRaw = {
     path: '/:path(.*)*',
     name: PageEnum.ERROR_PAGE_NAME,

@@ -1,28 +1,23 @@
 import { acceptHMRUpdate, defineStore, type StateTree } from 'pinia';
 import { store } from '@/store';
-import { doLogout, getUserInfo, login, type LoginParams } from '@/api/auth';
+import { doLogout, getUserInfo, login } from '@/api/user';
 import { PageEnum } from '@/enums/pageEnum';
 import router from '@/router';
 import { encryptAES, decryptAES } from '@miracle-web/utils';
 import { useEnv } from '@/hooks/useEnv';
-import {
-    removeToken as removeCookieToken,
-    isIntegratedMode,
-    isFromPortal,
-    notifyPortalUserLogout,
-} from '@/utils/auth';
+import { usePermissionStoreWidthOut } from './permission';
+import { isIntegratedMode, isFromPortal, notifyPortalUserLogout } from '@/utils/auth';
 
 interface UserInfo {
-    /** 业务用户编号（老计量系统字段） */
-    userNo: string;
-    /** 业务用户姓名 */
-    personName: string;
-    /** 业务用户 ID（兼容老代码：值为 userNo） */
-    personId: string;
-    personType: string;
-    roles: string[];
-    deptName: string;
-    deptId: string;
+    userId: string | number;
+    username: string;
+    nickname: string;
+    avatar: string;
+    cover: string;
+    gender: number;
+    phone: string;
+    sign?: string;
+    industry?: number;
 }
 
 interface IUserState {
@@ -32,20 +27,24 @@ interface IUserState {
     userInfo: UserInfo;
 }
 
+interface LoginParams {
+    username: string;
+    password: string;
+}
+
 const { isProdMode } = useEnv();
 
 export const useUserStore = defineStore('app-user-store', {
     state: (): IUserState => ({
         userInfo: {
-            userNo: '',
-            personName: '',
-            personId: '',
-            personType: '',
-            roles: [],
-            deptName: '',
-            deptId: '',
+            userId: '',
+            username: '',
+            nickname: '',
+            avatar: '',
+            cover: '',
+            gender: 0,
+            phone: '',
         },
-        // token 存 pinia + persist（localStorage），不依赖 Cookie（对齐 wl-app-tms）
         token: '',
         companyId: '',
     }),
@@ -53,11 +52,6 @@ export const useUserStore = defineStore('app-user-store', {
         getUserInfo: state => state.userInfo,
         getToken: state => state.token,
         getCompanyId: state => state.companyId || '',
-        getPersonName: state => state.userInfo.personName,
-        getUserNo: state => state.userInfo.userNo,
-        getPersonId: state => state.userInfo.personId,
-        getDeptName: state => state.userInfo.deptName,
-        getDeptId: state => state.userInfo.deptId,
     },
     actions: {
         setToken(token: string) {
@@ -66,54 +60,31 @@ export const useUserStore = defineStore('app-user-store', {
         setCompanyId(companyId: string) {
             this.companyId = companyId || '';
         },
-        setRoles(roles: string[]) {
-            this.userInfo.roles = roles || [];
-        },
-        setBusinessUserInfo(user: Partial<UserInfo>) {
-            this.userInfo = { ...this.userInfo, ...user };
+        setUserInfo(info: UserInfo) {
+            this.userInfo = info;
         },
 
-        /**
-         * 登录（jhlc 后端 /auth/oauth/token + /hrms/user/getCurUser）
-         */
         async Login(params: LoginParams) {
             try {
-                const res: any = await login(params);
-                // 响应体 {code, data:{access_token, roles, user_auth}, message}
-                const payload = res?.data ?? res ?? {};
-                const accessToken = payload.access_token || payload.token;
-                if (!accessToken) {
-                    throw new Error(payload.message || '登录失败');
+                const { data } = await login(params);
+                if (data.token) {
+                    this.setToken(data.token);
+                    await this.GetUserInfo();
+                    // 登录后加载菜单权限
+                    const permissionStore = usePermissionStoreWidthOut();
+                    await permissionStore.loadPermissions();
+                    return Promise.resolve(data.token);
                 }
-                this.setToken(accessToken);
-                this.setRoles(payload.roles || []);
-                await this.GetUserInfo();
-                return Promise.resolve(accessToken);
             } catch (error) {
                 return Promise.reject(error);
             }
         },
 
-        /**
-         * 获取当前登录用户业务信息（/hrms/user/getCurUser）
-         * 映射：personId/userNo ← user.userNo，personName ← user.name，
-         *      deptId ← dept.id，deptName ← dept.strName
-         */
         async GetUserInfo() {
             try {
-                const res: any = await getUserInfo();
-                const { user, dept, roles } = res?.data ?? res ?? {};
-                this.setBusinessUserInfo({
-                    personId: user?.userNo ?? '',
-                    userNo: user?.userNo != null ? String(user.userNo) : '',
-                    personName: user?.name ?? '',
-                    deptId: dept?.id ?? '',
-                    deptName: dept?.strName ?? '',
-                });
-                if (Array.isArray(roles)) {
-                    this.setRoles(roles);
-                }
-                return Promise.resolve(res);
+                const { data } = await getUserInfo();
+                this.setUserInfo(data);
+                return Promise.resolve(data);
             } catch (error) {
                 return Promise.reject(error);
             }
@@ -133,13 +104,15 @@ export const useUserStore = defineStore('app-user-store', {
                 }
             }
             this.setToken('');
-            removeCookieToken();
-            this.setBusinessUserInfo({});
+            this.setUserInfo({} as UserInfo);
+            // 重置权限数据
+            const permissionStore = usePermissionStoreWidthOut();
+            permissionStore.resetPermissions();
             router.push(PageEnum.BASE_LOGIN);
             location.reload();
         },
     },
-    // 开启数据缓存（token + 业务用户信息全量持久化，刷新后保持登录态；对齐 wl-app-tms）
+    // 开启数据缓存
     persist: {
         key: 'CURRENT-USER',
         storage: window.localStorage,
