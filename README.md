@@ -1182,7 +1182,7 @@ export default defineH5Config({
 | `useBluetooth` | 蓝牙设备连接 |
 | `useOfflineStorage` | IndexedDB 离线存储 |
 | `usePushNotification` | 推送通知 |
-| `useWatermark` | 图片水印（时间 + 地点 + 人员） |
+| `useWatermark` | 多行图片水印、旧 WebView 降级与尺寸保护 |
 | `usePermission` | 系统权限查询/请求/监听 |
 
 **Utils 工具函数（纯函数，零依赖，tree-shaking 友好）：**
@@ -1195,6 +1195,7 @@ export default defineH5Config({
 | `file` | `getFileType` · `formatFileSize` |
 | `validate` | `isPhone` · `isIdCard` · `isEmail` · `isCreditCode` |
 | `format` | `formatDate` · `formatMoney` |
+| `watermark` | `buildWatermarkFormData` · `normalizeServerWatermarkPolicy` |
 
 **Bridge 适配器（多平台适配）：**
 
@@ -1338,14 +1339,14 @@ export default defineH5Config({
 
 相册等扩展能力请直接使用 `@robot-h5/core/bridge` 的 `invokeMbaseCapability`；异常调试使用 `MbaseBridgeError` 与 `getMbaseTransportStatus`。模板的 `@/platform/mbase` 继续兼容转出这些 API，但新业务推荐依赖 Core 的公共出口。
 
-完整配置、代码示例、错误排查和验收清单见 [wl-mbase 子应用集成指南](./docs/mbase-integration.md)。基座侧协议、相册、无 ID 暂存和断点续传契约，以 wl-mbase 项目中的《集成文档》为准。
+完整配置、代码示例、错误排查和验收清单见 [wl-mbase 子应用集成指南](./docs/mbase-integration.md)。基座侧协议、相册、无 ID 暂存、可选服务端水印和断点续传契约，以 wl-mbase 项目中的《集成文档》为准。
 
 ## PDA 兼容与 mbase 专项文档
 
 | 文档 | 面向场景 |
 | --- | --- |
 | [PDA 与旧 WebView 兼容规范](./docs/pda-compatibility.md) | 构建目标、禁用语法、渐进增强、真机验证 |
-| [wl-mbase 子应用集成指南](./docs/mbase-integration.md) | 免登、单头部、动态标题、能力桥和排障 |
+| [wl-mbase 子应用集成指南](./docs/mbase-integration.md) | 免登、单头部、动态标题、能力桥、可选图片水印和排障 |
 
 提交或发布前至少执行：
 

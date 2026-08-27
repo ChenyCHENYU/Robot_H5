@@ -1,7 +1,7 @@
 {
   "name": "robot-h5",
   "version": "1.7.1",
-  "description": "Vue 3 + Vite 7 + TypeScript 企业级移动端 H5 应用框架",
+  "description": "Vue 3 + Vite 7 + TypeScript 浼佷笟绾хЩ鍔ㄧ H5 搴旂敤妗嗘灦",
   "private": true,
   "type": "module",
   "license": "UNLICENSED",
@@ -49,7 +49,7 @@
   "dependencies": {
     "@iconify/vue": "5.0.0",
     "@miracle-web/utils": "^0.0.6",
-    "@robot-h5/core": "^1.1.4",
+    "@robot-h5/core": "^1.2.0",
     "@unocss/reset": "^66.5.1",
     "@vant/touch-emulator": "^1.4.0",
     "@vueuse/core": "^13.9.0",

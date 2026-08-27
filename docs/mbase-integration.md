@@ -84,7 +84,46 @@ try {
 
 相册直传、无 ID 暂存、断点续传的 payload 和后端约束以 wl-mbase《集成文档》为唯一准则。模板只提供可靠传输层，不替业务决定上传接口或页面交互。
 
-## 5. 调试信息
+## 5. 可选图片水印
+
+正式业务水印使用服务端权威处理。子应用只维护“是否带水印”的交互，并用 Core 将策略加入现有上传 `formData`；关闭时不会增加字段，也不会改变旧上传：
+
+```ts
+import { buildWatermarkFormData } from '@robot-h5/core';
+
+const formData = buildWatermarkFormData(
+  { businessType: 'inspection', businessId },
+  watermarkEnabled.value
+    ? {
+        enabled: true,
+        required: true,
+        templateId: 'inspection-photo-v1',
+        source, // camera 或 album
+        clientCapturedAt: new Date(),
+        location: currentLocation,
+        context: { businessName: '气体检测' },
+      }
+    : { enabled: false },
+);
+
+await window.WLPortalMedia.chooseImageAndUpload({
+  source,
+  max: 1,
+  url: import.meta.env.VITE_MEDIA_UPLOAD_URL,
+  formData,
+  header,
+});
+```
+
+- 拍照和相册历史照片使用同一契约；相册照片水印应写“上传时间/位置”，不能冒充拍摄信息。
+- 钉钉虚拟路径不能由子应用 `fetch`，不要尝试用 Canvas 改造原生直传。
+- `required=true` 时服务端失败必须让上传失败，页面保留重试入口。
+- 无业务 ID 使用 `chooseImagePersist`，取得 ID 后在 `uploadPendingPhotos.formData` 中加入同一策略。
+- `useWatermark` 仅用于已取得真实 `File` 的本地预览或纯 H5 客户端处理，不能代替跨端服务端水印。
+
+Core 新能力尚未发布时不要在模板依赖中预填不存在的版本；发布后先升级 `@robot-h5/core`，再按 wl-mbase《集成文档》的服务端契约接入。
+
+## 6. 调试信息
 
 ```ts
 import { getMbaseTransportStatus } from '@robot-h5/core/bridge';
@@ -104,7 +143,7 @@ console.table(getMbaseTransportStatus());
 | `app_sdk_url_missing` | 未配置 App SDK 自托管地址 | 检查 `appSdkUrl` 和部署目录下 vendor 文件 |
 | `timeout` | 请求已发出但基座未回传 | 用请求 api、错误 details 和基座日志联合定位 |
 
-## 6. 验收清单
+## 7. 验收清单
 
 - 独立浏览器：子应用头部存在，返回、拍照/文件选择的浏览器降级正常。
 - 普通 H5/钉钉：只显示宿主头部，进入二级页和返回时标题均正确。
@@ -112,4 +151,6 @@ console.table(getMbaseTransportStatus());
 - 换号复用 WebView/未清缓存：必须使用新 `portal_token`，不能闪现或继续使用上一账号资料。
 - 长会话中基座重新注入更新后的 `portal_token` 时，即使本地仍有旧 token，也必须再次清空旧用户/权限并以本次 URL 为权威来源；Robot_H5 `v1.7.0+` 已内置该行为。
 - 拍照、扫码、定位失败时能看到稳定错误码和桥接状态，不出现 60 秒无提示假死。
+- 水印关闭时服务端收不到 `watermarkPolicy`；开启时拍照、相册在各宿主均返回服务端水印图。
+- 必须水印处理失败时阻止提交，不静默把原图标记成水印成功。
 - `pnpm build:integrated && pnpm test:compat` 通过。
