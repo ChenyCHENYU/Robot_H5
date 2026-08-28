@@ -6,6 +6,7 @@ import router from '@/router';
 import { encryptAES, decryptAES } from '@miracle-web/utils';
 import { useEnv } from '@/hooks/useEnv';
 import { usePermissionStoreWidthOut } from './permission';
+import { useRouteStoreWidthOut } from './route';
 import {
     clearPortalSource,
     isIntegratedMode,
@@ -29,6 +30,14 @@ interface IUserState {
     token?: string;
     // 集成模式下从 mbase 透传的公司 ID（后端权限校验必需）
     companyId?: string;
+    // 仅用于展示；权限与数据范围只认 companyId
+    companyName?: string;
+    companyContextStatus: 'idle' | 'syncing' | 'ready' | 'error';
+    companyContextError: {
+        code: string;
+        message: string;
+        endpoint?: string;
+    } | null;
     userInfo: UserInfo;
 }
 
@@ -54,11 +63,15 @@ export const useUserStore = defineStore('app-user-store', {
         userInfo: createEmptyUserInfo(),
         token: '',
         companyId: '',
+        companyName: '',
+        companyContextStatus: 'idle',
+        companyContextError: null,
     }),
     getters: {
         getUserInfo: state => state.userInfo,
         getToken: state => state.token,
         getCompanyId: state => state.companyId || '',
+        getCompanyName: state => state.companyName || '',
     },
     actions: {
         setToken(token: string) {
@@ -67,14 +80,27 @@ export const useUserStore = defineStore('app-user-store', {
         setCompanyId(companyId: string) {
             this.companyId = companyId || '';
         },
+        setCompanyContext(companyId: string, companyName = '') {
+            this.companyId = companyId || '';
+            this.companyName = companyName || '';
+        },
+        setCompanyContextStatus(
+            status: IUserState['companyContextStatus'],
+            error: IUserState['companyContextError'] = null
+        ) {
+            this.companyContextStatus = status;
+            this.companyContextError = error;
+        },
         setUserInfo(info: UserInfo) {
             this.userInfo = info;
         },
         clearLocalSession() {
             this.setToken('');
-            this.setCompanyId('');
+            this.setCompanyContext('', '');
+            this.setCompanyContextStatus('idle');
             this.setUserInfo(createEmptyUserInfo());
             usePermissionStoreWidthOut().resetPermissions();
+            useRouteStoreWidthOut().setKeepAliveComponents([]);
             clearPortalSource();
         },
 

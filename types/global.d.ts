@@ -77,6 +77,10 @@ declare global {
         VITE_APP_MODE: 'standalone' | 'integrated';
         /** wl-mbase 门户完整来源，例如 https://ytiop-sit.walsin.com.cn */
         VITE_MBASE_ORIGIN?: string;
+        /** 公司上下文同步：server 兼容现有平台；explicit 要求业务接口显式携带 companyId */
+        VITE_MBASE_COMPANY_SYNC_MODE?: 'server' | 'explicit';
+        /** server 模式下的平台切换公司接口 */
+        VITE_MBASE_CHANGE_COMPANY_API?: string;
     }
 }
 

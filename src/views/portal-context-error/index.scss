@@ -1,0 +1,81 @@
+.context-error {
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: #f5f7fb;
+
+    &__card {
+        width: 100%;
+        max-width: 420px;
+        padding: 28px 22px;
+        border: 1px solid #e8edf5;
+        border-radius: 20px;
+        background: #fff;
+        box-shadow: 0 12px 36px rgba(30, 64, 175, 0.1);
+        text-align: center;
+
+        h1 {
+            margin: 14px 0 8px;
+            color: #1f2937;
+            font-size: 22px;
+        }
+    }
+
+    &__icon {
+        display: inline-flex;
+        width: 64px;
+        height: 64px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #fff3e8;
+        color: #ff7a00;
+        font-size: 38px;
+        font-weight: 700;
+    }
+
+    &__message {
+        margin: 0;
+        color: #667085;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    &__details {
+        margin: 20px 0;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #f8fafc;
+        text-align: left;
+
+        div {
+            display: grid;
+            grid-template-columns: 72px minmax(0, 1fr);
+            gap: 8px;
+            padding: 5px 0;
+        }
+
+        dt {
+            color: #98a2b3;
+        }
+
+        dd {
+            word-break: break-all;
+            margin: 0;
+            color: #344054;
+        }
+    }
+
+    &__back {
+        margin-top: 12px;
+    }
+
+    &__hint {
+        margin: 16px 0 0;
+        color: #98a2b3;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+}

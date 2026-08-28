@@ -21,6 +21,12 @@ const [
   menuSource,
   routerGuardSource,
   userStoreSource,
+  companyContextSource,
+  permissionApiSource,
+  baseRouterSource,
+  integratedEnvSource,
+  httpSource,
+  httpEnumSource,
 ] = await Promise.all([
   read('build/vite/build.ts'),
   read('vite.config.ts'),
@@ -35,6 +41,12 @@ const [
   read('src/router/menu.ts'),
   read('src/router/router-guards.ts'),
   read('src/store/modules/user.ts'),
+  read('src/platform/mbase/company-context.ts'),
+  read('src/api/permission.ts'),
+  read('src/router/base.ts'),
+  read('.env.integrated'),
+  read('src/utils/http/index.ts'),
+  read('src/utils/http/httpEnum.ts'),
 ]);
 
 assert.match(buildSource, /target:\s*'es2018'/);
@@ -61,9 +73,28 @@ assert.match(navigationSource, /navigation:state/);
 assert.match(navigationSource, /mbase:navigation-command/);
 assert.match(navBarSource, /v-if="!isMbaseHosted\(\)"/);
 assert.ok((menuSource.match(/mbaseRoot:\s*true/g) || []).length >= 5);
-assert.match(routerGuardSource, /isIntegratedMode\(\) && getMbaseToken\(\)/);
+assert.match(routerGuardSource, /if \(!isIntegratedMode\(\) \|\| !token\) return 'unavailable'/);
 assert.match(routerGuardSource, /userStore\.clearLocalSession\(\)/);
+assert.match(routerGuardSource, /await initializeMbaseCompanyContext/);
+assert.match(routerGuardSource, /PageEnum\.PORTAL_CONTEXT_ERROR/);
+assert.ok(
+  routerGuardSource.indexOf('await initializeMbaseCompanyContext') <
+    routerGuardSource.indexOf('await userStore.GetUserInfo'),
+  '公司上下文必须先于用户信息和权限请求完成初始化'
+);
 assert.match(userStoreSource, /await notifyPortalUserLogout\(\);[\s\S]*this\.clearLocalSession\(\)/);
+assert.match(userStoreSource, /setKeepAliveComponents\(\[\]\)/);
+assert.match(companyContextSource, /\/hrms\/user\/changeCompany/);
+assert.match(companyContextSource, /withMbaseCompanyContext/);
+assert.match(companyContextSource, /getMbaseCompanyScopedKey/);
+assert.match(permissionApiSource, /withMbaseCompanyContext/);
+assert.match(baseRouterSource, /PortalContextErrorRoute/);
+assert.match(integratedEnvSource, /VITE_MBASE_COMPANY_SYNC_MODE\s*=\s*server/);
+assert.match(httpSource, /isIntegratedMode\(\) \? 'Bearer'/);
+assert.match(companyContextSource, /code !== 200 && code !== 2000/);
+assert.match(httpSource, /ResultEnum\.PLATFORM_SUCCESS/);
+assert.match(httpSource, /ResultEnum\.PLATFORM_TOKEN_EXPIRED/);
+assert.match(httpEnumSource, /PLATFORM_SUCCESS = 2000/);
 
 const distDirectory = path.join(root, 'dist');
 if (existsSync(distDirectory)) {

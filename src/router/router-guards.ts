@@ -4,14 +4,24 @@ import { useRouteStoreWidthOut } from '@/store/modules/route';
 import { useUserStore } from '@/store/modules/user';
 import { usePermissionStoreWidthOut } from '@/store/modules/permission';
 import { PageEnum } from '@/enums/pageEnum';
-import { isIntegratedMode, getMbaseToken, getMbaseCompanyId, markPortalSource, cleanPortalParamsFromUrl } from '@/utils/auth';
+import {
+    cleanPortalParamsFromUrl,
+    getMbaseCompanyId,
+    getMbaseCompanyName,
+    getMbaseToken,
+    isIntegratedMode,
+    markPortalSource,
+} from '@/utils/auth';
+import { initializeMbaseCompanyContext } from '@/platform/mbase/company-context';
 
 NProgress.configure({ parent: '#app', showSpinner: false, minimum: 0.3, speed: 200 });
 
 let npTimer: ReturnType<typeof setTimeout>;
 
 // 路由白名单（无需登录即可访问）
-const whitePathList = [PageEnum.BASE_LOGIN];
+const whitePathList = [PageEnum.BASE_LOGIN, PageEnum.PORTAL_CONTEXT_ERROR];
+
+type PortalAcquireResult = 'acquired' | 'unavailable' | 'company-error';
 
 // 不再硬编码 systemPaths — 所有在 router 中注册的命名路由（modules.ts / menu.ts）
 // 只要已登录即可访问，权限系统仅控制 TabBar 菜单可见性
@@ -24,19 +34,32 @@ const whitePathList = [PageEnum.BASE_LOGIN];
  * companyId 为后端权限校验必需（缺失会被拒为"用户不属于所选公司"）。
  * 同时持久化门户来源标记并清除地址栏 token，避免暴露。
  */
-async function tryAcquireMbaseToken(userStore: ReturnType<typeof useUserStore>): Promise<boolean> {
+async function tryAcquireMbaseToken(
+    userStore: ReturnType<typeof useUserStore>
+): Promise<PortalAcquireResult> {
     const token = getMbaseToken();
-    if (!token) return false;
+    if (!isIntegratedMode() || !token) return 'unavailable';
+    const companyId = getMbaseCompanyId();
+    const companyName = getMbaseCompanyName();
 
     // 门户 URL 是本次会话的权威来源。即使 Pinia 中仍有上次账号的持久化 token，
     // 也必须先清空旧用户和权限，再接收新身份，防止换号后展示旧账号信息。
     userStore.clearLocalSession();
     userStore.setToken(token);
-    // companyId 同步注入，供业务接口权限校验使用
-    userStore.setCompanyId(getMbaseCompanyId());
+    // companyId/companyName 必须在清理 URL 前读取并保存。
+    userStore.setCompanyContext(companyId, companyName);
     // 标记门户来源（清 URL 后仍可识别），并立即清除地址栏 token
     markPortalSource();
     cleanPortalParamsFromUrl();
+
+    // 先完成服务端公司上下文同步，再加载用户、权限、菜单和业务数据。
+    // 同步失败必须阻断，不能带着旧公司上下文继续进入业务首页。
+    try {
+        await initializeMbaseCompanyContext({ companyId, companyName });
+    } catch (error) {
+        console.error('[company-context] 门户公司上下文初始化失败', error);
+        return 'company-error';
+    }
 
     // 用户信息失败不阻断页面打开；至少保证不会回显上一账号的数据。
     try {
@@ -44,15 +67,17 @@ async function tryAcquireMbaseToken(userStore: ReturnType<typeof useUserStore>):
     } catch (error) {
         console.warn('[auth] 门户用户信息加载失败，已保留空用户态', error);
     }
-    return true;
+    return 'acquired';
 }
 
 /**
  * 处理未认证状态
  * @returns true = token 已获取（集成模式成功），false = 需要跳转登录页
  */
-async function handleUnauthenticated(userStore: ReturnType<typeof useUserStore>): Promise<boolean> {
-    if (!isIntegratedMode()) return false;
+async function handleUnauthenticated(
+    userStore: ReturnType<typeof useUserStore>
+): Promise<PortalAcquireResult> {
+    if (!isIntegratedMode()) return 'unavailable';
     return tryAcquireMbaseToken(userStore);
 }
 
@@ -76,10 +101,18 @@ export function createRouterGuards(router: Router) {
 
         const userStore = useUserStore();
 
-        // 只要 URL 携带门户 token 就先消费。不能仅在本地无 token 时处理，
-        // 否则 App/PDA WebView 复用或浏览器未清缓存时会继续使用上一账号。
-        if (isIntegratedMode() && getMbaseToken()) {
-            await tryAcquireMbaseToken(userStore);
+        // 公司初始化失败页不能再次触发权限加载，否则会用未就绪上下文发请求。
+        if (to.path === PageEnum.PORTAL_CONTEXT_ERROR) {
+            next();
+            return;
+        }
+
+        // 每次导航都探测本次 URL；非 integrated 或无新 token 时会立即返回。
+        // 不能仅在本地无 token 时处理，否则 WebView 复用时会继续使用旧账号/旧公司。
+        const directAcquireResult = await tryAcquireMbaseToken(userStore);
+        if (directAcquireResult === 'company-error') {
+            next(PageEnum.PORTAL_CONTEXT_ERROR);
+            return;
         }
 
         // 白名单页面直接放行
@@ -90,8 +123,12 @@ export function createRouterGuards(router: Router) {
 
         // 未登录时的处理逻辑
         if (!userStore.getToken) {
-            const resolved = await handleUnauthenticated(userStore);
-            if (!resolved) {
+            const acquireResult = await handleUnauthenticated(userStore);
+            if (acquireResult === 'company-error') {
+                next(PageEnum.PORTAL_CONTEXT_ERROR);
+                return;
+            }
+            if (acquireResult !== 'acquired') {
                 next(PageEnum.BASE_LOGIN);
                 return;
             }

@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [release-please](https://github.com/googleapis/release-please) for commit guidelines.
 
+## [1.8.0] - 2026-08-28
+
+### ✨ 新功能
+
+- 闭环 wl-mbase 公司上下文：入口优先完成服务端公司切换，再加载用户、菜单、权限和业务页面。
+- 新增 `server/explicit` 双模式、显式公司参数工具与按公司隔离的业务缓存键。
+- 新增公司上下文失败诊断页，缺参或同步失败时阻断业务请求并支持现场重试。
+
+### 🛡️ 稳定性
+
+- integrated 请求统一使用 Bearer Token，并兼容平台 `2000/4001` 成功与登录失效状态码。
+- 普通 standalone 构建不包含公司切换接口，保持原登录、请求和产物行为。
+- 模板门禁覆盖公司同步顺序、权限请求上下文、诊断路由和集成产物。
+
 ## [1.7.1] - 2026-08-13
 
 ### ♻️ 架构优化

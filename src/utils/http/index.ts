@@ -107,7 +107,9 @@ const transform: AxiosTransform = {
 
         const { code, data, message } = response.data;
 
-        const hasSuccess = Reflect.has(response.data, 'code') && code === ResultEnum.SUCCESS;
+        const hasSuccess =
+            Reflect.has(response.data, 'code') &&
+            (code === ResultEnum.SUCCESS || code === ResultEnum.PLATFORM_SUCCESS);
         // 消息处理
         if (isShowMessage) {
             // 自定义成功消息
@@ -148,8 +150,11 @@ const transform: AxiosTransform = {
         const token = userStore.getToken;
         // jwt token
         if (token && config.requestOptions?.withToken) {
-            config.headers.Authorization = options.authenticationScheme
-                ? `${options.authenticationScheme} ${token}`
+            // mbase 透传的是裸 access token，平台接口统一使用 Bearer 认证；
+            // standalone 保持模板原有 authenticationScheme 行为不变。
+            const authenticationScheme = isIntegratedMode() ? 'Bearer' : options.authenticationScheme;
+            config.headers.Authorization = authenticationScheme
+                ? `${authenticationScheme} ${token}`
                 : token;
         }
 
@@ -178,7 +183,7 @@ const transform: AxiosTransform = {
             showFailToast(message);
         }
 
-        if (code === ResultEnum.TOKEN_EXPIRED) {
+        if (code === ResultEnum.TOKEN_EXPIRED || code === ResultEnum.PLATFORM_TOKEN_EXPIRED) {
             // 集成模式（mbase 子应用）：token 由基座签发，失效时通知基座重新登录，
             // 不在 iframe 内跳自身登录页（避免与基座会话脱节）。
             if (isIntegratedMode() && isFromPortal()) {

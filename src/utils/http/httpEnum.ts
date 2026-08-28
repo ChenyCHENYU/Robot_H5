@@ -3,7 +3,9 @@
  */
 export enum ResultEnum {
     SUCCESS = 200,
+    PLATFORM_SUCCESS = 2000,
     TOKEN_EXPIRED = 401,
+    PLATFORM_TOKEN_EXPIRED = 4001,
     ERROR = 300,
     TIMEOUT = 10042,
 }

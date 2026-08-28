@@ -25,8 +25,8 @@ async function main() {
   if (pkg.version !== manifest.version) {
     errors.push("package.json 与模板清单版本不一致");
   }
-  if (pkg.dependencies?.["@robot-h5/core"] !== "^1.1.4") {
-    errors.push("@robot-h5/core 必须使用已验证的 ^1.1.4");
+  if (pkg.dependencies?.["@robot-h5/core"] !== "^1.2.0") {
+    errors.push("@robot-h5/core 必须使用已验证的 ^1.2.0");
   }
   if (pkg.engines?.node !== manifest.runtime?.node) {
     errors.push("Node 版本约束未与模板清单对齐");
@@ -43,6 +43,7 @@ async function main() {
   for (const requiredFile of [
     "scripts/verify-mobile-compat.mjs",
     "src/platform/mbase/index.ts",
+    "src/platform/mbase/company-context.ts",
     "src/platform/mbase/navigation.ts",
     "public/vendor/uni.webview.1.5.8.js",
     "docs/mbase-integration.md",

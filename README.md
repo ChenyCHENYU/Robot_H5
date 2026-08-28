@@ -73,7 +73,7 @@ pnpm dev
 
 初始化时可确认项目名称、应用标题、开发端口、本地 API 地址、npm registry，以及是否启用完整 Git 与代码质量规范。
 
-模板从 `v1.7.0` 起默认内置 PDA 兼容构建、wl-mbase 宿主识别、各宿主单头部与动态标题，并为 App/PDA 提供双向返回导航；`v1.7.1` 起桥接传输统一由 `@robot-h5/core` 维护。新项目无需复制业务项目的适配代码。
+模板从 `v1.7.0` 起默认内置 PDA 兼容构建、wl-mbase 宿主识别、各宿主单头部与动态标题，并为 App/PDA 提供双向返回导航；`v1.7.1` 起桥接传输统一由 `@robot-h5/core` 维护，`v1.8.0` 起内置公司上下文数据闭环。新项目无需复制业务项目的适配代码。
 
 ---
 
@@ -894,7 +894,7 @@ if (import.meta.hot)
 | `VITE_GLOB_APP_ID` | 移动端应用标识 | `robot-h5`（用于获取菜单权限） |
 | `VITE_HASH_ROUTE` | Hash 路由模式 | `false` |
 | `VITE_APP_MODE` | 应用运行模式 | `standalone` / `integrated` |
-| — 集成 Token | mbase 透传 URL 参数 | `portal_token` / `companyId` / `user_id` / `from`（固定，无需配置） |
+| — 集成身份与公司 | mbase 透传 URL 参数 | `portal_token` / `companyId` / `companyName` / `user_id` / `from`（固定，无需配置） |
 
 ### 双模式运行机制（standalone / integrated）
 
@@ -1128,11 +1128,11 @@ pnpm type-check        # 运行 vue-tsc --noEmit，必须零错误
 
 本项目已安装并配置好 `@robot-h5/core`：
 
-- 安装：`pnpm add @robot-h5/core@^1.1.4`（已在 `package.json` 中）
+- 安装：`pnpm add @robot-h5/core@^1.2.0`（已在 `package.json` 中）
 - 配置文件：`src/h5.config.ts`
 - 注册方式：`main.ts` 中 `app.use(h5Core, h5Config)` 一行完成
 
-依赖更新采用“兼容版本范围 + 锁文件 + 自动更新 PR”：`^1.1.4` 允许升级到后续兼容的 `1.x` 版本，`pnpm-lock.yaml` 保证相同源码可重复构建；GitHub 每周检查新版本并提交可审查的更新。
+依赖更新采用“兼容版本范围 + 锁文件 + 自动更新 PR”：`^1.2.0` 允许升级到后续兼容的 `1.x` 版本，`pnpm-lock.yaml` 保证相同源码可重复构建；GitHub 每周检查新版本并提交可审查的更新。
 
 ### 配置文件
 
@@ -1331,7 +1331,8 @@ export default defineH5Config({
 
 本项目默认以 standalone 模式独立运行，`pnpm build:integrated` 才启用 wl-mbase 集成配置。模板已经内置：
 
-- `portal_token + companyId` 免登参数接收与地址栏敏感参数清理；每次收到基座 token 都以本次 URL 为权威来源，覆盖本地旧会话，支持换号进入和基座长会话续期后的重新注入；
+- `portal_token + companyId/companyName` 免登参数接收与地址栏敏感参数清理；每次收到基座 token 都以本次 URL 为权威来源，覆盖本地旧会话，支持换号进入和基座长会话续期后的重新注入；
+- 公司上下文闭环：默认在用户/权限/业务请求前对齐平台 `/hrms/user/changeCompany`，失败进入可重试诊断页；新接口可使用 `withMbaseCompanyContext` 显式传参，业务缓存可用 `getMbaseCompanyScopedKey` 按公司隔离；
 - App/PDA 与 iframe 宿主识别；
 - 路由进入、返回时的动态标题同步；
 - App/PDA 单头部和原生返回协议；
@@ -1339,7 +1340,7 @@ export default defineH5Config({
 
 相册等扩展能力请直接使用 `@robot-h5/core/bridge` 的 `invokeMbaseCapability`；异常调试使用 `MbaseBridgeError` 与 `getMbaseTransportStatus`。模板的 `@/platform/mbase` 继续兼容转出这些 API，但新业务推荐依赖 Core 的公共出口。
 
-完整配置、代码示例、错误排查和验收清单见 [wl-mbase 子应用集成指南](./docs/mbase-integration.md)。基座侧协议、相册、无 ID 暂存、可选服务端水印和断点续传契约，以 wl-mbase 项目中的《集成文档》为准。
+完整配置、公司切换数据闭环、代码示例、错误排查和验收清单见 [wl-mbase 子应用集成指南](./docs/mbase-integration.md)。基座侧协议、相册、无 ID 暂存、可选服务端水印和断点续传契约，以 wl-mbase 项目中的《集成文档》为准。
 
 ## PDA 兼容与 mbase 专项文档
 

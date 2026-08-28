@@ -65,6 +65,15 @@ export function getMbaseCompanyId(): string {
     return getUrlParam('companyId');
 }
 
+/**
+ * 集成模式下从 mbase 获取当前公司名称。
+ *
+ * companyName 仅用于页面展示，不能参与权限判断或数据过滤。
+ */
+export function getMbaseCompanyName(): string {
+    return getUrlParam('companyName');
+}
+
 // ─── 门户来源标记（sessionStorage）───────────────────────────────────
 // 清除地址栏 portal 参数后仍可判断是否来自 mbase 门户，
 // 用于 token 失效等场景决定是否通知基座（而非跳自身登录页）。
@@ -88,18 +97,18 @@ export function isFromPortal(): boolean {
 
 // ─── URL 参数清理 ─────────────────────────────────────────────────────
 /**
- * 从地址栏移除 portal_token、from，避免 token 残留在 URL 暴露。
- * 调用时机：子应用读取并应用 portal_token 之后。
+ * 从地址栏移除已经落入本地状态的门户参数，避免 token 暴露，
+ * 也避免刷新时误把旧 companyId 当成本次新上下文重复消费。
+ * 调用时机：子应用读取并应用 portal_token/companyId 之后。
  */
 export function cleanPortalParamsFromUrl(): void {
     const url = new URL(window.location.href);
-    url.searchParams.delete('portal_token');
-    url.searchParams.delete('from');
+    const consumedParams = ['portal_token', 'from', 'companyId', 'companyName'];
+    consumedParams.forEach(name => url.searchParams.delete(name));
     const [hashPath, hashQuery = ''] = url.hash.split('?');
     if (hashQuery) {
         const hashParams = new URLSearchParams(hashQuery);
-        hashParams.delete('portal_token');
-        hashParams.delete('from');
+        consumedParams.forEach(name => hashParams.delete(name));
         const cleanHashQuery = hashParams.toString();
         url.hash = `${hashPath}${cleanHashQuery ? `?${cleanHashQuery}` : ''}`;
     }

@@ -29,10 +29,11 @@ src/api/
 ```ts
 // src/api/customer.ts
 import { get, post, put, del, toast } from '@/utils/http';
+import { withMbaseCompanyContext } from '@/platform/mbase';
 
 /** 获取客户列表 */
 export const getCustomerList = (params?: object) =>
-    get('/customer/list', params);
+    get('/customer/list', withMbaseCompanyContext(params || {}));
 
 /** 获取客户详情 */
 export const getCustomerDetail = (id: string | number) =>
@@ -61,10 +62,28 @@ export const convertCustomer = (id: string | number) =>
 
 ```ts
 import { get, post, put, del, toast } from '@/utils/http';
+import { withMbaseCompanyContext } from '@/platform/mbase';
 
 // toast() 是第三个参数，用于操作成功提示
 post('/api/xxx', data, toast('操作成功'));
 ```
+
+## 公司级数据
+
+由 `wl-mbase` 托管时，模板会先完成服务端公司上下文同步，再加载用户和权限。新接口仍应显式携带 `companyId`，避免依赖服务端可变状态：
+
+```ts
+import { get } from '@/utils/http';
+import { withMbaseCompanyContext } from '@/platform/mbase';
+
+export const getInspectionList = (params: Record<string, unknown>) =>
+    get('/inspection/list', withMbaseCompanyContext(params));
+```
+
+- `standalone` 模式下工具保持原参数不变，不污染独立登录流程。
+- `integrated` 模式缺少 `companyId` 时会阻止请求，避免误查默认公司。
+- localStorage/IndexedDB 中的业务缓存使用 `getMbaseCompanyScopedKey('业务键')` 按公司隔离。
+- 后端必须校验 `portal_token + companyId`，不能信任仅用于展示的 `companyName`。
 
 ## 注意事项
 
