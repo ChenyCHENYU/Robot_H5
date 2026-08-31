@@ -78,36 +78,39 @@ export function getEnvironmentFromBranch(value) {
   return entry ? { name: entry[0], ...entry[1] } : null
 }
 
-export function resolveBuildEnvironment({ explicitEnvironment, branch }) {
+export function resolveBuildEnvironment({
+  explicitEnvironment,
+  branch,
+  allowDemo = false,
+}) {
   const branchName = normalizeBranchName(branch)
   const branchEnvironment = getEnvironmentFromBranch(branchName)
   const explicitConfig = explicitEnvironment
     ? getEnvironment(explicitEnvironment)
     : null
 
-  if (
-    explicitConfig &&
-    explicitConfig.name !== 'vercel' &&
-    branchEnvironment &&
-    branchEnvironment.name !== explicitConfig.name
-  ) {
+  // Vercel 是模板演示站专用构建，不属于企业标准发布分支。
+  if (explicitConfig?.name === 'vercel') {
+    if (!allowDemo) {
+      throw new Error('DEMO 环境只能通过 pnpm build:vercel 专用入口构建')
+    }
+    return explicitConfig
+  }
+
+  if (!branchEnvironment) {
     throw new Error(
-      `构建环境与分支冲突：当前 ${branchName} 分支，只允许 ${branchEnvironment.label}，实际选择 ${explicitConfig.label}`
+      `无法从分支 ${branchName || '未知'} 自动识别 H5 环境；请使用 dev / sit / uat / pre / main 标准发布分支`
     )
   }
 
-  if (
-    explicitConfig?.name === 'production' &&
-    branchName &&
-    branchName !== 'HEAD' &&
-    !explicitConfig.branches.includes(branchName)
-  ) {
+  // 标准 H5 环境只由分支决定；显式参数和 CI 变量只能做一致性断言。
+  if (explicitConfig && branchEnvironment.name !== explicitConfig.name) {
     throw new Error(
-      `生产构建只能从 ${explicitConfig.branches.join(' / ')} 分支发起，当前为 ${branchName}`
+      `H5 环境与分支冲突：当前 ${branchName} 分支固定对应 ${branchEnvironment.label}，流水线却声明 ${explicitConfig.label}`
     )
   }
 
-  return explicitConfig || branchEnvironment
+  return branchEnvironment
 }
 
 export function readGitCommit(env = process.env, cwd = root) {

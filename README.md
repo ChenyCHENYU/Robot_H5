@@ -44,8 +44,8 @@ pnpm install
 # 启动开发服务（含 Mock）
 pnpm dev
 
-# 构建（自动跟随 dev/sit/uat/pre/main/prd 分支）
-pnpm build
+# 构建（统一命令，自动跟随 dev/sit/uat/pre/main 分支）
+pnpm build:h5
 ```
 
 **默认账号**：`admin` / `123456`
@@ -862,7 +862,7 @@ if (import.meta.hot)
 
 ## 环境配置
 
-Robot_H5 只有 H5 一个构建目标。环境与分支映射集中在 `build/environments.json`，标准流水线在对应分支统一执行 `pnpm build`：
+Robot_H5 只有 H5 一个构建目标。环境与分支映射集中在 `build/environments.json`，所有企业环境流水线统一执行 `pnpm build:h5`：
 
 | 文件 | 环境 | Mock | 模式 | 用途 |
 | --- | --- | --- | --- | --- |
@@ -883,15 +883,17 @@ Robot_H5 只有 H5 一个构建目标。环境与分支映射集中在 `build/en
 | --- | --- | --- |
 | `pnpm dev` | development | 本地开发（Mock + HMR） |
 | `pnpm dev:integrated` | SIT | 兼容入口，本地调试 SIT 集成模式 |
-| `pnpm build` | 当前分支 | 新标准：自动映射 DEV/SIT/UAT/PRE/PRD |
-| `pnpm build -- --env sit` | SIT | 本地显式复核；必须与标准环境分支一致 |
-| `pnpm build:test` | SIT | 旧流水线兼容别名，仍可使用 |
-| `pnpm build:uat` | UAT | 旧流水线兼容别名，仍可使用 |
-| `pnpm build:prod` | PRD | 旧流水线兼容别名，仍可使用 |
-| `pnpm build:integrated` | PRD | 旧集成构建兼容别名，仍可使用 |
-| `pnpm build:vercel` | DEMO | Vercel 演示构建兼容入口 |
+| `pnpm build:h5` | 当前标准分支 | 唯一标准入口：自动映射 DEV/SIT/UAT/PRE/PRD |
+| `pnpm build` | 当前标准分支 | `build:h5` 兼容别名 |
+| `pnpm build:sit` | SIT | 旧别名，仅在 `sit` 分支通过 |
+| `pnpm build:pre` | PRE | 旧别名，仅在 `pre` 分支通过 |
+| `pnpm build:test` | SIT | 旧别名，仅在 `sit` 分支通过 |
+| `pnpm build:uat` | UAT | 旧别名，仅在 `uat` 分支通过 |
+| `pnpm build:prod` | PRD | 旧别名，仅在 `main` 分支通过 |
+| `pnpm build:integrated` | PRD | 旧别名，仅在 `main` 分支通过 |
+| `pnpm build:vercel` | DEMO | Vercel 演示站专用入口 |
 
-环境选择优先级为 `--env`、`DEPLOY_ENV`、Git 分支。显式环境与标准环境分支不一致时构建失败；生产只允许从 `main` 或 `prd` 发起。
+企业 H5 环境只由 Git 标准发布分支决定：`dev → DEV`、`sit → SIT`、`uat → UAT`、`pre → PRE`、`main → PRD`。CI 不需要设置 `DEPLOY_ENV`；遗留的 `DEPLOY_ENV`、`--env` 和兼容命令只做一致性校验，不能覆盖分支。`prd` 只是环境参数别名，不是生产分支。Vercel DEMO 通过独立的 `build:vercel` 入口隔离。
 
 ### 关键变量说明
 
@@ -964,11 +966,8 @@ Robot_H5 只有 H5 一个构建目标。环境与分支映射集中在 `build/en
 pnpm dev                    # 开发服务器（Mock + HMR）
 pnpm dev:integrated         # SIT 集成模式本地调试
 
-# 标准流水线：根据分支自动选择环境并先执行类型检查
-pnpm build
-
-# 本地显式复核
-pnpm build -- --env sit
+# 标准流水线：统一命令，根据分支自动选择环境并先执行类型检查
+pnpm build:h5
 
 # 预览构建产物
 pnpm preview:dist
@@ -1073,8 +1072,9 @@ pnpm type-check        # 运行 vue-tsc --noEmit，必须零错误
 | `pnpm dev` | 启动开发服务器（Mock + HMR） |
 | `pnpm dev:prod` | 以生产模式启动 dev server |
 | `pnpm dev:integrated` | 以 SIT 集成模式启动 dev server |
-| `pnpm build` | 自动跟随标准环境分支构建 H5 |
-| `pnpm build:sit` / `build:pre` | SIT/PRE 显式入口 |
+| `pnpm build:h5` | 标准入口，自动跟随标准环境分支构建 H5 |
+| `pnpm build` | `build:h5` 兼容别名 |
+| `pnpm build:sit` / `build:pre` | SIT/PRE 旧兼容入口，仅在对应分支通过 |
 | `pnpm build:test` | SIT 旧流水线兼容入口 |
 | `pnpm build:uat` | UAT 旧流水线兼容入口 |
 | `pnpm build:prod` | PRD 旧流水线兼容入口 |
@@ -1353,7 +1353,7 @@ export default defineH5Config({
 
 ## 附录：mbase 集成指南
 
-本地开发和 Vercel 演示以 standalone 模式运行；SIT/UAT/PRE/PRD 标准环境均已启用 wl-mbase integrated 配置。旧 `pnpm build:integrated` 仍兼容为 PRD 构建，但新流水线只需执行 `pnpm build`。模板已经内置：
+本地开发和 Vercel 演示以 standalone 模式运行；SIT/UAT/PRE/PRD 标准环境均已启用 wl-mbase integrated 配置。旧 `pnpm build:integrated` 仍兼容为 `main` 分支的 PRD 构建，但新流水线统一执行 `pnpm build:h5`。模板已经内置：
 
 - `portal_token + companyId/companyName` 免登参数接收与地址栏敏感参数清理；每次收到基座 token 都以本次 URL 为权威来源，覆盖本地旧会话，支持换号进入和基座长会话续期后的重新注入；
 - 公司上下文闭环：默认在用户/权限/业务请求前对齐平台 `/hrms/user/changeCompany`，失败进入可重试诊断页；新接口可使用 `withMbaseCompanyContext` 显式传参，业务缓存可用 `getMbaseCompanyScopedKey` 按公司隔离；
@@ -1383,7 +1383,7 @@ export default defineH5Config({
 ```bash
 pnpm template:validate
 pnpm type-check
-pnpm build
+pnpm build:h5
 pnpm test:compat
 ```
 

@@ -118,7 +118,7 @@ const validateBuildLock = (
 ): void => {
     if (command !== 'build') return;
     if (process.env.ROBOT_H5_BUILD_ENTRY !== '1') {
-        throw new Error('禁止绕过统一构建入口，请执行 pnpm build 或兼容的 build:* 命令。');
+        throw new Error('禁止绕过统一构建入口，请执行 pnpm build:h5 或兼容的 build:* 命令。');
     }
     if (
         process.env.ROBOT_H5_BUILD_ENVIRONMENT !== environmentName ||
@@ -137,7 +137,8 @@ const validateBaseEnvironment = (environmentName: string, viteEnv: ViteEnv): voi
     if (!viteEnv.VITE_GLOB_APP_ID || !viteEnv.VITE_GLOB_APP_TITLE) {
         throw new Error('环境配置缺少 VITE_GLOB_APP_ID 或 VITE_GLOB_APP_TITLE。');
     }
-    if (!String(viteEnv.VITE_PUBLIC_PATH || '').match(/^\/.*\/$/)) {
+    const publicPath = String(viteEnv.VITE_PUBLIC_PATH || '');
+    if (publicPath !== '/' && !publicPath.match(/^\/.+\/$/)) {
         throw new Error('VITE_PUBLIC_PATH 必须以 / 开头和结尾。');
     }
 };

@@ -17,15 +17,29 @@ assert.equal(getEnvironment('prd').name, 'production')
 assert.equal(getEnvironmentFromMode('pre')?.name, 'pre')
 assert.equal(getEnvironmentFromBranch('origin/sit')?.name, 'sit')
 assert.equal(detectBranchName({ GITHUB_REF_NAME: 'uat' }), 'uat')
+assert.equal(detectBranchName({ GIT_BRANCH: 'origin/main' }), 'main')
 assert.equal(resolveBuildEnvironment({ branch: 'main' })?.name, 'production')
-assert.equal(resolveBuildEnvironment({ branch: 'prd' })?.name, 'production')
+assert.equal(getEnvironmentFromBranch('prd'), null, 'prd 不是生产发布分支')
+assert.deepEqual(ENVIRONMENTS.production.branches, ['main'])
+assert.throws(
+  () => resolveBuildEnvironment({ branch: 'prd' }),
+  /dev \/ sit \/ uat \/ pre \/ main/
+)
+assert.equal(
+  resolveBuildEnvironment({
+    branch: 'main',
+    explicitEnvironment: 'prd',
+  }).name,
+  'production',
+  'prd 可作为环境参数别名，但生产分支必须是 main'
+)
 assert.throws(
   () =>
     resolveBuildEnvironment({
       branch: 'sit',
       explicitEnvironment: 'uat',
     }),
-  /构建环境与分支冲突/
+  /H5 环境与分支冲突/
 )
 assert.throws(
   () =>
@@ -33,7 +47,25 @@ assert.throws(
       branch: 'feature/demo',
       explicitEnvironment: 'prd',
     }),
-  /生产构建只能从/
+  /dev \/ sit \/ uat \/ pre \/ main/
+)
+assert.equal(
+  resolveBuildEnvironment({
+    branch: 'main',
+    explicitEnvironment: 'vercel',
+    allowDemo: true,
+  }).name,
+  'vercel',
+  'Vercel DEMO 保留独立显式构建入口'
+)
+assert.throws(
+  () =>
+    resolveBuildEnvironment({
+      branch: 'main',
+      explicitEnvironment: 'vercel',
+    }),
+  /pnpm build:vercel/,
+  '标准 build:h5 不能被环境变量切换成 DEMO'
 )
 
 for (const [name, config] of Object.entries(ENVIRONMENTS)) {

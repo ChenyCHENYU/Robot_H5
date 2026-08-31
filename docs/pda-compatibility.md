@@ -38,7 +38,7 @@ Robot_H5 `v1.7.0+` 已将已验证的 PDA 样式兼容方式固化进模板；`v
 
 ```bash
 pnpm type-check
-pnpm build
+pnpm build:h5
 pnpm test:compat
 ```
 

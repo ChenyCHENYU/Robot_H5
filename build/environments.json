@@ -29,7 +29,7 @@
       "label": "PRD",
       "mode": "production",
       "aliases": ["production", "prod", "prd"],
-      "branches": ["main", "prd"]
+      "branches": ["main"]
     },
     "vercel": {
       "label": "DEMO",

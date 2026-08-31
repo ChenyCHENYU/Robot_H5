@@ -31,6 +31,7 @@
     "dev:prod": "vite --mode production",
     "dev:integrated": "vite --mode sit",
     "build": "node scripts/build.mjs",
+    "build:h5": "node scripts/build.mjs",
     "build:sit": "node scripts/build.mjs --env sit",
     "build:pre": "node scripts/build.mjs --env pre",
     "build:test": "node scripts/build.mjs --env sit --legacy build:test",

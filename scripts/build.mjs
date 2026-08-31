@@ -57,13 +57,8 @@ const legacyCommand = readArg('legacy')
 const environment = resolveBuildEnvironment({
   explicitEnvironment,
   branch,
+  allowDemo: legacyCommand === 'build:vercel',
 })
-
-if (!environment) {
-  throw new Error(
-    `无法从分支 ${branch || '未知'} 自动识别环境；CI 请设置 DEPLOY_ENV，本地可执行 pnpm build -- --env sit`
-  )
-}
 
 const viteEnvironment = loadEnv(environment.mode, root, '')
 const outputDirectory = resolve(root, viteEnvironment.VITE_OUTPUT_DIR || 'dist')
@@ -75,9 +70,11 @@ const childEnv = {
 }
 
 if (legacyCommand) {
-  console.warn(
-    `[兼容入口] ${legacyCommand} 仍可使用；新流水线统一执行 pnpm build`
-  )
+  const message =
+    environment.name === 'vercel'
+      ? `[演示入口] ${legacyCommand} 已隔离为 standalone DEMO 构建`
+      : `[兼容入口] ${legacyCommand} 仅校验当前分支环境；新流水线统一执行 pnpm build:h5`
+  console.warn(message)
 }
 
 console.log('')

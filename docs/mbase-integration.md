@@ -16,7 +16,7 @@ VITE_MBASE_COMPANY_SYNC_MODE = server
 VITE_MBASE_CHANGE_COMPANY_API = /hrms/user/changeCompany
 ```
 
-`pnpm setup` 会同时写入 `.env.sit / .env.uat / .env.pre / .env.production` 的应用 ID、`/mbase/{应用缩写}/`、API 和网关 origin。`VITE_MBASE_ORIGIN` 用于严格校验 iframe 消息，禁止配置 `*`。标准环境分支执行 `pnpm build` 即可；旧 `build:test / build:uat / build:prod / build:integrated` 命令仍兼容。
+`pnpm setup` 会同时写入 `.env.sit / .env.uat / .env.pre / .env.production` 的应用 ID、`/mbase/{应用缩写}/`、API 和网关 origin。`VITE_MBASE_ORIGIN` 用于严格校验 iframe 消息，禁止配置 `*`。`dev / sit / uat / pre / main` 标准环境分支统一执行 `pnpm build:h5`；生产只认 `main`。旧 `build:test / build:uat / build:prod / build:integrated` 命令仍兼容，但只能校验、不能覆盖分支环境。
 
 每次构建只生成当前子应用自己的 `dist/env.json`。它不会自动加载基座的 `/mbase/env.json`，也不参与运行时环境切换；完整边界见[构建、环境与产物身份证](./build-and-environments.md)。
 
@@ -216,4 +216,4 @@ console.table(getMbaseTransportStatus());
 - 拍照、扫码、定位失败时能看到稳定错误码和桥接状态，不出现 60 秒无提示假死。
 - 水印关闭时服务端收不到 `watermarkPolicy`；开启时拍照、相册在各宿主均返回服务端水印图。
 - 必须水印处理失败时阻止提交，不静默把原图标记成水印成功。
-- 对应环境分支执行 `pnpm build && pnpm test:compat` 通过，并核对 `dist/env.json`。
+- 对应环境分支执行 `pnpm build:h5 && pnpm test:compat` 通过，并核对 `dist/env.json`。

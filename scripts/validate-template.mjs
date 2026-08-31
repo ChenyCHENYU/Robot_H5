@@ -77,9 +77,19 @@ async function main() {
     }
   }
   if (pkg.scripts?.build !== "node scripts/build.mjs") {
-    errors.push("默认 build 命令必须使用纯 H5 统一构建入口");
+    errors.push("兼容 build 命令必须使用纯 H5 统一构建入口");
   }
-  for (const legacyScript of ["build:test", "build:uat", "build:prod", "build:integrated"]) {
+  if (pkg.scripts?.["build:h5"] !== "node scripts/build.mjs") {
+    errors.push("标准 build:h5 命令必须使用纯 H5 统一构建入口");
+  }
+  for (const legacyScript of [
+    "build:sit",
+    "build:pre",
+    "build:test",
+    "build:uat",
+    "build:prod",
+    "build:integrated"
+  ]) {
     if (!pkg.scripts?.[legacyScript]?.includes("scripts/build.mjs")) {
       errors.push(`旧流水线兼容命令未保留: ${legacyScript}`);
     }
