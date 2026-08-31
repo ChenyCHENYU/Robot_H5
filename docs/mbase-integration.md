@@ -2,7 +2,9 @@
 
 Robot_H5 `v1.8.0+` 已内置免登参数接收、公司上下文闭环、宿主识别、各宿主单头部、动态标题、App/PDA 返回导航和 `@robot-h5/core@^1.2.0` 通用能力桥。业务项目只负责环境配置、路由元数据与业务交互。
 
-## 1. 配置 integrated 环境
+## 1. 配置目标环境
+
+SIT/UAT/PRE/PRD 都是独立的 integrated 环境，不再共用 `.env.integrated`。以下以 `.env.sit` 为例：
 
 ```dotenv
 VITE_APP_MODE = integrated
@@ -14,7 +16,9 @@ VITE_MBASE_COMPANY_SYNC_MODE = server
 VITE_MBASE_CHANGE_COMPANY_API = /hrms/user/changeCompany
 ```
 
-`pnpm setup` 会按项目名自动写入 `/mbase/{应用缩写}/` 和网关 origin；部署其他环境时仍需核对。`VITE_MBASE_ORIGIN` 用于严格校验 iframe 消息，禁止配置 `*`。
+`pnpm setup` 会同时写入 `.env.sit / .env.uat / .env.pre / .env.production` 的应用 ID、`/mbase/{应用缩写}/`、API 和网关 origin。`VITE_MBASE_ORIGIN` 用于严格校验 iframe 消息，禁止配置 `*`。标准环境分支执行 `pnpm build` 即可；旧 `build:test / build:uat / build:prod / build:integrated` 命令仍兼容。
+
+每次构建只生成当前子应用自己的 `dist/env.json`。它不会自动加载基座的 `/mbase/env.json`，也不参与运行时环境切换；完整边界见[构建、环境与产物身份证](./build-and-environments.md)。
 
 模板已在 `src/h5.config.ts` 将它传入 Core：
 
@@ -193,7 +197,7 @@ console.table(getMbaseTransportStatus());
 
 | code | 含义 | 排查 |
 |------|------|------|
-| `unsupported` | 当前不在 wl-mbase 宿主 | 检查构建模式及 `from=portal` / `mbase_host=app` |
+| `unsupported` | 当前不在 wl-mbase 宿主 | 检查目标环境的 `VITE_APP_MODE` 及 `from=portal` / `mbase_host=app` |
 | `mbase_origin_missing` | 未取得可信门户来源 | 检查 `VITE_MBASE_ORIGIN` 是否进入当前构建环境 |
 | `app_bridge_not_ready` | PDA/App 原生桥未就绪 | 查看宿主版本与 `sdkPostMessage/nativeBridge`，稍后重试 |
 | `app_sdk_url_missing` | 未配置 App SDK 自托管地址 | 检查 `appSdkUrl` 和部署目录下 vendor 文件 |
@@ -212,4 +216,4 @@ console.table(getMbaseTransportStatus());
 - 拍照、扫码、定位失败时能看到稳定错误码和桥接状态，不出现 60 秒无提示假死。
 - 水印关闭时服务端收不到 `watermarkPolicy`；开启时拍照、相册在各宿主均返回服务端水印图。
 - 必须水印处理失败时阻止提交，不静默把原图标记成水印成功。
-- `pnpm build:integrated && pnpm test:compat` 通过。
+- 对应环境分支执行 `pnpm build && pnpm test:compat` 通过，并核对 `dist/env.json`。

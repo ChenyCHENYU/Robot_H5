@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "environments": {
+    "development": {
+      "label": "DEV",
+      "mode": "development",
+      "aliases": ["dev", "development"],
+      "branches": ["dev"]
+    },
+    "sit": {
+      "label": "SIT",
+      "mode": "sit",
+      "aliases": ["sit", "test"],
+      "branches": ["sit"]
+    },
+    "uat": {
+      "label": "UAT",
+      "mode": "uat",
+      "aliases": ["uat"],
+      "branches": ["uat"]
+    },
+    "pre": {
+      "label": "PRE",
+      "mode": "pre",
+      "aliases": ["pre"],
+      "branches": ["pre"]
+    },
+    "production": {
+      "label": "PRD",
+      "mode": "production",
+      "aliases": ["production", "prod", "prd"],
+      "branches": ["main", "prd"]
+    },
+    "vercel": {
+      "label": "DEMO",
+      "mode": "vercel",
+      "aliases": ["vercel", "demo"],
+      "branches": []
+    }
+  }
+}

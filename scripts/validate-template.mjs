@@ -41,6 +41,16 @@ async function main() {
     errors.push("缺少模板初始化脚本");
   }
   for (const requiredFile of [
+    "build/environments.json",
+    ".env.development",
+    ".env.sit",
+    ".env.uat",
+    ".env.pre",
+    ".env.production",
+    ".env.vercel",
+    "scripts/build.mjs",
+    "scripts/build-environment.mjs",
+    "scripts/verify-build-environment.mjs",
     "scripts/verify-mobile-compat.mjs",
     "src/platform/mbase/index.ts",
     "src/platform/mbase/company-context.ts",
@@ -53,12 +63,25 @@ async function main() {
       errors.push(`缺少模板基础能力文件: ${requiredFile}`);
     }
   }
+  for (const deprecatedFile of [".env.test", ".env.integrated"]) {
+    if (existsSync(path.join(root, deprecatedFile))) {
+      errors.push(`仍存在已废弃环境文件: ${deprecatedFile}`);
+    }
+  }
   for (const feature of manifest.features ?? []) {
     if (feature.defaultEnabled && !config.features?.includes(feature.id)) {
       errors.push(`默认能力未写入 project.config.json: ${feature.id}`);
     }
     if (feature.package && !pkg.devDependencies?.[feature.package]) {
       errors.push(`能力 ${feature.id} 缺少依赖 ${feature.package}`);
+    }
+  }
+  if (pkg.scripts?.build !== "node scripts/build.mjs") {
+    errors.push("默认 build 命令必须使用纯 H5 统一构建入口");
+  }
+  for (const legacyScript of ["build:test", "build:uat", "build:prod", "build:integrated"]) {
+    if (!pkg.scripts?.[legacyScript]?.includes("scripts/build.mjs")) {
+      errors.push(`旧流水线兼容命令未保留: ${legacyScript}`);
     }
   }
 

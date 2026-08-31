@@ -24,7 +24,7 @@ const [
   companyContextSource,
   permissionApiSource,
   baseRouterSource,
-  integratedEnvSource,
+  productionEnvSource,
   httpSource,
   httpEnumSource,
 ] = await Promise.all([
@@ -44,7 +44,7 @@ const [
   read('src/platform/mbase/company-context.ts'),
   read('src/api/permission.ts'),
   read('src/router/base.ts'),
-  read('.env.integrated'),
+  read('.env.production'),
   read('src/utils/http/index.ts'),
   read('src/utils/http/httpEnum.ts'),
 ]);
@@ -54,6 +54,8 @@ assert.match(buildSource, /cssTarget:\s*'chrome61'/);
 assert.match(viewportSource, /enableMediaQuery:\s*true/);
 assert.doesNotMatch(viewportSource, /maxDisplayWidth:\s*\d+/);
 assert.match(viteSource, /postcssLegacyFallbacks\(\)/);
+assert.match(viteSource, /robot-h5:build-identity/);
+assert.match(viteSource, /禁止绕过统一构建入口/);
 assert.doesNotMatch(viteSource, /return `\$\{use\}@layer components/);
 assert.doesNotMatch(unoSource, /outputToCssLayers\s*:/);
 assert.match(unoSource, /important:\s*'#app'/);
@@ -89,7 +91,8 @@ assert.match(companyContextSource, /withMbaseCompanyContext/);
 assert.match(companyContextSource, /getMbaseCompanyScopedKey/);
 assert.match(permissionApiSource, /withMbaseCompanyContext/);
 assert.match(baseRouterSource, /PortalContextErrorRoute/);
-assert.match(integratedEnvSource, /VITE_MBASE_COMPANY_SYNC_MODE\s*=\s*server/);
+assert.match(productionEnvSource, /VITE_APP_MODE\s*=\s*integrated/);
+assert.match(productionEnvSource, /VITE_MBASE_COMPANY_SYNC_MODE\s*=\s*server/);
 assert.match(httpSource, /isIntegratedMode\(\) \? 'Bearer'/);
 assert.match(companyContextSource, /code !== 200 && code !== 2000/);
 assert.match(httpSource, /ResultEnum\.PLATFORM_SUCCESS/);

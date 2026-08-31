@@ -1,4 +1,6 @@
-import { defineConfig, loadEnv, type UserConfig, type ConfigEnv } from 'vite';
+import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { defineConfig, loadEnv, type UserConfig, type ConfigEnv, type Plugin } from 'vite';
 import { getNowTime, pathResolve, wrapperEnv } from './build/utils';
 import { createVitePlugins } from './build/vite/plugin';
 import { createProxy } from './build/vite/proxy';
@@ -7,6 +9,165 @@ import autoprefixer from 'autoprefixer';
 import { postcssPxToViewProtConfig } from './build/vite/plugin/postcssPxToView';
 import { postcssLegacyFallbacks } from './build/vite/plugin/postcssLegacyFallbacks';
 import pkg from './package.json';
+
+interface BuildEnvironmentDefinition {
+    label: string;
+    mode: string;
+    aliases: string[];
+    branches: string[];
+}
+
+interface BuildEnvironmentDocument {
+    environments: Record<string, BuildEnvironmentDefinition>;
+}
+
+const buildEnvironmentDocument = JSON.parse(
+    readFileSync(new URL('./build/environments.json', import.meta.url), 'utf8'),
+) as BuildEnvironmentDocument;
+
+const readGitValue = (args: string[]): string => {
+    try {
+        return execFileSync('git', args, {
+            cwd: process.cwd(),
+            encoding: 'utf8',
+            stdio: ['ignore', 'pipe', 'ignore'],
+        }).trim();
+    } catch {
+        return '';
+    }
+};
+
+const detectBuildBranch = (): string => {
+    const branch = [
+        process.env.CI_COMMIT_REF_NAME,
+        process.env.CI_COMMIT_BRANCH,
+        process.env.BRANCH_NAME,
+        process.env.GITHUB_HEAD_REF,
+        process.env.GITHUB_REF_NAME,
+        process.env.BUILD_SOURCEBRANCHNAME,
+        process.env.GIT_LOCAL_BRANCH,
+        process.env.GIT_BRANCH,
+        readGitValue(['rev-parse', '--abbrev-ref', 'HEAD']),
+    ].find(value => String(value || '').trim());
+    return String(branch || '')
+        .trim()
+        .replace(/^refs\/heads\//, '')
+        .replace(/^refs\/remotes\//, '')
+        .replace(/^(origin|gitee)\//, '');
+};
+
+const firstNonEmpty = (...values: Array<string | undefined>): string =>
+    String(values.find(value => String(value || '').trim()) || '').trim();
+
+const createBuildIdentity = (
+    environmentName: string,
+    environment: BuildEnvironmentDefinition,
+    viteEnv: ViteEnv,
+) => ({
+    schemaVersion: 1,
+    application: {
+        id: String(viteEnv.VITE_GLOB_APP_ID),
+        name: String(viteEnv.VITE_GLOB_APP_TITLE),
+        version: pkg.version,
+    },
+    build: {
+        environment: environmentName,
+        environmentLabel: environment.label,
+        target: 'h5',
+        mode: environment.mode,
+        branch: detectBuildBranch(),
+        commitSha: firstNonEmpty(
+            process.env.CI_COMMIT_SHA,
+            process.env.GIT_COMMIT,
+            readGitValue(['rev-parse', 'HEAD']),
+        ),
+        dirty: Boolean(readGitValue(['status', '--porcelain'])),
+        builtAt: new Date().toISOString(),
+        pipelineId: firstNonEmpty(
+            process.env.CI_PIPELINE_ID,
+            process.env.BUILD_NUMBER,
+            process.env.BUILD_ID,
+        ),
+    },
+    runtime: {
+        publicPath: String(viteEnv.VITE_PUBLIC_PATH),
+        apiBaseUrl: String(viteEnv.VITE_GLOB_API_URL),
+        apiPrefix: String(viteEnv.VITE_GLOB_API_URL_PREFIX),
+        uploadUrl: String(viteEnv.VITE_GLOB_UPLOAD_URL),
+        appMode: String(viteEnv.VITE_APP_MODE),
+        mbaseOrigin: String(viteEnv.VITE_MBASE_ORIGIN || ''),
+    },
+});
+
+const createBuildIdentityPlugin = (identity: ReturnType<typeof createBuildIdentity>): Plugin => ({
+    name: 'robot-h5:build-identity',
+    apply: 'build',
+    generateBundle() {
+        this.emitFile({
+            type: 'asset',
+            fileName: 'env.json',
+            source: `${JSON.stringify(identity, null, 2)}\n`,
+        });
+    },
+});
+
+const validateBuildLock = (
+    command: string,
+    mode: string,
+    environmentName: string,
+): void => {
+    if (command !== 'build') return;
+    if (process.env.ROBOT_H5_BUILD_ENTRY !== '1') {
+        throw new Error('禁止绕过统一构建入口，请执行 pnpm build 或兼容的 build:* 命令。');
+    }
+    if (
+        process.env.ROBOT_H5_BUILD_ENVIRONMENT !== environmentName ||
+        process.env.ROBOT_H5_BUILD_MODE !== mode
+    ) {
+        throw new Error(
+            `构建环境锁冲突：入口为 ${process.env.ROBOT_H5_BUILD_ENVIRONMENT}/${process.env.ROBOT_H5_BUILD_MODE}，Vite 为 ${environmentName}/${mode}`,
+        );
+    }
+};
+
+const validateBaseEnvironment = (environmentName: string, viteEnv: ViteEnv): void => {
+    if (viteEnv.VITE_ENV !== environmentName) {
+        throw new Error(`环境文件标识错误：期望 VITE_ENV=${environmentName}，实际为 ${viteEnv.VITE_ENV}`);
+    }
+    if (!viteEnv.VITE_GLOB_APP_ID || !viteEnv.VITE_GLOB_APP_TITLE) {
+        throw new Error('环境配置缺少 VITE_GLOB_APP_ID 或 VITE_GLOB_APP_TITLE。');
+    }
+    if (!String(viteEnv.VITE_PUBLIC_PATH || '').match(/^\/.*\/$/)) {
+        throw new Error('VITE_PUBLIC_PATH 必须以 / 开头和结尾。');
+    }
+};
+
+const validateIntegratedEnvironment = (environmentName: string, viteEnv: ViteEnv): void => {
+    if (!['sit', 'uat', 'pre', 'production'].includes(environmentName)) return;
+    if (viteEnv.VITE_APP_MODE !== 'integrated' || viteEnv.VITE_USE_MOCK) {
+        throw new Error(`${environmentName} 必须使用 integrated 模式并关闭 Mock。`);
+    }
+    const portalOrigin = new URL(String(viteEnv.VITE_MBASE_ORIGIN || ''));
+    const apiUrl = new URL(String(viteEnv.VITE_GLOB_API_URL || ''));
+    if (portalOrigin.origin !== viteEnv.VITE_MBASE_ORIGIN || portalOrigin.protocol !== 'https:') {
+        throw new Error('VITE_MBASE_ORIGIN 必须是无路径的完整 HTTPS Origin。');
+    }
+    if (apiUrl.protocol !== 'https:') {
+        throw new Error('线上环境 VITE_GLOB_API_URL 必须使用 HTTPS。');
+    }
+};
+
+const validateBuildConfiguration = (
+    command: string,
+    mode: string,
+    environmentName: string,
+    viteEnv: ViteEnv,
+): void => {
+    if (command !== 'build') return;
+    validateBuildLock(command, mode, environmentName);
+    validateBaseEnvironment(environmentName, viteEnv);
+    validateIntegratedEnvironment(environmentName, viteEnv);
+};
 
 // 应用信息
 const __APP_INFO__ = {
@@ -30,12 +191,22 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
     // 将env环境变量转换为对象
     const viteEnv = wrapperEnv(env);
 
+    const environmentEntry = Object.entries(buildEnvironmentDocument.environments).find(
+        ([, environment]) => environment.mode === mode,
+    );
+    if (!environmentEntry) {
+        throw new Error(`未注册的 Vite mode：${mode}`);
+    }
+    const [environmentName, environment] = environmentEntry;
+    validateBuildConfiguration(command, mode, environmentName, viteEnv);
+    const buildIdentity = createBuildIdentity(environmentName, environment, viteEnv);
+
     const { VITE_PUBLIC_PATH, VITE_PORT } = viteEnv;
 
     return {
         base: VITE_PUBLIC_PATH,
         root,
-        plugins: createVitePlugins(viteEnv, isBuild),
+        plugins: [...createVitePlugins(viteEnv, isBuild), createBuildIdentityPlugin(buildIdentity)],
         resolve: {
             alias: [
                 {

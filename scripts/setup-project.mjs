@@ -33,11 +33,11 @@ const GIT_STANDARDS_DEV_DEPENDENCIES = [
 ];
 const ENVIRONMENTS = [
   [".env.development", "dev"],
-  [".env.test", "sit"],
+  [".env.sit", "sit"],
   [".env.uat", "uat"],
+  [".env.pre", "pre"],
   [".env.production", "prd"],
-  [".env.integrated", "prd"],
-  [".env.vercel", "dev"]
+  [".env.vercel", "vercel"]
 ];
 
 async function readJson(file) {
@@ -147,15 +147,17 @@ async function updateEnvironmentFiles(config, projectName, moduleName, title, po
     const file = path.join(root, fileName);
     if (!existsSync(file)) continue;
     const environment = config.environments?.[environmentName] ?? {};
-    const backendUrl = environmentName === "dev"
+    const isDevelopment = environmentName === "dev";
+    const isDemo = environmentName === "vercel";
+    const backendUrl = isDevelopment || isDemo
       ? localBackendUrl
-      : validateUrl(environment.webUrl ?? localBackendUrl, `${environmentName} API 地址`);
+      : validateUrl(environment.webUrl, `${environmentName} API 地址`);
     const prefix = apiPrefix(environment.apiPrefix);
     let content = await readFile(file, "utf8");
     content = setEnvValue(content, "VITE_GLOB_APP_TITLE", title);
     content = setEnvValue(content, "VITE_GLOB_APP_ID", projectName);
     content = setEnvValue(content, "VITE_GLOB_API_URL_PREFIX", prefix);
-    if (fileName === ".env.development") {
+    if (isDevelopment) {
       content = setEnvValue(content, "VITE_PORT", port);
       content = setEnvValue(
         content,
@@ -166,11 +168,18 @@ async function updateEnvironmentFiles(config, projectName, moduleName, title, po
         ])
       );
       content = setEnvValue(content, "VITE_GLOB_API_URL", "");
+      content = setEnvValue(content, "VITE_GLOB_UPLOAD_URL", "");
+    } else if (isDemo) {
+      content = setEnvValue(content, "VITE_PUBLIC_PATH", "/");
+      content = setEnvValue(content, "VITE_APP_MODE", "standalone");
+      content = setEnvValue(content, "VITE_GLOB_API_URL", "");
+      content = setEnvValue(content, "VITE_GLOB_UPLOAD_URL", "");
     } else {
       content = setEnvValue(content, "VITE_GLOB_API_URL", backendUrl);
-      content = setEnvValue(content, "VITE_GLOB_UPLOAD_URL", `${backendUrl}/upload`);
+      content = setEnvValue(content, "VITE_GLOB_UPLOAD_URL", `${backendUrl}${prefix}/upload`);
     }
-    if (fileName === ".env.integrated") {
+    if (["sit", "uat", "pre", "prd"].includes(environmentName)) {
+      content = setEnvValue(content, "VITE_APP_MODE", "integrated");
       content = setEnvValue(content, "VITE_PUBLIC_PATH", mbasePath(moduleName, projectName));
       content = setEnvValue(content, "VITE_MBASE_ORIGIN", new URL(backendUrl).origin);
     }
