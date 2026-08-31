@@ -79,7 +79,7 @@ dist/env.json
 - 是否基于脏工作区构建、构建时间和流水线编号；
 - public path、API、上传地址、运行模式和可信 mbase origin。
 
-`env.json` 只能包含公开诊断信息，不得放 Token、密码、OAuth secret 或私钥。`builtAt` 是产物构建时间；实际部署时间应由发布平台记录。
+`env.json` 只能包含公开诊断信息，不得放 Token、密码、OAuth secret 或私钥。`builtAt` 使用 `YYYY-MM-DD HH:mm:ss` 格式的中国标准时间，例如 `2026-08-05 15:44:32`；它是产物构建时间，实际部署时间应由发布平台记录。
 
 ### 基座与子应用会不会加载多个文件
 

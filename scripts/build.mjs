@@ -37,6 +37,9 @@ function verifyBuildIdentity(outputDirectory, environment, viteEnvironment) {
   if (
     identity?.build?.environment !== environment.name ||
     identity?.build?.target !== 'h5' ||
+    !/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(
+      String(identity?.build?.builtAt || '')
+    ) ||
     identity?.runtime?.publicPath !== viteEnvironment.VITE_PUBLIC_PATH ||
     identity?.application?.id !== viteEnvironment.VITE_GLOB_APP_ID
   ) {

@@ -59,6 +59,12 @@ const detectBuildBranch = (): string => {
 const firstNonEmpty = (...values: Array<string | undefined>): string =>
     String(values.find(value => String(value || '').trim()) || '').trim();
 
+/** 输出 `YYYY-MM-DD HH:mm:ss` 格式的中国标准时间。 */
+const formatChinaTimestamp = (value = new Date()): string => {
+    const chinaTime = new Date(value.getTime() + 8 * 60 * 60 * 1000);
+    return chinaTime.toISOString().slice(0, 19).replace('T', ' ');
+};
+
 const createBuildIdentity = (
     environmentName: string,
     environment: BuildEnvironmentDefinition,
@@ -82,7 +88,7 @@ const createBuildIdentity = (
             readGitValue(['rev-parse', 'HEAD']),
         ),
         dirty: Boolean(readGitValue(['status', '--porcelain'])),
-        builtAt: new Date().toISOString(),
+        builtAt: formatChinaTimestamp(),
         pipelineId: firstNonEmpty(
             process.env.CI_PIPELINE_ID,
             process.env.BUILD_NUMBER,
