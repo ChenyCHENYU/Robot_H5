@@ -10,6 +10,32 @@ const environmentDocument = JSON.parse(readFileSync(environmentFile, 'utf8'))
 export const ENVIRONMENTS = Object.freeze(environmentDocument.environments)
 export const ENVIRONMENT_NAMES = Object.freeze(Object.keys(ENVIRONMENTS))
 
+const SHARED_VALUES = Object.freeze(environmentDocument.shared || {})
+
+const toValueStrings = values =>
+  Object.fromEntries(
+    Object.entries(values || {}).map(([key, value]) => [
+      key,
+      typeof value === 'string' ? value : String(value),
+    ])
+  )
+
+/**
+ * 返回某环境的全部 VITE_* 配置（共享默认值 + 环境差异覆盖），
+ * 值统一为字符串，与旧 .env 文件经 wrapperEnv 前的形态一致。
+ * @param {string} name 环境名（development/sit/uat/pre/production/vercel）
+ */
+export function getViteEnvironmentValues(name) {
+  const environment = ENVIRONMENTS[name]
+  if (!environment) {
+    throw new Error(`未注册的环境：${name || '空值'}`)
+  }
+  return {
+    ...toValueStrings(SHARED_VALUES),
+    ...toValueStrings(environment.values),
+  }
+}
+
 function readGitValue(args, cwd = root) {
   try {
     return execFileSync('git', args, {

@@ -419,12 +419,7 @@ const tabBarMenus = apiMenus.length > 0 ? apiMenus : localMenus;
 │   ├── index.d.ts             #   通用工具类型
 │   ├── global.d.ts            #   全局声明
 │   └── ...                    #   config / modules / auto-import
-├── .env.development            # 开发环境变量
-├── .env.sit                    # SIT 子应用环境变量
-├── .env.uat                    # UAT 子应用环境变量
-├── .env.pre                    # PRE 子应用环境变量
-├── .env.production             # 生产环境变量
-├── build/environments.json     # 环境别名、Vite mode 与分支映射唯一来源
+├── build/environments.json     # 环境配置唯一来源：别名、分支映射与全部 VITE_* 值（共享默认值+环境差异）
 ├── project.config.json         # 初始化时各环境网关与 API 前缀默认值
 ├── scripts/build.mjs           # 纯 H5 统一构建入口
 ├── index.html                  # HTML 入口（主题与首屏加载壳）
@@ -862,18 +857,18 @@ if (import.meta.hot)
 
 ## 环境配置
 
-Robot_H5 只有 H5 一个构建目标。环境与分支映射集中在 `build/environments.json`，所有企业环境流水线统一执行 `pnpm build:h5`：
+Robot_H5 只有 H5 一个构建目标。环境配置（分支映射与全部 `VITE_*` 值）集中在 `build/environments.json` 一张表里维护：`shared` 放跨环境共享默认值，各环境条目的 `values` 只声明差异，不再使用按环境拆分的 `.env.*` 文件。所有企业环境流水线统一执行 `pnpm build:h5`：
 
-| 文件 | 环境 | Mock | 模式 | 用途 |
+| 环境条目 | 环境 | Mock | 模式 | 用途 |
 | --- | --- | --- | --- | --- |
-| `.env.development` | 开发 | ✅ 开启 | standalone | 本地开发调试（Mock 数据） |
-| `.env.sit` | SIT | ❌ 关闭 | integrated | SIT mbase 子应用 |
-| `.env.uat` | UAT | ❌ 关闭 | integrated | UAT mbase 子应用 |
-| `.env.pre` | PRE | ❌ 关闭 | integrated | PRE mbase 子应用 |
-| `.env.production` | PRD | ❌ 关闭 | integrated | PRD mbase 子应用 |
-| `.env.vercel` | 演示 | ✅ 开启 | standalone | Vercel 静态演示站 |
+| `development` | 开发 | ✅ 开启 | standalone | 本地开发调试（Mock 数据） |
+| `sit` | SIT | ❌ 关闭 | integrated | SIT mbase 子应用 |
+| `uat` | UAT | ❌ 关闭 | integrated | UAT mbase 子应用 |
+| `pre` | PRE | ❌ 关闭 | integrated | PRE mbase 子应用 |
+| `production` | PRD | ❌ 关闭 | integrated | PRD mbase 子应用 |
+| `vercel` | 演示 | ✅ 开启 | standalone | Vercel 静态演示站 |
 
-`.env.test` 和 `.env.integrated` 已退出：`test` 是 SIT 的旧名称，`integrated` 是运行模式而不是部署环境。SIT/UAT/PRE/PRD 现在分别拥有完整 mbase 配置，不再靠修改同一份 integrated 文件切环境。
+历史上按环境拆分的 `.env.*` 文件已全部并入上表：`test` 是 SIT 的旧名称，`integrated` 是运行模式而不是部署环境，两者均已退出。修改环境配置（域名、前缀、公开路径等）只改 `build/environments.json` 一处。
 
 `project.config.json` 是 `pnpm setup` 的环境地址来源。模板已提供标准网关和 `sit-api / uat-api / pre-api / prd-api` 前缀；创建具体子应用前应复核这些公开地址。Vercel 演示环境始终保持 standalone、Mock 和空后端地址，不继承本地 localhost。
 

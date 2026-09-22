@@ -7,6 +7,7 @@ import {
   getEnvironment,
   getEnvironmentFromBranch,
   getEnvironmentFromMode,
+  getViteEnvironmentValues,
   resolveBuildEnvironment,
 } from './build-environment.mjs'
 
@@ -68,17 +69,20 @@ assert.throws(
   '标准 build:h5 不能被环境变量切换成 DEMO'
 )
 
-for (const [name, config] of Object.entries(ENVIRONMENTS)) {
-  const envPath = resolve(`.env.${config.mode}`)
-  const source = readFileSync(envPath, 'utf8')
-  assert.match(source, new RegExp(`VITE_ENV\\s*=\\s*['"]?${name}['"]?`))
-  assert.match(source, /VITE_GLOB_APP_ID\s*=\s*\S+/)
-  assert.match(source, /VITE_OUTPUT_DIR\s*=\s*['"]?dist['"]?/)
+for (const name of Object.keys(ENVIRONMENTS)) {
+  const values = getViteEnvironmentValues(name)
+  assert.equal(values.VITE_ENV, name, `${name} 的 VITE_ENV 必须与环境名一致`)
+  assert.match(values.VITE_GLOB_APP_ID, /\S+/, `${name} 缺少 VITE_GLOB_APP_ID`)
+  assert.equal(values.VITE_OUTPUT_DIR, 'dist', `${name} 的输出目录必须是 dist`)
 
   if (['sit', 'uat', 'pre', 'production'].includes(name)) {
-    assert.match(source, /VITE_APP_MODE\s*=\s*integrated/)
-    assert.match(source, /VITE_USE_MOCK\s*=\s*false/)
-    assert.match(source, /VITE_MBASE_ORIGIN\s*=\s*https:\/\//)
+    assert.equal(values.VITE_APP_MODE, 'integrated', `${name} 必须为 integrated 模式`)
+    assert.equal(values.VITE_USE_MOCK, 'false', `${name} 必须关闭 Mock`)
+    assert.match(
+      values.VITE_MBASE_ORIGIN || '',
+      /^https:\/\//,
+      `${name} 缺少 HTTPS 的 VITE_MBASE_ORIGIN`
+    )
   }
 }
 
@@ -90,9 +94,9 @@ for (const name of ['sit', 'uat', 'pre', 'prd']) {
 }
 
 const setupSource = readFileSync(resolve('scripts/setup-project.mjs'), 'utf8')
-assert.match(setupSource, /\["\.env\.sit", "sit"\]/)
-assert.match(setupSource, /\["\.env\.pre", "pre"\]/)
-assert.match(setupSource, /\["\.env\.vercel", "vercel"\]/)
+assert.match(setupSource, /\["development", "dev"\]/)
+assert.match(setupSource, /\["pre", "pre"\]/)
+assert.match(setupSource, /\["vercel", "vercel"\]/)
 assert.doesNotMatch(setupSource, /\.env\.(?:test|integrated)/)
 
 console.log('Robot_H5 环境选择、分支锁与配置契约校验通过')

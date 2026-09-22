@@ -1,41 +1,104 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "shared": {
+    "VITE_GLOB_APP_TITLE": "CHENY",
+    "VITE_PORT": "8888",
+    "VITE_USE_MOCK": false,
+    "VITE_HASH_ROUTE": false,
+    "VITE_OUTPUT_DIR": "dist",
+    "VITE_APP_MODE": "integrated",
+    "VITE_MBASE_COMPANY_SYNC_MODE": "server",
+    "VITE_MBASE_CHANGE_COMPANY_API": "/hrms/user/changeCompany",
+    "VITE_GLOB_APP_ID": "robot-h5",
+    "VITE_GLOB_IMG_URL_PREFIX": ""
+  },
   "environments": {
     "development": {
       "label": "DEV",
       "mode": "development",
       "aliases": ["dev", "development"],
-      "branches": ["dev"]
+      "branches": ["dev"],
+      "values": {
+        "VITE_ENV": "development",
+        "VITE_PUBLIC_PATH": "/robot-h5/",
+        "VITE_USE_MOCK": true,
+        "VITE_APP_MODE": "standalone",
+        "VITE_PROXY": "[[\"/api\",\"http://172.28.99.172:9000/api\"],[\"/upload\",\"http://172.28.99.172:9000/upload\"]]",
+        "VITE_GLOB_API_URL": "",
+        "VITE_GLOB_API_URL_PREFIX": "/api",
+        "VITE_GLOB_UPLOAD_URL": ""
+      }
     },
     "sit": {
       "label": "SIT",
       "mode": "sit",
       "aliases": ["sit", "test"],
-      "branches": ["sit"]
+      "branches": ["sit"],
+      "values": {
+        "VITE_ENV": "sit",
+        "VITE_PUBLIC_PATH": "/mbase/robot-h5/",
+        "VITE_MBASE_ORIGIN": "https://ytiop-sit.walsin.com.cn",
+        "VITE_GLOB_API_URL": "https://ytiop-sit.walsin.com.cn",
+        "VITE_GLOB_API_URL_PREFIX": "/sit-api",
+        "VITE_GLOB_UPLOAD_URL": "https://ytiop-sit.walsin.com.cn/sit-api/upload"
+      }
     },
     "uat": {
       "label": "UAT",
       "mode": "uat",
       "aliases": ["uat"],
-      "branches": ["uat"]
+      "branches": ["uat"],
+      "values": {
+        "VITE_ENV": "uat",
+        "VITE_PUBLIC_PATH": "/mbase/robot-h5/",
+        "VITE_MBASE_ORIGIN": "https://ytiop-uat.walsin.com.cn",
+        "VITE_GLOB_API_URL": "https://ytiop-uat.walsin.com.cn",
+        "VITE_GLOB_API_URL_PREFIX": "/uat-api",
+        "VITE_GLOB_UPLOAD_URL": "https://ytiop-uat.walsin.com.cn/uat-api/upload"
+      }
     },
     "pre": {
       "label": "PRE",
       "mode": "pre",
       "aliases": ["pre"],
-      "branches": ["pre"]
+      "branches": ["pre"],
+      "values": {
+        "VITE_ENV": "pre",
+        "VITE_PUBLIC_PATH": "/mbase/robot-h5/",
+        "VITE_MBASE_ORIGIN": "https://ytiop-pre.walsin.com.cn",
+        "VITE_GLOB_API_URL": "https://ytiop-pre.walsin.com.cn",
+        "VITE_GLOB_API_URL_PREFIX": "/pre-api",
+        "VITE_GLOB_UPLOAD_URL": "https://ytiop-pre.walsin.com.cn/pre-api/upload"
+      }
     },
     "production": {
       "label": "PRD",
       "mode": "production",
       "aliases": ["production", "prod", "prd"],
-      "branches": ["main"]
+      "branches": ["main"],
+      "values": {
+        "VITE_ENV": "production",
+        "VITE_PUBLIC_PATH": "/mbase/robot-h5/",
+        "VITE_MBASE_ORIGIN": "https://ytiop-prd.walsin.com.cn",
+        "VITE_GLOB_API_URL": "https://ytiop-prd.walsin.com.cn",
+        "VITE_GLOB_API_URL_PREFIX": "/prd-api",
+        "VITE_GLOB_UPLOAD_URL": "https://ytiop-prd.walsin.com.cn/prd-api/upload"
+      }
     },
     "vercel": {
       "label": "DEMO",
       "mode": "vercel",
       "aliases": ["vercel", "demo"],
-      "branches": []
+      "branches": [],
+      "values": {
+        "VITE_ENV": "vercel",
+        "VITE_PUBLIC_PATH": "/",
+        "VITE_USE_MOCK": true,
+        "VITE_APP_MODE": "standalone",
+        "VITE_GLOB_API_URL": "",
+        "VITE_GLOB_API_URL_PREFIX": "/api",
+        "VITE_GLOB_UPLOAD_URL": ""
+      }
     }
   }
 }

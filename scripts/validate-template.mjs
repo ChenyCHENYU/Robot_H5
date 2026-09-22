@@ -42,12 +42,6 @@ async function main() {
   }
   for (const requiredFile of [
     "build/environments.json",
-    ".env.development",
-    ".env.sit",
-    ".env.uat",
-    ".env.pre",
-    ".env.production",
-    ".env.vercel",
     "scripts/build.mjs",
     "scripts/build-environment.mjs",
     "scripts/verify-build-environment.mjs",

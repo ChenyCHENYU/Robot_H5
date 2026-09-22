@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { getViteEnvironmentValues } from './build-environment.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = file => readFile(path.join(root, file), 'utf8');
@@ -24,7 +25,6 @@ const [
   companyContextSource,
   permissionApiSource,
   baseRouterSource,
-  productionEnvSource,
   httpSource,
   httpEnumSource,
 ] = await Promise.all([
@@ -44,7 +44,6 @@ const [
   read('src/platform/mbase/company-context.ts'),
   read('src/api/permission.ts'),
   read('src/router/base.ts'),
-  read('.env.production'),
   read('src/utils/http/index.ts'),
   read('src/utils/http/httpEnum.ts'),
 ]);
@@ -91,8 +90,9 @@ assert.match(companyContextSource, /withMbaseCompanyContext/);
 assert.match(companyContextSource, /getMbaseCompanyScopedKey/);
 assert.match(permissionApiSource, /withMbaseCompanyContext/);
 assert.match(baseRouterSource, /PortalContextErrorRoute/);
-assert.match(productionEnvSource, /VITE_APP_MODE\s*=\s*integrated/);
-assert.match(productionEnvSource, /VITE_MBASE_COMPANY_SYNC_MODE\s*=\s*server/);
+const productionValues = getViteEnvironmentValues('production');
+assert.equal(productionValues.VITE_APP_MODE, 'integrated');
+assert.equal(productionValues.VITE_MBASE_COMPANY_SYNC_MODE, 'server');
 assert.match(httpSource, /isIntegratedMode\(\) \? 'Bearer'/);
 assert.match(companyContextSource, /code !== 200 && code !== 2000/);
 assert.match(httpSource, /ResultEnum\.PLATFORM_SUCCESS/);

@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
-import { defineConfig, loadEnv, type UserConfig, type ConfigEnv, type Plugin } from 'vite';
+import { defineConfig, type UserConfig, type ConfigEnv, type Plugin } from 'vite';
 import { getNowTime, pathResolve, wrapperEnv } from './build/utils';
 import { createVitePlugins } from './build/vite/plugin';
 import { createProxy } from './build/vite/proxy';
@@ -15,9 +15,11 @@ interface BuildEnvironmentDefinition {
     mode: string;
     aliases: string[];
     branches: string[];
+    values: Record<string, string | boolean>;
 }
 
 interface BuildEnvironmentDocument {
+    shared: Record<string, string | boolean>;
     environments: Record<string, BuildEnvironmentDefinition>;
 }
 
@@ -193,10 +195,6 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
     const root = process.cwd();
     // 是否是构建 (dev/serve 或 build)
     const isBuild = command === 'build';
-    // 加载env环境 (root目录下的 .env开头的环境文件)
-    const env = loadEnv(mode, root);
-    // 将env环境变量转换为对象
-    const viteEnv = wrapperEnv(env);
 
     const environmentEntry = Object.entries(buildEnvironmentDocument.environments).find(
         ([, environment]) => environment.mode === mode,
@@ -205,8 +203,28 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
         throw new Error(`未注册的 Vite mode：${mode}`);
     }
     const [environmentName, environment] = environmentEntry;
+
+    // 环境配置统一来自 build/environments.json（共享默认值 + 环境差异覆盖），
+    // 不再读取根目录 .env.* 文件。
+    const rawEnv: Record<string, string> = {};
+    for (const [key, value] of Object.entries(buildEnvironmentDocument.shared)) {
+        rawEnv[key] = typeof value === 'string' ? value : String(value);
+    }
+    for (const [key, value] of Object.entries(environment.values || {})) {
+        rawEnv[key] = typeof value === 'string' ? value : String(value);
+    }
+    // 保持与旧 .env 文件一致的处理链（true/false 布尔化、VITE_PROXY 解析、process.env 回写）
+    const viteEnv = wrapperEnv(rawEnv);
     validateBuildConfiguration(command, mode, environmentName, viteEnv);
     const buildIdentity = createBuildIdentity(environmentName, environment, viteEnv);
+
+    // 将全部 VITE_* 以编译期常量注入，保证 src 中 import.meta.env.VITE_* 可用
+    const importMetaEnvDefines = Object.fromEntries(
+        Object.entries(viteEnv).map(([key, value]) => [
+            `import.meta.env.${key}`,
+            JSON.stringify(value),
+        ]),
+    );
 
     const { VITE_PUBLIC_PATH, VITE_PORT } = viteEnv;
 
@@ -273,6 +291,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
         },
         define: {
             __APP_INFO__: JSON.stringify(__APP_INFO__),
+            ...importMetaEnvDefines,
         },
         // 预优化依赖，避免首次访问时 Vite 发现新依赖触发 "reloading"
         optimizeDeps: {

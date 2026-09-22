@@ -32,13 +32,14 @@ const GIT_STANDARDS_DEV_DEPENDENCIES = [
   "lint-staged"
 ];
 const ENVIRONMENTS = [
-  [".env.development", "dev"],
-  [".env.sit", "sit"],
-  [".env.uat", "uat"],
-  [".env.pre", "pre"],
-  [".env.production", "prd"],
-  [".env.vercel", "vercel"]
+  ["development", "dev"],
+  ["sit", "sit"],
+  ["uat", "uat"],
+  ["pre", "pre"],
+  ["production", "prd"],
+  ["vercel", "vercel"]
 ];
+const environmentsFilePath = path.join(root, "build", "environments.json");
 
 async function readJson(file) {
   return JSON.parse(await readFile(file, "utf8"));
@@ -120,14 +121,6 @@ async function loadInput(file) {
   return readJson(resolved);
 }
 
-function setEnvValue(content, key, value) {
-  const line = `${key} = ${value}`;
-  const pattern = new RegExp(`^${key}\\s*=.*$`, "m");
-  return pattern.test(content)
-    ? content.replace(pattern, line)
-    : `${content.trimEnd()}\n${line}\n`;
-}
-
 function apiPrefix(value) {
   return `/${String(value || "api").replace(/^\/+|\/+$/g, "")}`;
 }
@@ -143,48 +136,50 @@ function mbasePath(moduleName, projectName) {
 }
 
 async function updateEnvironmentFiles(config, projectName, moduleName, title, port, localBackendUrl) {
-  for (const [fileName, environmentName] of ENVIRONMENTS) {
-    const file = path.join(root, fileName);
-    if (!existsSync(file)) continue;
-    const environment = config.environments?.[environmentName] ?? {};
-    const isDevelopment = environmentName === "dev";
-    const isDemo = environmentName === "vercel";
+  const document = await readJson(environmentsFilePath);
+  const shared = { ...(document.shared || {}) };
+  shared.VITE_GLOB_APP_TITLE = title;
+  shared.VITE_GLOB_APP_ID = projectName;
+
+  for (const [environmentName, configKey] of ENVIRONMENTS) {
+    const environment = config.environments?.[configKey] ?? {};
+    const isDevelopment = configKey === "dev";
+    const isDemo = configKey === "vercel";
     const backendUrl = isDevelopment || isDemo
       ? localBackendUrl
-      : validateUrl(environment.webUrl, `${environmentName} API 地址`);
+      : validateUrl(environment.webUrl, `${configKey} API 地址`);
     const prefix = apiPrefix(environment.apiPrefix);
-    let content = await readFile(file, "utf8");
-    content = setEnvValue(content, "VITE_GLOB_APP_TITLE", title);
-    content = setEnvValue(content, "VITE_GLOB_APP_ID", projectName);
-    content = setEnvValue(content, "VITE_GLOB_API_URL_PREFIX", prefix);
+    const values = { ...((document.environments?.[environmentName]?.values) || {}) };
+    values.VITE_GLOB_API_URL_PREFIX = prefix;
     if (isDevelopment) {
-      content = setEnvValue(content, "VITE_PORT", port);
-      content = setEnvValue(
-        content,
-        "VITE_PROXY",
-        JSON.stringify([
-          [prefix, `${backendUrl}${prefix}`],
-          ["/upload", `${backendUrl}/upload`]
-        ])
-      );
-      content = setEnvValue(content, "VITE_GLOB_API_URL", "");
-      content = setEnvValue(content, "VITE_GLOB_UPLOAD_URL", "");
+      values.VITE_PORT = String(port);
+      values.VITE_PROXY = JSON.stringify([
+        [prefix, `${backendUrl}${prefix}`],
+        ["/upload", `${backendUrl}/upload`]
+      ]);
+      values.VITE_GLOB_API_URL = "";
+      values.VITE_GLOB_UPLOAD_URL = "";
     } else if (isDemo) {
-      content = setEnvValue(content, "VITE_PUBLIC_PATH", "/");
-      content = setEnvValue(content, "VITE_APP_MODE", "standalone");
-      content = setEnvValue(content, "VITE_GLOB_API_URL", "");
-      content = setEnvValue(content, "VITE_GLOB_UPLOAD_URL", "");
+      values.VITE_PUBLIC_PATH = "/";
+      values.VITE_APP_MODE = "standalone";
+      values.VITE_GLOB_API_URL = "";
+      values.VITE_GLOB_UPLOAD_URL = "";
     } else {
-      content = setEnvValue(content, "VITE_GLOB_API_URL", backendUrl);
-      content = setEnvValue(content, "VITE_GLOB_UPLOAD_URL", `${backendUrl}${prefix}/upload`);
+      values.VITE_GLOB_API_URL = backendUrl;
+      values.VITE_GLOB_UPLOAD_URL = `${backendUrl}${prefix}/upload`;
     }
-    if (["sit", "uat", "pre", "prd"].includes(environmentName)) {
-      content = setEnvValue(content, "VITE_APP_MODE", "integrated");
-      content = setEnvValue(content, "VITE_PUBLIC_PATH", mbasePath(moduleName, projectName));
-      content = setEnvValue(content, "VITE_MBASE_ORIGIN", new URL(backendUrl).origin);
+    if (["sit", "uat", "pre", "prd"].includes(configKey)) {
+      values.VITE_APP_MODE = "integrated";
+      values.VITE_PUBLIC_PATH = mbasePath(moduleName, projectName);
+      values.VITE_MBASE_ORIGIN = new URL(backendUrl).origin;
     }
-    await writeFile(file, content, "utf8");
+    if (document.environments?.[environmentName]) {
+      document.environments[environmentName].values = values;
+    }
   }
+
+  document.shared = shared;
+  await writeJson(environmentsFilePath, document);
 }
 
 async function removeGitStandards(pkg) {

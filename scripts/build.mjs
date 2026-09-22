@@ -2,9 +2,9 @@ import { existsSync, readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import { loadEnv } from 'vite'
 import {
   detectBranchName,
+  getViteEnvironmentValues,
   resolveBuildEnvironment,
 } from './build-environment.mjs'
 
@@ -63,7 +63,7 @@ const environment = resolveBuildEnvironment({
   allowDemo: legacyCommand === 'build:vercel',
 })
 
-const viteEnvironment = loadEnv(environment.mode, root, '')
+const viteEnvironment = getViteEnvironmentValues(environment.name)
 const outputDirectory = resolve(root, viteEnvironment.VITE_OUTPUT_DIR || 'dist')
 const childEnv = {
   ...process.env,
