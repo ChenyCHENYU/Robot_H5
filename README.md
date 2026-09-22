@@ -935,7 +935,7 @@ Robot_H5 只有 H5 一个构建目标。环境配置（分支映射与全部 `VI
 开发环境通过 Vite Proxy 代理后端网关：
 
 ```jsonc
-// .env.development 中的 VITE_PROXY
+// build/environments.json → development.values 中的 VITE_PROXY
 [
     ["/api",    "http://172.28.99.172:9000/api"],   // 后端网关
     ["/upload", "http://172.28.99.172:9000/upload"]  // 文件上传

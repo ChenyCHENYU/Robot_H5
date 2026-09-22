@@ -4,19 +4,20 @@ Robot_H5 `v1.8.0+` 已内置免登参数接收、公司上下文闭环、宿主�
 
 ## 1. 配置目标环境
 
-SIT/UAT/PRE/PRD 都是独立的 integrated 环境，不再共用 `.env.integrated`。以下以 `.env.sit` 为例：
+SIT/UAT/PRE/PRD 都是独立的 integrated 环境条目，统一维护在 `build/environments.json`。以下以 `sit` 条目的 `values` 为例（共享默认值在 `shared` 中）：
 
-```dotenv
-VITE_APP_MODE = integrated
-VITE_PUBLIC_PATH = /mbase/{应用缩写}/
-VITE_MBASE_ORIGIN = https://ytiop-sit.walsin.com.cn
-VITE_GLOB_API_URL = https://ytiop-sit.walsin.com.cn
-VITE_GLOB_API_URL_PREFIX = /sit-api
-VITE_MBASE_COMPANY_SYNC_MODE = server
-VITE_MBASE_CHANGE_COMPANY_API = /hrms/user/changeCompany
+```jsonc
+// build/environments.json → environments.sit.values
+{
+  "VITE_ENV": "sit",
+  "VITE_PUBLIC_PATH": "/mbase/{应用缩写}/",
+  "VITE_MBASE_ORIGIN": "https://ytiop-sit.walsin.com.cn",
+  "VITE_GLOB_API_URL": "https://ytiop-sit.walsin.com.cn",
+  "VITE_GLOB_API_URL_PREFIX": "/sit-api"
+}
 ```
 
-`pnpm setup` 会同时写入 `.env.sit / .env.uat / .env.pre / .env.production` 的应用 ID、`/mbase/{应用缩写}/`、API 和网关 origin。`VITE_MBASE_ORIGIN` 用于严格校验 iframe 消息，禁止配置 `*`。`dev / sit / uat / pre / main` 标准环境分支统一执行 `pnpm build:h5`；生产只认 `main`。旧 `build:test / build:uat / build:prod / build:integrated` 命令仍兼容，但只能校验、不能覆盖分支环境。
+`pnpm setup` 会同时更新 `sit / uat / pre / production` 各环境条目的应用 ID、`/mbase/{应用缩写}/`、API 和网关 origin（`VITE_MBASE_COMPANY_SYNC_MODE`、`VITE_MBASE_CHANGE_COMPANY_API` 在 `shared` 中统一维护）。`VITE_MBASE_ORIGIN` 用于严格校验 iframe 消息，禁止配置 `*`。`dev / sit / uat / pre / main` 标准环境分支统一执行 `pnpm build:h5`；生产只认 `main`。旧 `build:test / build:uat / build:prod / build:integrated` 命令仍兼容，但只能校验、不能覆盖分支环境。
 
 每次构建只生成当前子应用自己的 `dist/env.json`。它不会自动加载基座的 `/mbase/env.json`，也不参与运行时环境切换；完整边界见[构建、环境与产物身份证](./build-and-environments.md)。
 

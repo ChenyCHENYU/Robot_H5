@@ -13,21 +13,20 @@
 
 ## 2. 配置文件
 
-| 文件 | 环境 | 默认运行模式 | 说明 |
+环境配置唯一来源是 `build/environments.json`：`shared` 保存跨环境共享默认值，各环境条目的 `values` 只声明差异，不再使用按环境拆分的 `.env.*` 文件。
+
+| 环境条目 | 环境 | 默认运行模式 | 说明 |
 | --- | --- | --- | --- |
-| `.env.development` | DEV | `standalone` | 本地 Mock 与 HMR |
-| `.env.sit` | SIT | `integrated` | SIT mbase 子应用 |
-| `.env.uat` | UAT | `integrated` | UAT mbase 子应用 |
-| `.env.pre` | PRE | `integrated` | PRE mbase 子应用 |
-| `.env.production` | PRD | `integrated` | PRD mbase 子应用 |
-| `.env.vercel` | DEMO | `standalone` | 静态演示站 |
+| `development` | DEV | `standalone` | 本地 Mock 与 HMR |
+| `sit` | SIT | `integrated` | SIT mbase 子应用 |
+| `uat` | UAT | `integrated` | UAT mbase 子应用 |
+| `pre` | PRE | `integrated` | PRE mbase 子应用 |
+| `production` | PRD | `integrated` | PRD mbase 子应用 |
+| `vercel` | DEMO | `standalone` | 静态演示站 |
 
-环境名称、别名、Vite mode 和分支映射集中维护在 `build/environments.json`。`project.config.json` 保存新项目初始化时各环境的网关与 API 前缀默认值，业务应用最终使用的标题、应用 ID、部署路径和 API 地址写入对应 `.env` 文件；`pnpm setup` 会一次性按项目参数更新所有标准环境。
+环境名称、别名、Vite mode、分支映射与全部 `VITE_*` 业务值（标题、应用 ID、部署路径、API 地址等）都在这张表维护。`project.config.json` 保存新项目初始化时各环境的网关与 API 前缀默认值；`pnpm setup` 会一次性按项目参数更新 `build/environments.json` 的所有标准环境。
 
-已删除旧的 `.env.test` 和 `.env.integrated`：
-
-- `test` 只是 SIT 的旧名字，现在由 `.env.sit` 承载；
-- `integrated` 是运行模式，不是部署环境，现在 SIT/UAT/PRE/PRD 各自包含完整的 mbase 配置。
+历史上已删除 `.env.test` 和 `.env.integrated`：`test` 只是 SIT 的旧名字；`integrated` 是运行模式，不是部署环境。按环境拆分的 `.env.*` 文件也已全部并入上表。
 
 ## 3. 构建命令
 
@@ -114,7 +113,7 @@ pnpm setup
 
 Vercel 环境只同步应用标题和 ID，并强制保持根路径、standalone、Mock 与空后端地址，避免演示产物意外连接 localhost 或业务网关。
 
-初始化后必须逐环境复核 `.env.*`，尤其是应用缩写、HTTPS 域名和 API 前缀。若网关规则变化，应先更新 `project.config.json` 再初始化；不要把另一个子应用的路径或应用 ID 原样提交。
+初始化后必须逐环境复核 `build/environments.json` 的各环境 `values`，尤其是应用缩写、HTTPS 域名和 API 前缀。若网关规则变化，应先更新 `project.config.json` 再初始化；不要把另一个子应用的路径或应用 ID 原样提交。
 
 ## 6. 发布校验
 
@@ -142,6 +141,6 @@ pnpm test:compat
 | 无法从分支识别环境 | 切换到 `dev / sit / uat / pre / main` 标准发布分支 |
 | 构建环境与分支冲突 | 切换到对应分支，不要绕过环境锁 |
 | 禁止绕过统一构建入口 | 使用 `pnpm build:h5` 或仍受支持的 `build:*` 兼容命令 |
-| 环境文件标识错误 | 检查 `.env.<mode>` 中的 `VITE_ENV` |
+| 环境标识错误 | 检查 `build/environments.json` 对应环境条目 `values.VITE_ENV` |
 | integrated 模式或 HTTPS 校验失败 | 检查目标环境的 `VITE_APP_MODE`、Mock、API 和 mbase origin |
 | 产物缺少/不匹配 `env.json` | 停止部署，清理 `dist` 后重新构建 |
