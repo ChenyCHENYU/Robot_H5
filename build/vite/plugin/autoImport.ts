@@ -20,6 +20,8 @@ export function configAutoImportPlugin() {
         dirs: ['src/hooks', 'src/api'],
         // 可以选择auto-import.d.ts生成的位置，使用ts建议设置为'src/auto-import.d.ts'
         dts: 'types/auto-import.d.ts',
+        // 升级 VueUse 后清理已移除的 API，避免旧声明继续误导类型检查。
+        dtsMode: 'overwrite',
         // eslint globals Docs - https://eslint.org/docs/user-guide/configuring/language-options#specifying-globals
         // 生成全局声明文件，给eslint用
         eslintrc: {

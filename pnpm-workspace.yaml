@@ -1,5 +1,9 @@
 minimumReleaseAgeExclude:
   - '@robot-h5/core'
+overrides:
+  # 统一 Vue/Vite 构建链中的 PostCSS 8，保留 SVG 旧插件的 PostCSS 5 及其 peer 范围。
+  vite>postcss: 8.5.29
+  '@vue/compiler-sfc>postcss': 8.5.29
 allowBuilds:
   '@parcel/watcher': true
   core-js: true

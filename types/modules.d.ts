@@ -33,3 +33,5 @@ declare module 'virtual:robot-icons' {
     const collections: import('@iconify/vue').IconifyJSON[];
     export default collections;
 }
+
+declare module 'virtual:svg-icons-register';

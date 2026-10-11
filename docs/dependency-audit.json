@@ -1,0 +1,570 @@
+{
+  "checkedAt": "2026-10-11",
+  "registry": "https://registry.npmjs.org/",
+  "upgradedPackages": 34,
+  "toolchain": {
+    "node": "^22.13.0 || ^24.0.0",
+    "recommendedNode": "24",
+    "packageManager": "pnpm@11.8.0"
+  },
+  "compatibility": {
+    "javascript": "ES2018",
+    "css": "Chrome 61",
+    "releaseAgeExceptionsAdded": false,
+    "postcssOverrides": "仅 Vue/Vite 构建链使用 8.5.29，保留旧 SVG 插件依赖。"
+  },
+  "validation": {
+    "status": "passed",
+    "typeCheck": "0 errors",
+    "peerConstraints": "passed",
+    "eslint": {
+      "errors": 0,
+      "existingComplexityWarnings": 2
+    },
+    "browserRegression": {
+      "passed": 15,
+      "failed": 0
+    },
+    "builds": [
+      "standalone DEMO",
+      "integrated PRD"
+    ],
+    "assets": {
+      "demoEntryKiB": 299.5,
+      "demoGzipKiB": 104.8,
+      "productionEntryKiB": 140.4,
+      "productionGzipKiB": 48.8,
+      "themeCopies": 1,
+      "faviconBaseVerified": true
+    },
+    "startup": {
+      "light": true,
+      "dark": true,
+      "imagesUnavailable": true,
+      "reducedMotion": true,
+      "normalRefreshBrokenImages": 0
+    },
+    "integration": {
+      "portalParamsCleaned": true,
+      "bearer": true,
+      "companyRequestOrder": true,
+      "accountCacheIsolation": true
+    },
+    "note": "兼容性校验和浏览器模拟已通过，PDA 真机与真实宿主能力未在本轮验证。"
+  },
+  "packages": [
+    {
+      "name": "@commitlint/cli",
+      "previous": "20.5.0",
+      "selected": "21.2.3",
+      "latestAtCheck": "21.2.3",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/%40commitlint%2Fcli/21.2.3"
+    },
+    {
+      "name": "@commitlint/config-conventional",
+      "previous": "20.5.0",
+      "selected": "21.2.3",
+      "latestAtCheck": "21.2.3",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/%40commitlint%2Fconfig-conventional/21.2.3"
+    },
+    {
+      "name": "@iconify-json/ic",
+      "previous": "1.2.4",
+      "selected": "1.2.4",
+      "latestAtCheck": "1.2.4",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/%40iconify-json%2Fic/1.2.4"
+    },
+    {
+      "name": "@iconify-json/ph",
+      "previous": "1.2.2",
+      "selected": "1.2.2",
+      "latestAtCheck": "1.2.2",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/%40iconify-json%2Fph/1.2.2"
+    },
+    {
+      "name": "@iconify/vue",
+      "previous": "5.0.0",
+      "selected": "5.0.3",
+      "latestAtCheck": "5.0.3",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/%40iconify%2Fvue/5.0.3"
+    },
+    {
+      "name": "@miracle-web/utils",
+      "previous": "0.0.6",
+      "selected": "0.0.6",
+      "latestAtCheck": "0.0.9",
+      "decision": "held",
+      "reason": "0.0.9 移除当前使用的 BrowserType、Axios 类型导出及部分 RequestOptions 字段，类型实测失败，撤回此项升级。",
+      "source": "https://registry.npmjs.org/%40miracle-web%2Futils/0.0.9"
+    },
+    {
+      "name": "@playwright/test",
+      "previous": "1.63.0",
+      "selected": "1.64.0",
+      "latestAtCheck": "1.64.0",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/%40playwright%2Ftest/1.64.0"
+    },
+    {
+      "name": "@robot-admin/git-standards",
+      "previous": "1.0.3",
+      "selected": "1.0.5",
+      "latestAtCheck": "1.0.5",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/%40robot-admin%2Fgit-standards/1.0.5"
+    },
+    {
+      "name": "@robot-h5/core",
+      "previous": "1.2.0",
+      "selected": "^1.2.0",
+      "latestAtCheck": "1.2.0",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/%40robot-h5%2Fcore/1.2.0"
+    },
+    {
+      "name": "@types/mockjs",
+      "previous": "1.0.10",
+      "selected": "1.0.10",
+      "latestAtCheck": "1.0.10",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/%40types%2Fmockjs/1.0.10"
+    },
+    {
+      "name": "@types/node",
+      "previous": "24.12.2",
+      "selected": "24.19.2",
+      "latestAtCheck": "26.6.5",
+      "decision": "upgraded",
+      "reason": "与推荐 Node 24 的 API 匹配，不引入 Node 26 的类型。",
+      "source": "https://registry.npmjs.org/%40types%2Fnode/24.19.2"
+    },
+    {
+      "name": "@types/nprogress",
+      "previous": "0.2.3",
+      "selected": "0.2.3",
+      "latestAtCheck": "0.2.3",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/%40types%2Fnprogress/0.2.3"
+    },
+    {
+      "name": "@typescript-eslint/eslint-plugin",
+      "previous": "8.58.1",
+      "selected": "8.71.1",
+      "latestAtCheck": "8.71.1",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/%40typescript-eslint%2Feslint-plugin/8.71.1"
+    },
+    {
+      "name": "@typescript-eslint/parser",
+      "previous": "8.58.1",
+      "selected": "8.71.1",
+      "latestAtCheck": "8.71.1",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/%40typescript-eslint%2Fparser/8.71.1"
+    },
+    {
+      "name": "@unocss/preset-icons",
+      "previous": "66.6.8",
+      "selected": "66.10.5",
+      "latestAtCheck": "66.10.5",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/%40unocss%2Fpreset-icons/66.10.5"
+    },
+    {
+      "name": "@unocss/preset-rem-to-px",
+      "previous": "66.6.8",
+      "selected": "66.10.5",
+      "latestAtCheck": "66.10.5",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/%40unocss%2Fpreset-rem-to-px/66.10.5"
+    },
+    {
+      "name": "@unocss/reset",
+      "previous": "66.6.8",
+      "selected": "66.10.5",
+      "latestAtCheck": "66.10.5",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/%40unocss%2Freset/66.10.5"
+    },
+    {
+      "name": "@unocss/transformer-directives",
+      "previous": "66.6.8",
+      "selected": "66.10.5",
+      "latestAtCheck": "66.10.5",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/%40unocss%2Ftransformer-directives/66.10.5"
+    },
+    {
+      "name": "@unocss/transformer-variant-group",
+      "previous": "66.6.8",
+      "selected": "66.10.5",
+      "latestAtCheck": "66.10.5",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/%40unocss%2Ftransformer-variant-group/66.10.5"
+    },
+    {
+      "name": "@vant/auto-import-resolver",
+      "previous": "1.3.0",
+      "selected": "1.3.0",
+      "latestAtCheck": "1.3.0",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/%40vant%2Fauto-import-resolver/1.3.0"
+    },
+    {
+      "name": "@vant/touch-emulator",
+      "previous": "1.5.0",
+      "selected": "1.5.0",
+      "latestAtCheck": "1.5.0",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/%40vant%2Ftouch-emulator/1.5.0"
+    },
+    {
+      "name": "@vitejs/plugin-vue",
+      "previous": "6.0.6",
+      "selected": "6.0.10",
+      "latestAtCheck": "6.0.10",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/%40vitejs%2Fplugin-vue/6.0.10"
+    },
+    {
+      "name": "@vitejs/plugin-vue-jsx",
+      "previous": "5.1.5",
+      "selected": "5.1.6",
+      "latestAtCheck": "5.1.6",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/%40vitejs%2Fplugin-vue-jsx/5.1.6"
+    },
+    {
+      "name": "@vue/eslint-config-typescript",
+      "previous": "14.7.0",
+      "selected": "14.9.0",
+      "latestAtCheck": "14.9.0",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/%40vue%2Feslint-config-typescript/14.9.0"
+    },
+    {
+      "name": "@vueuse/core",
+      "previous": "13.9.0",
+      "selected": "15.0.0",
+      "latestAtCheck": "15.0.0",
+      "decision": "upgraded",
+      "reason": "核对 14/15 的移除 API、timer 选项与节流默认值，当前使用不涉及这些变化；保留现有调用并验证。",
+      "source": "https://github.com/vueuse/vueuse/releases/tag/v15.0.0"
+    },
+    {
+      "name": "autoprefixer",
+      "previous": "10.5.0",
+      "selected": "10.6.1",
+      "latestAtCheck": "10.6.1",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/autoprefixer/10.6.1"
+    },
+    {
+      "name": "commitizen",
+      "previous": "4.3.1",
+      "selected": "4.3.2",
+      "latestAtCheck": "4.3.2",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/commitizen/4.3.2"
+    },
+    {
+      "name": "cz-customizable",
+      "previous": "7.5.4",
+      "selected": "7.5.4",
+      "latestAtCheck": "7.5.4",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/cz-customizable/7.5.4"
+    },
+    {
+      "name": "disable-devtool",
+      "previous": "0.3.9",
+      "selected": "0.3.9",
+      "latestAtCheck": "0.3.9",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/disable-devtool/0.3.9"
+    },
+    {
+      "name": "echarts",
+      "previous": "6.1.0",
+      "selected": "6.1.0",
+      "latestAtCheck": "6.1.0",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/echarts/6.1.0"
+    },
+    {
+      "name": "eslint",
+      "previous": "10.2.0",
+      "selected": "10.12.0",
+      "latestAtCheck": "10.12.0",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/eslint/10.12.0"
+    },
+    {
+      "name": "eslint-plugin-vue",
+      "previous": "10.8.0",
+      "selected": "10.11.1",
+      "latestAtCheck": "10.11.1",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/eslint-plugin-vue/10.11.1"
+    },
+    {
+      "name": "husky",
+      "previous": "9.1.7",
+      "selected": "9.1.7",
+      "latestAtCheck": "9.1.7",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/husky/9.1.7"
+    },
+    {
+      "name": "lint-staged",
+      "previous": "16.4.0",
+      "selected": "16.4.0",
+      "latestAtCheck": "17.6.0",
+      "decision": "held",
+      "reason": "17.6.0 要求 Node >=22.22.1，高于当前 Node 22.13 的下限；提交钩子改用固定的本地 16.4.0。",
+      "source": "https://registry.npmjs.org/lint-staged/17.6.0"
+    },
+    {
+      "name": "mitt",
+      "previous": "3.0.1",
+      "selected": "3.0.1",
+      "latestAtCheck": "3.0.1",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/mitt/3.0.1"
+    },
+    {
+      "name": "mockjs",
+      "previous": "1.1.0",
+      "selected": "1.1.0",
+      "latestAtCheck": "1.1.0",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/mockjs/1.1.0"
+    },
+    {
+      "name": "nprogress",
+      "previous": "0.2.0",
+      "selected": "0.2.0",
+      "latestAtCheck": "0.2.0",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/nprogress/0.2.0"
+    },
+    {
+      "name": "pinia",
+      "previous": "3.0.4",
+      "selected": "3.0.4",
+      "latestAtCheck": "4.0.3",
+      "decision": "held",
+      "reason": "Pinia 4 引入 Object.hasOwn；当前旧 WebView 目标没有该原生 API，保持 Pinia 3。",
+      "source": "https://github.com/vuejs/pinia/releases/tag/v4.0.0"
+    },
+    {
+      "name": "pinia-plugin-persistedstate",
+      "previous": "4.7.1",
+      "selected": "4.7.1",
+      "latestAtCheck": "4.7.1",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/pinia-plugin-persistedstate/4.7.1"
+    },
+    {
+      "name": "postcss",
+      "previous": "8.5.10",
+      "selected": "8.5.29",
+      "latestAtCheck": "8.5.29",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/postcss/8.5.29"
+    },
+    {
+      "name": "postcss-mobile-forever",
+      "previous": "5.0.0",
+      "selected": "5.0.0",
+      "latestAtCheck": "5.0.0",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/postcss-mobile-forever/5.0.0"
+    },
+    {
+      "name": "rimraf",
+      "previous": "5.0.10",
+      "selected": "6.1.3",
+      "latestAtCheck": "6.1.3",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/rimraf/6.1.3"
+    },
+    {
+      "name": "rollup-plugin-visualizer",
+      "previous": "6.0.11",
+      "selected": "7.1.1",
+      "latestAtCheck": "7.1.1",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/rollup-plugin-visualizer/7.1.1"
+    },
+    {
+      "name": "sass",
+      "previous": "1.99.0",
+      "selected": "1.105.1",
+      "latestAtCheck": "1.105.1",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/sass/1.105.1"
+    },
+    {
+      "name": "typescript",
+      "previous": "5.9.3",
+      "selected": "6.0.3",
+      "latestAtCheck": "7.0.2",
+      "decision": "upgraded",
+      "reason": "TypeScript 7 不再提供旧编译器 API，当前 Vue/ESLint 工具仍需要它；使用 API 兼容的 6.0.3。",
+      "source": "https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/"
+    },
+    {
+      "name": "unocss",
+      "previous": "66.6.8",
+      "selected": "66.10.5",
+      "latestAtCheck": "66.10.5",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/unocss/66.10.5"
+    },
+    {
+      "name": "unplugin-auto-import",
+      "previous": "20.3.0",
+      "selected": "21.1.0",
+      "latestAtCheck": "21.1.0",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/unplugin-auto-import/21.1.0"
+    },
+    {
+      "name": "unplugin-vue-components",
+      "previous": "29.2.0",
+      "selected": "32.1.0",
+      "latestAtCheck": "32.1.0",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/unplugin-vue-components/32.1.0"
+    },
+    {
+      "name": "vant",
+      "previous": "4.9.24",
+      "selected": "4.10.2",
+      "latestAtCheck": "4.10.2",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/vant/4.10.2"
+    },
+    {
+      "name": "vite",
+      "previous": "7.3.2",
+      "selected": "7.3.7",
+      "latestAtCheck": "8.3.4",
+      "decision": "upgraded",
+      "reason": "保留 Vite 7 的打包与 PDA 兼容链路，更新到该系列最新补丁；Vite 8 的 Rolldown/Oxc 配置需专项迁移。",
+      "source": "https://vite.dev/guide/migration.html"
+    },
+    {
+      "name": "vite-plugin-html",
+      "previous": "3.2.2",
+      "selected": "3.2.2",
+      "latestAtCheck": "3.2.2",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/vite-plugin-html/3.2.2"
+    },
+    {
+      "name": "vite-plugin-mock",
+      "previous": "2.9.8",
+      "selected": "2.9.8",
+      "latestAtCheck": "3.0.2",
+      "decision": "held",
+      "reason": "保留已验证的 localEnabled/prodEnabled/injectCode 开发与演示注入流程；3 系列需迁移后再验证。",
+      "source": "https://github.com/vbenjs/vite-plugin-mock"
+    },
+    {
+      "name": "vite-plugin-progress",
+      "previous": "0.0.7",
+      "selected": "0.0.7",
+      "latestAtCheck": "0.0.7",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/vite-plugin-progress/0.0.7"
+    },
+    {
+      "name": "vite-plugin-svg-icons",
+      "previous": "2.0.1",
+      "selected": "2.0.1",
+      "latestAtCheck": "2.0.1",
+      "decision": "unchanged",
+      "reason": "核查时已处于最新稳定版本。",
+      "source": "https://registry.npmjs.org/vite-plugin-svg-icons/2.0.1"
+    },
+    {
+      "name": "vue",
+      "previous": "3.5.32",
+      "selected": "3.5.43",
+      "latestAtCheck": "3.5.43",
+      "decision": "upgraded",
+      "reason": "升级至官方稳定版本，核对 Node/peer 约束并进行构建和浏览器回归。",
+      "source": "https://registry.npmjs.org/vue/3.5.43"
+    },
+    {
+      "name": "vue-router",
+      "previous": "4.6.4",
+      "selected": "5.4.0",
+      "latestAtCheck": "5.4.0",
+      "decision": "upgraded",
+      "reason": "官方说明手动配置路由由 4 升级 5 无破坏性变化，保留现有路由并进行回归。",
+      "source": "https://router.vuejs.org/guide/migration/v4-to-v5.html"
+    },
+    {
+      "name": "vue-tsc",
+      "previous": "3.2.6",
+      "selected": "3.3.12",
+      "latestAtCheck": "3.3.13",
+      "decision": "upgraded",
+      "reason": "核查时 3.3.13 发布时间尚不足既有检查期限；使用 2026-10-02 发布的 3.3.12，不新增发布时间例外。",
+      "source": "https://registry.npmjs.org/vue-tsc"
+    }
+  ]
+}

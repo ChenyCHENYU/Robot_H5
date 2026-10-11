@@ -19,7 +19,7 @@ Robot H5 是企业移动端 Vue 应用模板，面向独立浏览器、App/PDA W
 
 ## 快速开始
 
-需要 **Node.js 22.12+ 或 24.x**、**pnpm 11.8+**；推荐版本以 [.nvmrc](./.nvmrc) 为准。
+需要 **Node.js 22.13+ 或 24.x**、**pnpm 11.8+**；推荐版本以 [.nvmrc](./.nvmrc) 为准。Node 下限与固定 pnpm 的引擎要求一致。
 
 ```bash
 pnpm install --frozen-lockfile
@@ -142,6 +142,12 @@ export const addCustomer = (data: CustomerInput) => post<Customer>('/customer', 
 | `pnpm test:compat` | 检查旧 WebView 与宿主约定 |
 
 首次运行浏览器测试前执行 `pnpm exec playwright install chromium`。CI 自动安装 Chromium，运行检查、构建和浏览器回归。
+
+### 依赖维护
+
+升级前查询官方版本与迁移说明，升级后验证类型、peer 约束、两种构建与浏览器回归。升级版本采用精确版本号，提交 `pnpm-lock.yaml`；CI 使用冻结锁文件安装。`pnpm deps:update` 提供交互选择，提交钩子调用项目内固定版本的 lint-staged。
+
+本次核查及选择记录见 [依赖清单](./docs/dependency-audit.json)。TypeScript 使用提供编译器 API 的 6 系列；Vite 与 Mock 保留现有兼容链路；Node 类型匹配 Node 24。Pinia 4 的新内置 API、工具链大版本及新发布版本需要满足现有兼容和发布时间检查后再升级。
 
 | 分支 / 环境 | 模式 | 部署路径 |
 | --- | --- | --- |

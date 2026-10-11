@@ -1,5 +1,21 @@
 import { test, expect, type Page } from '@playwright/test';
 
+for (const colorScheme of ['light', 'dark'] as const) {
+    test(`冷启动加载屏内联品牌 Logo，图片不可用时仍可显示（${colorScheme}）`, async ({ page }) => {
+        await page.emulateMedia({ colorScheme, reducedMotion: 'reduce' });
+        await page.addInitScript(() => localStorage.setItem('THEME-SETTING', JSON.stringify({ followSystem: true })));
+        // 模拟应用脚本暂不可用，检查 Vue 挂载前的真实 HTML 首屏。
+        await page.route('**/src/main.ts*', route => route.abort());
+        await page.route('**/logo.svg', route => route.abort());
+        await page.goto('login');
+        await expect(page.locator('#app-shell .shell-logo')).toBeVisible();
+        await expect(page.locator('#app-shell img')).toHaveCount(0);
+        expect(await page.locator('link[rel="icon"]').getAttribute('href')).toBe('/robot-h5/logo.svg');
+        expect(await page.locator('#app-shell .shell-logo-wrap').evaluate(el => getComputedStyle(el, '::before').animationName)).toBe('none');
+        if (colorScheme === 'dark') await expect(page.locator('html')).toHaveClass(/dark/);
+    });
+}
+
 async function login(page: Page) {
     await page.goto('login');
     const image = page.locator('.login-form__captcha-img');
@@ -29,6 +45,29 @@ test('默认账号、验证码错误及登录成功', async ({ page }) => {
     await expect(page.getByText('验证码错误或已过期，请刷新', { exact: true })).toBeVisible();
     await expect(page).toHaveURL(/login$/);
     await login(page);
+});
+
+test('登录、路由和缓存在缺少现代内置 API 时仍可运行', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', error => errors.push(error.message));
+    await page.addInitScript(() => {
+        Reflect.deleteProperty(Object, 'hasOwn');
+        Reflect.deleteProperty(Object, 'groupBy');
+        Reflect.deleteProperty(Array.prototype, 'toSorted');
+        Reflect.deleteProperty(Array.prototype, 'toReversed');
+        Reflect.deleteProperty(Array.prototype, 'toSpliced');
+        Reflect.deleteProperty(Array.prototype, 'at');
+    });
+    await login(page);
+    await expect(page.locator('#app-shell')).toHaveCount(0);
+    await page.goto('keepAliveDemo');
+    await page.getByRole('button', { name: '计数 +1' }).click();
+    await page.getByRole('button', { name: '跳转子页' }).click();
+    await expect(page.locator('.about-page')).toBeVisible();
+    await page.goBack();
+    await expect(page.locator('.about-page')).toHaveCount(0);
+    await expect(page.locator('.ka-page__counter-num')).toHaveText('1');
+    expect(errors).toEqual([]);
 });
 
 test('业务错误 reject；GET 等待重试成功；POST 不后台重发', async ({ page }) => {

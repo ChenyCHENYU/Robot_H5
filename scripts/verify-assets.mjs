@@ -3,6 +3,13 @@ import { readFile, readdir } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
 
 const directory = new URL('../dist/static/', import.meta.url);
+const identity = JSON.parse(await readFile(new URL('../dist/env.json', import.meta.url), 'utf8'));
+const html = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
+const favicon = html.match(/<link\b[^>]*rel=["']?icon["']?[^>]*>/i)?.[0] ?? '';
+const faviconUrl = favicon.match(/\bhref=["']?([^\s"'>]+)/)?.[1];
+assert.equal(faviconUrl, `${identity.runtime.publicPath}logo.svg`, 'favicon 部署前缀必须只添加一次');
+assert.ok(html.includes('shell-logo-title'), '启动加载屏必须内联品牌 Logo');
+assert.ok(!html.includes('%BASE_URL%') && !/<%[-=]/.test(html), 'HTML 模板必须完成渲染');
 const javascript = await readdir(new URL('js/', directory));
 const entries = await Promise.all(javascript.filter(file => /^index-.*\.js$/.test(file)).map(async file => ({ file, data: await readFile(new URL(`js/${file}`, directory)) })));
 const entry = entries.sort((a, b) => b.data.length - a.data.length)[0];

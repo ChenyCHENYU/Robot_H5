@@ -2,7 +2,7 @@
 <html lang="zh-CN">
     <head>
         <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="%BASE_URL%logo.svg" />
+        <link rel="icon" type="image/svg+xml" href="/logo.svg" />
         <meta
             name="viewport"
             content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover"
@@ -89,19 +89,19 @@
             html.dark .shell-blob { opacity: 0.18; }
             .shell-blob--1 {
                 width: 320px; height: 320px;
-                background: radial-gradient(circle, #7551CD 0%, transparent 70%);
+                background: radial-gradient(circle, #6948DC 0%, transparent 70%);
                 top: -100px; left: -80px;
                 animation: blob-1 18s ease-in-out infinite;
             }
             .shell-blob--2 {
                 width: 280px; height: 280px;
-                background: radial-gradient(circle, #0071E3 0%, transparent 70%);
+                background: radial-gradient(circle, #2163EF 0%, transparent 70%);
                 bottom: -80px; right: -60px;
                 animation: blob-2 20s ease-in-out infinite;
             }
             .shell-blob--3 {
                 width: 200px; height: 200px;
-                background: radial-gradient(circle, #5AC8FA 0%, transparent 70%);
+                background: radial-gradient(circle, #62D6FB 0%, transparent 70%);
                 top: 45%; left: 60%;
                 animation: blob-3 15s ease-in-out infinite;
             }
@@ -142,14 +142,14 @@
                 border-radius: 26px;
                 overflow: hidden;
                 box-shadow:
-                    0 0 40px rgba(117, 81, 205, 0.25),
-                    0 0 80px rgba(0, 113, 227, 0.12);
+                    0 0 40px rgba(105, 72, 220, 0.25),
+                    0 0 80px rgba(33, 99, 239, 0.12);
                 will-change: transform;
             }
             html.dark .shell-logo-wrap {
                 box-shadow:
-                    0 0 50px rgba(117, 81, 205, 0.35),
-                    0 0 100px rgba(0, 113, 227, 0.18);
+                    0 0 50px rgba(105, 72, 220, 0.35),
+                    0 0 100px rgba(33, 99, 239, 0.18);
             }
             /* 旋转 conic-gradient 伪元素 */
             .shell-logo-wrap::before {
@@ -157,11 +157,13 @@
                 position: absolute;
                 top: 50%; left: 50%;
                 width: 200%; height: 200%;
+                transform: translate(-50%, -50%);
                 transform-origin: center;
+                background: #2163EF;
                 background: conic-gradient(
                     from 0deg,
-                    #7551CD, #0071E3, #5AC8FA, #34C759,
-                    #0071E3, #7551CD
+                    #6948DC, #2163EF, #62D6FB, #A8F2FF,
+                    #2163EF, #6948DC
                 );
                 animation: ring-spin 3s linear infinite;
                 will-change: transform;
@@ -170,7 +172,7 @@
                 from { transform: translate(-50%, -50%) rotate(0deg); }
                 to { transform: translate(-50%, -50%) rotate(360deg); }
             }
-            .shell-logo-wrap img {
+            .shell-logo-wrap .shell-logo {
                 position: relative;
                 z-index: 1;
                 display: block;
@@ -187,7 +189,7 @@
                 letter-spacing: 3px;
                 text-transform: uppercase;
                 color: #1d1d1f;
-                background: linear-gradient(135deg, #7551CD 0%, #0071E3 50%, #5AC8FA 100%);
+                background: linear-gradient(135deg, #6948DC 0%, #2163EF 50%, #62D6FB 100%);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
                 background-clip: text;
@@ -206,7 +208,7 @@
             .shell-dots span {
                 width: 6px; height: 6px;
                 border-radius: 50%;
-                background: #7551CD;
+                background: #6948DC;
                 animation: dot-breath 1.6s ease-in-out infinite;
             }
             html.dark .shell-dots span { background: #a78bfa; }
@@ -249,16 +251,19 @@
             }
             html.dark .shell-footer-text { color: #636366; }
             @media (prefers-reduced-motion: reduce) {
-                #app-shell, #app-shell * { animation: none !important; transition-duration: .01ms !important; }
+                #app-shell, #app-shell *, #app-shell *::before, #app-shell *::after {
+                    animation: none !important;
+                    transition-duration: .01ms !important;
+                }
             }
         </style>
     </head>
 
     <body>
         <!-- App Shell 加载屏（独立于 #app，Vue 挂载后平滑退出） -->
-        <div id="app-shell">
+        <div id="app-shell" role="status" aria-label="Robot H5 正在加载">
             <!-- 环境光晕 -->
-            <div class="shell-ambient">
+            <div class="shell-ambient" aria-hidden="true">
                 <div class="shell-blob shell-blob--1"></div>
                 <div class="shell-blob shell-blob--2"></div>
                 <div class="shell-blob shell-blob--3"></div>
@@ -266,10 +271,10 @@
             <!-- 主内容 -->
             <div class="shell-center">
                 <div class="shell-logo-wrap">
-                    <img src="%BASE_URL%logo.svg" alt="Robot H5" />
+                    <%- shellLogo %>
                 </div>
                 <div class="shell-brand">Robot H5</div>
-                <div class="shell-dots">
+                <div class="shell-dots" aria-hidden="true">
                     <span></span><span></span><span></span>
                 </div>
             </div>
