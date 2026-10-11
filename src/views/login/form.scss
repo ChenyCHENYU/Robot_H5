@@ -1,0 +1,76 @@
+// 三种登录表单共用输入与按钮规格，适配亮色和暗色令牌。
+@mixin auth-form($name) {
+    .#{$name} {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+
+        &__field {
+            min-height: 52px;
+            padding: 12px !important;
+            align-items: center;
+            background: var(--ds-bg-secondary) !important;
+            border: 1px solid var(--ds-border);
+            border-radius: var(--ds-radius-md);
+            transition: border-color 0.2s, background 0.2s;
+
+            &::after {
+                display: none;
+            }
+
+            &:focus-within {
+                background: var(--ds-surface) !important;
+                border-color: var(--ds-accent);
+            }
+        }
+
+        &__icon {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            color: var(--ds-text-secondary);
+        }
+
+        .van-field__left-icon,
+        .van-field__right-icon {
+            display: flex;
+            align-items: center;
+        }
+
+        .van-field__left-icon {
+            margin-right: 12px;
+        }
+
+        .van-field__control {
+            font-size: 15px;
+            color: var(--ds-text-primary);
+        }
+
+        &__btn {
+            height: 48px;
+            border-radius: var(--ds-radius-md);
+            font-size: 15px;
+            font-weight: 600;
+            transition: opacity 0.2s, transform 0.2s;
+
+            &:active {
+                transform: scale(0.98);
+            }
+
+            &--primary {
+                background: var(--ds-accent);
+                border-color: var(--ds-accent);
+                box-shadow: var(--ds-shadow-1);
+            }
+
+            &--secondary {
+                background: var(--ds-surface);
+                border-color: var(--ds-border);
+                color: var(--ds-text-secondary);
+            }
+        }
+    }
+}

@@ -1,4 +1,4 @@
-import { type Router, isNavigationFailure } from 'vue-router';
+import { type Router, type RouteLocationNormalized, isNavigationFailure } from 'vue-router';
 import NProgress from 'nprogress';
 import { useRouteStoreWidthOut } from '@/store/modules/route';
 import { useUserStore } from '@/store/modules/user';
@@ -93,6 +93,15 @@ async function ensurePermissionsLoaded(): Promise<void> {
     }
 }
 
+function syncRouteCache(route: RouteLocationNormalized) {
+    if (typeof route.name !== 'string') return;
+    const routeStore = useRouteStoreWidthOut();
+    const names = new Set(routeStore.keepAliveComponents);
+    if (route.meta.keepAlive) names.add(route.name);
+    else names.delete(route.name);
+    routeStore.setKeepAliveComponents([...names]);
+}
+
 export function createRouterGuards(router: Router) {
     router.beforeEach(async (to, _from, next) => {
         // 延迟显示 NProgress，快速导航（tab切换）不会出现进度条闪烁
@@ -112,6 +121,14 @@ export function createRouterGuards(router: Router) {
         const directAcquireResult = await tryAcquireMbaseToken(userStore);
         if (directAcquireResult === 'company-error') {
             next(PageEnum.PORTAL_CONTEXT_ERROR);
+            return;
+        }
+
+        // 用 Router 完成参数清理，防止本次导航又写回原始 fullPath。
+        if (directAcquireResult === 'acquired' && to.query.portal_token) {
+            const query = { ...to.query };
+            for (const name of ['portal_token', 'from', 'companyId', 'companyName']) delete query[name];
+            next({ path: to.path, query, hash: to.hash, replace: true });
             return;
         }
 
@@ -156,30 +173,7 @@ export function createRouterGuards(router: Router) {
             console.warn('failed navigation', failure);
         }
 
-        const routeStore = useRouteStoreWidthOut();
-        // 在这里设置需要缓存的组件名称
-        const {keepAliveComponents} = routeStore;
-
-        // 获取当前组件名
-        const currentComName: any = to.matched.find(item => item.name === to.name)?.name;
-
-        // 如果 currentComName 且 keepAliveComponents 不包含 currentComName 且 即将要进入的路由 meta 属性里 keepAlive 为 true，则缓存该组件
-        if (currentComName && !keepAliveComponents.includes(currentComName) && to.meta?.keepAlive) {
-            // 需要缓存的组件
-            keepAliveComponents.push(currentComName);
-            // keepAlive 为 false 则不缓存
-        } else if (!to.meta?.keepAlive) {
-            // 不需要缓存的组件
-
-            // 这里的作用一开始组件设置为缓存，之后又设置不缓存但是它还是存在 keepAliveComponents 数组中
-            // keepAliveComponents 使用 findIndex 与 当前路由对比，如果存在则返回具体下标位置，不存在返回 -1
-            const index = routeStore.keepAliveComponents.findIndex(name => name === currentComName);
-            if (index !== -1) {
-                // 通过返回具体下标位置删除 keepAliveComponents 数组中缓存的 元素
-                keepAliveComponents.splice(index, 1);
-            }
-        }
-        routeStore.setKeepAliveComponents(keepAliveComponents);
+        syncRouteCache(to);
         clearTimeout(npTimer);
         NProgress.done();
     });

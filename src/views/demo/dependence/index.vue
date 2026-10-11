@@ -4,7 +4,7 @@
         <div class="dep-page__body">
             <div class="dep-page__hero">
                 <div class="dep-page__hero-shine" />
-                <VanImage class="dep-page__avatar" round fit="cover" :src="avatar" />
+                <C_Avatar class="dep-page__avatar" :src="userStore.getUserInfo.avatar" />
                 <div class="dep-page__meta">
                     <h2 class="dep-page__name">{{ name }}</h2>
                     <span class="dep-page__version">v{{ version }}</span>
@@ -42,8 +42,9 @@
     import './index.scss';
     import { useUserStore } from '@/store/modules/user';
 
+    defineOptions({ name: 'DependencePage' });
+
     const { pkg, lastBuildTime } = __APP_INFO__;
     const { dependencies, devDependencies, name, version } = pkg;
     const userStore = useUserStore();
-    const { avatar } = userStore.userInfo;
 </script>

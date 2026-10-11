@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore, type StateTree } from 'pinia';
 import { store } from '@/store';
-import { doLogout, getUserInfo, login } from '@/api/user';
+import { doLogout, getUserInfo, login, updateUserProfile } from '@/api/user';
 import { PageEnum } from '@/enums/pageEnum';
 import router from '@/router';
 import { encryptAES, decryptAES } from '@miracle-web/utils';
@@ -14,18 +14,7 @@ import {
     notifyPortalUserLogout,
 } from '@/utils/auth';
 
-interface UserInfo {
-    userId: string | number;
-    username: string;
-    nickname: string;
-    avatar: string;
-    cover: string;
-    gender: number;
-    phone: string;
-    sign?: string;
-    industry?: number;
-}
-
+import type { UserInfo, LoginParams, UserProfile } from '#/User/type';
 interface IUserState {
     token?: string;
     // 集成模式下从 mbase 透传的公司 ID（后端权限校验必需）
@@ -39,11 +28,6 @@ interface IUserState {
         endpoint?: string;
     } | null;
     userInfo: UserInfo;
-}
-
-interface LoginParams {
-    username: string;
-    password: string;
 }
 
 const { isProdMode } = useEnv();
@@ -94,6 +78,11 @@ export const useUserStore = defineStore('app-user-store', {
         setUserInfo(info: UserInfo) {
             this.userInfo = info;
         },
+        async UpdateProfile(profile: UserProfile) {
+            const info = await updateUserProfile(profile);
+            this.setUserInfo(info);
+            return info;
+        },
         clearLocalSession() {
             this.setToken('');
             this.setCompanyContext('', '');
@@ -106,7 +95,7 @@ export const useUserStore = defineStore('app-user-store', {
 
         async Login(params: LoginParams) {
             try {
-                const { data } = await login(params);
+                const data = await login(params);
                 if (data.token) {
                     this.setToken(data.token);
                     await this.GetUserInfo();
@@ -122,7 +111,7 @@ export const useUserStore = defineStore('app-user-store', {
 
         async GetUserInfo() {
             try {
-                const { data } = await getUserInfo();
+                const data = await getUserInfo();
                 this.setUserInfo(data);
                 return Promise.resolve(data);
             } catch (error) {
@@ -152,8 +141,7 @@ export const useUserStore = defineStore('app-user-store', {
                 }
             }
             this.clearLocalSession();
-            router.push(PageEnum.BASE_LOGIN);
-            location.reload();
+            await router.replace(PageEnum.BASE_LOGIN);
         },
     },
     // 开启数据缓存

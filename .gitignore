@@ -45,3 +45,7 @@ types/.eslintrc-auto-import.json
 
 # Design references (local only)
 design-md/
+
+# Browser test artifacts
+playwright-report/
+test-results/

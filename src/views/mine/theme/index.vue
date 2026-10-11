@@ -9,17 +9,17 @@
                 <div class="theme-page__group">
                     <VanCell center title="跟随系统" class="theme-page__cell">
                         <template #icon>
-                            <div class="theme-page__cell-icon" style="background:#5856d6">
+                            <div class="theme-page__cell-icon" style="background:var(--ds-violet)">
                                 <i class="i-ph:device-mobile-bold" />
                             </div>
                         </template>
                         <template #right-icon>
-                            <VanSwitch v-model="followSystem" size="22" @change="handleFollowSystem" />
+                            <VanSwitch v-model="followSystem" size="22" />
                         </template>
                     </VanCell>
                     <VanCell center title="暗黑模式" class="theme-page__cell">
                         <template #icon>
-                            <div class="theme-page__cell-icon" style="background:#1c1c1e">
+                            <div class="theme-page__cell-icon" style="background:var(--ds-text-primary)">
                                 <i class="i-ph:moon-bold" />
                             </div>
                         </template>
@@ -34,7 +34,10 @@
             <div class="theme-page__section">
                 <h3 class="theme-page__section-title">主题色</h3>
                 <div class="theme-page__colors">
-                    <span
+                    <button
+                        type="button"
+                        :aria-label="`主题色 ${item}`"
+                        :aria-pressed="item === themeStore.themeColor"
                         v-for="(item, index) in themeStore.themeColorList"
                         :key="index"
                         class="theme-page__color-dot"
@@ -44,9 +47,9 @@
                         <i
                             v-show="item === themeStore.themeColor"
                             class="i-ph:check-bold"
-                            style="color: #fff; font-size: 16px"
+                            style="color: var(--ds-text-on-accent); font-size: 16px"
                         />
-                    </span>
+                    </button>
                 </div>
                 <!-- 主题色预览卡片 -->
                 <div class="theme-page__preview" :style="{ '--preview-color': themeStore.themeColor }">
@@ -92,7 +95,7 @@
                 <div class="theme-page__group">
                     <VanCell center title="页面切换动画" class="theme-page__cell">
                         <template #icon>
-                            <div class="theme-page__cell-icon" style="background:#ff9500">
+                            <div class="theme-page__cell-icon" style="background:var(--ds-warning)">
                                 <i class="i-ph:sparkle-bold" />
                             </div>
                         </template>
@@ -102,7 +105,7 @@
                     </VanCell>
                     <VanCell center title="动画类型" class="theme-page__cell">
                         <template #icon>
-                            <div class="theme-page__cell-icon" style="background:#34c759">
+                            <div class="theme-page__cell-icon" style="background:var(--ds-success)">
                                 <i class="i-ph:play-bold" />
                             </div>
                         </template>
@@ -142,38 +145,11 @@
     const { toggleTheme } = useTheme();
     const themeStore = useThemeStore();
 
-    // ---- 跟随系统 ----
-    const followSystem = ref(themeStore.followSystem);
-    let systemDarkMQ: MediaQueryList | null = null;
-
-    function syncSystemTheme(e: MediaQueryListEvent | MediaQueryList) {
-        const shouldDark = 'matches' in e ? e.matches : false;
-        const current = themeStore.getThemeMode;
-        if ((shouldDark && current === 'light') || (!shouldDark && current === 'dark')) {
-            toggleTheme.value = shouldDark;
-        }
-    }
-
-    function handleFollowSystem(val: boolean) {
-        themeStore.setFollowSystem(val);
-        if (val) {
-            systemDarkMQ = window.matchMedia('(prefers-color-scheme: dark)');
-            syncSystemTheme(systemDarkMQ);
-            systemDarkMQ.addEventListener('change', syncSystemTheme);
-        } else {
-            systemDarkMQ?.removeEventListener('change', syncSystemTheme);
-            systemDarkMQ = null;
-        }
-    }
-
-    onMounted(() => {
-        if (followSystem.value) handleFollowSystem(true);
+    defineOptions({ name: 'ThemeSetting' });
+    const followSystem = computed({
+        get: () => themeStore.followSystem,
+        set: value => themeStore.setFollowSystem(value),
     });
-
-    onUnmounted(() => {
-        systemDarkMQ?.removeEventListener('change', syncSystemTheme);
-    });
-
     // ---- 主题色 ----
     function togTheme(color: string) {
         themeStore.themeColor = color;

@@ -37,6 +37,7 @@
             </div>
         </div>
 
+        <!-- @vue-generic {import('./data').FeedItem} -->
         <C_PullRefreshList
             ref="listRef"
             class="prl-page__list"
@@ -75,19 +76,11 @@
 
 <script setup lang="ts">
     import './index.scss';
-    import type { PullRefreshListInstance } from '@/components/C_PullRefreshList/index.vue';
+    import type { PullRefreshListInstance } from '#/PullRefreshList/type';
 
     defineOptions({ name: 'PullRefreshDemo' });
 
-    interface FeedItem {
-        id: number;
-        title: string;
-        desc: string;
-        time: string;
-        category: string;
-        categoryType: string;
-        isNew?: boolean;
-    }
+    import type { FeedItem } from './data';
 
     const TOTAL = 55;
     const CATEGORIES = [

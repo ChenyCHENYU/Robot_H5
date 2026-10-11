@@ -9,7 +9,7 @@ import '@/styles/common.scss';
 
 import { vantPlugins } from './miracleComponents';
 
-import { useDirectives } from '@miracle-web/utils';
+import { useDirectives } from '@/utils/directives';
 import { useDevtool } from './devtool';
 import { useUpdater } from './updater';
 import { setupIconify } from './iconify';

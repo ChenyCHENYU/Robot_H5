@@ -29,10 +29,12 @@ async function bootstrap() {
         const shell = document.getElementById('app-shell');
         if (shell) {
             shell.classList.add('shell-exit');
-            shell.addEventListener('transitionend', () => {
+            const removeShell = () => {
                 shell.remove();
                 document.getElementById('app-shell-style')?.remove();
-            }, { once: true });
+            };
+            shell.addEventListener('transitionend', removeShell, { once: true });
+            setTimeout(removeShell, 600);
         }
     });
 }

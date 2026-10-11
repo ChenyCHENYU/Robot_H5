@@ -1,12 +1,10 @@
-import { acceptHMRUpdate, defineStore, type StateTree } from 'pinia';
+import { acceptHMRUpdate, defineStore } from 'pinia';
 import { store } from '@/store';
 import { setting, type IThemeState } from '@/utils/const/theme';
-import { encryptAES, decryptAES } from '@miracle-web/utils';
-import { useEnv } from '@/hooks/useEnv';
+import { decryptAES } from '@miracle-web/utils';
 
 const { themeMode, themeColor, themeColorList, isPageAnimate, pageAnimateType, fontScale, followSystem } = setting;
 
-const { isProdMode } = useEnv();
 
 export const useThemeStore = defineStore('app-theme-store', {
     state: (): IThemeState => ({
@@ -49,8 +47,7 @@ export const useThemeStore = defineStore('app-theme-store', {
             this.pageAnimateType = type;
         },
         setFontScale(scale: number): void {
-            this.fontScale = scale;
-            document.documentElement.style.setProperty('--ds-font-scale', String(scale));
+            this.fontScale = Math.min(1.15, Math.max(0.85, scale));
         },
         setFollowSystem(follow: boolean): void {
             this.followSystem = follow;
@@ -61,16 +58,15 @@ export const useThemeStore = defineStore('app-theme-store', {
         key: 'THEME-SETTING',
         storage: window.localStorage,
         serializer: {
-            serialize: isProdMode()
-                ? (value: StateTree) => {
-                      return encryptAES(value);
-                  }
-                : JSON.stringify,
-            deserialize: isProdMode()
-                ? (value: string) => {
-                      return JSON.parse(decryptAES(value));
-                  }
-                : JSON.parse,
+            serialize: JSON.stringify,
+            deserialize: (value: string) => {
+                try { return JSON.parse(value); }
+                catch {
+                    // 兼容旧版本生产环境的加密主题数据。
+                    try { return JSON.parse(decryptAES(value)); }
+                    catch { return { ...setting }; }
+                }
+            },
         },
     },
 });

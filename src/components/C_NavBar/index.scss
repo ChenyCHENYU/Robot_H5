@@ -1,11 +1,11 @@
-:deep(.van-nav-bar) {
+.van-nav-bar {
   backdrop-filter: blur(20px) saturate(180%);
-  background: rgba(255, 255, 255, 0.72) !important;
+  background: var(--ds-nav-bg) !important;
   border-bottom: 0.5px solid var(--ds-divider);
 }
 
-html.dark :deep(.van-nav-bar) {
-  background: rgba(28, 28, 30, 0.72) !important;
+html.dark .van-nav-bar {
+  background: var(--ds-nav-bg) !important;
 }
 
 // 返回按钮 —— 精致小巧的圆形毛玻璃胶囊
@@ -13,8 +13,10 @@ html.dark :deep(.van-nav-bar) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  cursor: pointer;
   border-radius: 50%;
   background: var(--ds-glass-bg);
   backdrop-filter: blur(8px);
@@ -35,7 +37,7 @@ html.dark :deep(.van-nav-bar) {
 }
 
 @media screen and (min-width: 576px) {
-  :deep(.van-nav-bar--fixed) {
+  .van-nav-bar--fixed {
     top: var(--vbar-h) !important;
   }
 }

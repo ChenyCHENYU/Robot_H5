@@ -11,13 +11,13 @@
         }
 
         // label 样式
-        :deep(.van-field__label) {
+        .van-field__label {
             color: var(--ds-text-secondary);
             font-size: 14px;
         }
 
         // 输入框样式
-        :deep(.van-field__control) {
+        .van-field__control {
             font-size: 14px;
             color: var(--ds-text-primary);
 
@@ -28,7 +28,7 @@
         }
 
         // 错误信息
-        :deep(.van-field__error-message) {
+        .van-field__error-message {
             font-size: 11px;
             padding-top: 2px;
         }
@@ -36,7 +36,7 @@
         &--textarea {
             align-items: flex-start;
 
-            :deep(.van-field__label) {
+            .van-field__label {
                 padding-top: 10px;
             }
         }
@@ -80,7 +80,7 @@
         &--submit {
             background: var(--ds-accent) !important;
             border: none !important;
-            color: #fff !important;
+            color: var(--ds-text-on-accent) !important;
         }
 
         &--reset {

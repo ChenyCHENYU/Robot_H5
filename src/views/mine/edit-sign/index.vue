@@ -2,7 +2,7 @@
     <div class="form-page">
         <C_NavBar>
             <template #right>
-                <span class="form-page__save" @click="handleSave">保存</span>
+                <VanButton size="small" type="primary" :loading="saving" @click="handleSave">保存</VanButton>
             </template>
         </C_NavBar>
         <div class="form-page__body">
@@ -34,16 +34,23 @@
     import { showToast, type FormInstance } from 'vant';
     import { useUserStore } from '@/store/modules/user';
 
+    defineOptions({ name: 'EditSign' });
+    const saving = ref(false);
+    const router = useRouter();
     const userStore = useUserStore();
     const { sign } = userStore.getUserInfo;
     const formRef = ref<FormInstance>();
     const formValue = reactive({ sign: sign ?? '' });
 
-    const handleSave = () => {
-        formRef.value?.validate().then(async () => {
-            try {
-                showToast({ message: '签名已保存' });
-            } finally {}
-        }).catch(() => {});
+    const handleSave = async () => {
+        if (saving.value) return;
+        try {
+            await formRef.value?.validate();
+            saving.value = true;
+            await userStore.UpdateProfile({ sign: formValue.sign });
+            showToast('签名已保存');
+            await router.replace('/editInfo');
+        } catch { /* 失败保留表单 */ }
+        finally { saving.value = false; }
     };
 </script>

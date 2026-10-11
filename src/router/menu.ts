@@ -5,7 +5,8 @@ const Layout = () => import('@/layout/index.vue');
 const menuRouteList: Array<RouteRecordRaw> = [
     {
         path: '/',
-        name: '',
+        name: 'MainLayout',
+        meta: { title: 'Robot H5', keepAlive: true },
         redirect: '/dashboard',
         component: Layout,
         children: [

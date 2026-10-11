@@ -2,7 +2,9 @@
     <div class="customer-form">
         <C_NavBar :title="pageTitle" />
 
-        <VanForm ref="formRef" :show-error="false" scroll-to-error>
+        <VanEmpty v-if="failed" description="客户加载失败"><VanButton size="small" @click="load">重试</VanButton></VanEmpty>
+        <VanLoading v-else-if="!ready" class="customer-form__loading">加载中…</VanLoading>
+        <VanForm v-else ref="formRef" :show-error="false" scroll-to-error>
             <!-- 基本信息 -->
             <div class="customer-form__section">
                 <div class="customer-form__section-head">
@@ -113,7 +115,7 @@
         <!-- 底部按钮 -->
         <div class="customer-form__footer">
             <VanButton block round @click="onCancel">取 消</VanButton>
-            <VanButton block round type="primary" :loading="loading" @click="onSubmit">
+            <VanButton block round type="primary" :loading="loading" :disabled="!ready" @click="onSubmit">
                 {{ isEdit ? '保 存' : '提 交' }}
             </VanButton>
         </div>
@@ -139,8 +141,9 @@
 
 <script setup lang="ts">
     import './form.scss';
-    import { showToast, showConfirmDialog } from 'vant';
-    import { MOCK_CUSTOMERS, CATEGORY_MAP, CLASS_OPTIONS, CATEGORY_OPTIONS } from './data';
+    import { showToast, showConfirmDialog, type FormInstance } from 'vant';
+    import { getCustomerDetail, addCustomer, updateCustomer } from '@/api/customer';
+    import { CATEGORY_MAP, CLASS_OPTIONS, CATEGORY_OPTIONS } from './data';
 
     defineOptions({ name: 'CustomerForm' });
 
@@ -154,7 +157,7 @@
     const form = reactive({
         name: '',
         customerClass: '',
-        category: '',
+        category: 'hotRolled',
         contactName: '',
         contactPhone: '',
         position: '',
@@ -162,20 +165,19 @@
         remark: '',
     });
 
-    // 编辑模式填充
-    if (route.query.id) {
-        const c = MOCK_CUSTOMERS.find((c) => c.id === Number(route.query.id));
-        if (c) {
-            form.name = c.name;
-            form.customerClass = c.customerClass;
-            form.category = c.category;
-            form.contactName = c.contactName;
-            form.contactPhone = c.contactPhone;
-            form.position = c.position;
-            form.address = c.address;
-            form.remark = c.remark;
-        }
+    const ready = ref(!route.query.id);
+    const failed = ref(false);
+    async function load() {
+        ready.value = false; failed.value = false;
+        try {
+            if (route.query.id) {
+                const customer = await getCustomerDetail(Number(route.query.id));
+                for (const key of Object.keys(form) as (keyof typeof form)[]) form[key] = customer[key];
+            }
+            ready.value = true;
+        } catch { failed.value = true; }
     }
+    watch(() => route.query.id, load, { immediate: true });
 
     // ── 分类选择 ──
     const showClassPicker = ref(false);
@@ -199,21 +201,19 @@
     const onlyRequired = ref(false);
 
     // ── 提交 ──
-    const formRef = ref();
+    const formRef = ref<FormInstance>();
     const loading = ref(false);
 
     const onSubmit = async () => {
+        if (loading.value || !ready.value) return;
         try {
             await formRef.value?.validate();
-        } catch {
-            return;
-        }
-        loading.value = true;
-        setTimeout(() => {
-            loading.value = false;
+            loading.value = true;
+            const result = isEdit.value ? await updateCustomer(Number(route.query.id), form) : await addCustomer(form);
             showToast(isEdit.value ? '保存成功' : '新增成功');
-            router.back();
-        }, 600);
+            await router.replace({ path: '/customerDetail', query: { id: String(result.id) } });
+        } catch { /* 保留表单，支持重试 */ }
+        finally { loading.value = false; }
     };
 
     const onCancel = () => {

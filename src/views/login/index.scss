@@ -1,173 +1,76 @@
 .login-page {
     min-height: 100%;
+    width: 100%;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    width: 100%;
-    box-sizing: border-box;
-    background: var(--ds-bg);
-    padding: 0 24px;
     position: relative;
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 24px 24px 0;
+    padding-top: calc(24px + env(safe-area-inset-top, 0px));
+    background: var(--ds-bg-secondary);
 
-    // ---- 背景彩色光球 ----
-    &__orb {
+    &__ambient {
         position: absolute;
-        border-radius: 50%;
-        filter: blur(60px);
+        inset: 0;
+        z-index: -1;
         pointer-events: none;
-        animation: loginOrb 10s ease-in-out infinite;
-
-        &--1 {
-            width: 280px;
-            height: 280px;
-            top: -10%;
-            right: -15%;
-            background: var(--ds-accent);
-            opacity: 0.28;
-        }
-
-        &--2 {
-            width: 220px;
-            height: 220px;
-            bottom: 5%;
-            left: -15%;
-            background: #5856d6;
-            opacity: 0.22;
-            animation-delay: -4s;
-        }
-
-        &--3 {
-            width: 150px;
-            height: 150px;
-            top: 38%;
-            right: 18%;
-            background: var(--ds-danger);
-            opacity: 0.13;
-            animation-delay: -7s;
-        }
-
-        &--4 {
-            width: 130px;
-            height: 130px;
-            top: 12%;
-            left: 8%;
-            background: var(--ds-success);
-            opacity: 0.09;
-            filter: blur(50px);
-            animation-delay: -2s;
-        }
-
-        &--5 {
-            width: 170px;
-            height: 170px;
-            bottom: 0;
-            right: 0;
-            background: var(--ds-warning);
-            opacity: 0.09;
-            filter: blur(70px);
-            animation-delay: -5s;
-        }
-    }
-
-    // ---- 毛玻璃表单卡片 ----
-    &__card {
-        width: 100%;
-        box-sizing: border-box;
-        background: rgba(255, 255, 255, 0.68);
-        backdrop-filter: blur(24px) saturate(200%);
-        -webkit-backdrop-filter: blur(24px) saturate(200%);
-        border-top: 1px solid rgba(255, 255, 255, 0.92);
-        border-left: 1px solid rgba(255, 255, 255, 0.75);
-        border-right: 1px solid rgba(255, 255, 255, 0.45);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.35);
-        border-radius: var(--ds-radius-xl);
-        box-shadow:
-            inset 0 1px 0 rgba(255, 255, 255, 0.95),
-            inset 1px 0 0 rgba(255, 255, 255, 0.55),
-            0 8px 40px rgba(31, 38, 135, 0.10),
-            0 2px 10px rgba(0, 0, 0, 0.05);
-        padding: 20px 18px;
-        position: relative;
-        overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-
-        &::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(160deg,
-                rgba(255, 255, 255, 0.55) 0%,
-                rgba(255, 255, 255, 0.08) 50%,
-                transparent 100%);
-            border-radius: inherit;
-            pointer-events: none;
-        }
+        background:
+            radial-gradient(ellipse at 90% 0%, var(--ds-accent-light), transparent 60%),
+            radial-gradient(ellipse at 0% 80%, var(--ds-accent-light), transparent 55%);
     }
 
     &__inner {
         width: 100%;
-        max-width: 340px;
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        z-index: 1;
+        max-width: 360px;
+        margin: auto 0;
+        padding: 16px 0 24px;
         flex-shrink: 0;
-        min-height: 0;
-        padding-top: 20px;
-        padding-top: env(safe-area-inset-top, 20px);
-        margin-left: auto;
-        margin-right: auto;
-        animation: loginFadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
-    // ---- 底部版权 ----
+    &__card {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 24px 20px;
+        background: var(--ds-surface);
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius-xl);
+        box-shadow: var(--ds-shadow-2);
+    }
+
+    &__card-header {
+        margin-bottom: 24px;
+    }
+
+    &__card-title {
+        margin: 0 0 8px;
+        font-size: 22px;
+        font-weight: 650;
+        line-height: 1.4;
+        color: var(--ds-text-primary);
+    }
+
+    &__card-sub {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--ds-text-secondary);
+    }
+
     &__footer {
-        position: relative;
-        z-index: 1;
-        margin-top: auto;
-        padding: 16px 0 12px;
-        padding-bottom: env(safe-area-inset-bottom, 12px);
+        flex-shrink: 0;
+        padding: 16px 0 20px;
+        padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
         text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
+        font-size: 11px;
+        line-height: 1.5;
     }
 
     &__footer-text {
         font-size: 11px;
-        letter-spacing: 0.5px;
-        color: var(--ds-text-tertiary);
-        opacity: 0.6;
+        line-height: 1.5;
+        color: var(--ds-text-secondary);
     }
-
-}
-
-@keyframes loginOrb {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(10px, -20px) scale(1.06); }
-    66% { transform: translate(-8px, 12px) scale(0.96); }
-}
-
-@keyframes loginFadeInUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-html.dark .login-page__card {
-    background: rgba(28, 28, 34, 0.72);
-    border-top-color: rgba(255, 255, 255, 0.14);
-    border-left-color: rgba(255, 255, 255, 0.10);
-    border-right-color: rgba(255, 255, 255, 0.04);
-    border-bottom-color: rgba(255, 255, 255, 0.03);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.16),
-        inset 1px 0 0 rgba(255, 255, 255, 0.08),
-        0 8px 40px rgba(0, 0, 0, 0.30),
-        0 2px 10px rgba(0, 0, 0, 0.18);
 }

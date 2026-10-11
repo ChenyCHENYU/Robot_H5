@@ -18,18 +18,18 @@
         background: var(--ds-glass-bg) !important;
         border-top: 0.5px solid var(--ds-divider) !important;
 
-        :deep(.van-tabbar-item) {
+        .van-tabbar-item {
             color: var(--ds-text-tertiary);
             font-size: 10px;
             transition: color 0.2s;
         }
 
-        :deep(.van-tabbar-item--active) {
+        .van-tabbar-item--active {
             color: var(--ds-accent);
             background: transparent;
         }
 
-        :deep(.van-tabbar-item__icon) {
+        .van-tabbar-item__icon {
             font-size: 22px;
             margin-bottom: 2px;
 

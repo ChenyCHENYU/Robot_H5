@@ -8,7 +8,7 @@
 
         <!-- Profile Card -->
         <div class="mine-page__profile" @click="$router.push('/editUserInfo')">
-            <VanImage class="mine-page__avatar" round fit="cover" :src="avatarSrc" />
+            <C_Avatar class="mine-page__avatar" :src="userStore.getUserInfo.avatar" />
             <div class="mine-page__info">
                 <h2 class="mine-page__name">{{ userStore.getUserInfo.nickname || 'CHENY' }}</h2>
                 <p class="mine-page__sign">{{ userStore.getUserInfo.sign || '把复杂的事做简单，把简单的事做极致。' }}</p>
@@ -30,7 +30,7 @@
             >
                 <template #icon>
                     <div class="mine-page__icon-box" :style="{ background: cell.color }">
-                        <C_Icon :name="cell.icon" :size="18" color="#fff" />
+                        <C_Icon :name="cell.icon" :size="18" color="var(--ds-text-on-accent)" />
                     </div>
                 </template>
                 <template v-if="cell.value" #value>
@@ -55,22 +55,22 @@
 
 <script lang="ts" setup>
     import './index.scss';
-    import { settingsGroups, DEFAULT_AVATAR } from './data';
+    import { settingsGroups } from './data';
     import { useUserStore } from '@/store/modules/user';
     import LogoutTransition from '@/views/login/components/LogoutTransition/index.vue';
     import type { ActionSheetAction } from 'vant';
 
-    defineOptions({ name: 'MinePage' });
+    // eslint-disable-next-line vue/multi-word-component-names -- 与既有 Mine 路由保持同名。
+    defineOptions({ name: 'Mine' });
 
     const userStore = useUserStore();
     const showLogoutAction = ref(false);
     const showLogoutTransition = ref(false);
-    const avatarSrc = computed(() => userStore.getUserInfo.avatar || DEFAULT_AVATAR);
 
     const logoutActions: ActionSheetAction[] = [
         {
             name: '退出登录',
-            color: '#FF3B30',
+            color: 'var(--ds-danger)',
             callback: () => {
                 showLogoutTransition.value = true;
                 setTimeout(() => {

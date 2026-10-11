@@ -74,10 +74,7 @@
         font-size: 72px;
         font-weight: 900;
         letter-spacing: -2px;
-        background: linear-gradient(135deg, var(--ds-accent), var(--ds-warning));
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        @include gradient-text(linear-gradient(135deg, var(--ds-accent), var(--ds-warning)), var(--ds-accent));
         line-height: 1;
         margin-bottom: 12px;
         position: relative;

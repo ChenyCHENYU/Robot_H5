@@ -5,6 +5,7 @@
             class="login-form__field"
             name="username"
             placeholder="用户名"
+            autocomplete="username"
             :rules="getFormRules.username"
         >
             <template #left-icon>
@@ -17,6 +18,7 @@
             :type="switchPassType ? 'password' : 'text'"
             name="password"
             placeholder="密码"
+            autocomplete="current-password"
             :rules="getFormRules.password"
             @click-right-icon="switchPassType = !switchPassType"
         >
@@ -36,31 +38,43 @@
             name="captchaCode"
             placeholder="验证码"
             maxlength="6"
+            autocomplete="off"
             :rules="[{ required: true, message: '请输入验证码' }]"
         >
             <template #left-icon>
                 <i class="i-ph:shield-check-bold login-form__icon" />
             </template>
             <template #button>
-                <div class="login-form__captcha" @click="refreshCaptcha">
+                <button
+                    type="button"
+                    class="login-form__captcha"
+                    :disabled="captchaRefreshing"
+                    :aria-busy="captchaRefreshing"
+                    aria-label="刷新验证码"
+                    @click="refreshCaptcha"
+                >
                     <img
                         v-if="captchaImage"
                         :src="captchaImage"
                         class="login-form__captcha-img"
-                        :class="{ 'is-refreshing': captchaRefreshing }"
                         alt="验证码"
+                        @error="handleCaptchaError"
                     />
-                    <span v-else class="login-form__captcha-loading">加载中</span>
-                </div>
+                    <span v-else class="login-form__captcha-status" aria-live="polite">
+                        {{ captchaError ? '点击重试' : '加载中…' }}
+                    </span>
+                </button>
             </template>
         </VanField>
 
         <div class="login-form__options">
-            <div class="flex items-center gap-2">
-                <VanSwitch v-model="rememberMe" size="16px" />
-                <span class="text-xs" style="color: var(--ds-text-secondary); opacity: 0.8">记住我</span>
+            <div class="login-form__remember">
+                <VanSwitch v-model="rememberMe" size="16px" aria-label="记住账号" />
+                <span>记住账号</span>
             </div>
-            <a class="login-form__link" @click="setLoginState(LoginStateEnum.RESET_PASSWORD)">忘记密码?</a>
+            <button type="button" class="login-form__link" @click="setLoginState(LoginStateEnum.RESET_PASSWORD)">
+                忘记密码？
+            </button>
         </div>
 
         <VanButton
@@ -69,6 +83,7 @@
             block
             native-type="submit"
             :loading="loading"
+            :disabled="captchaRefreshing || captchaError || !captchaId"
         >
             登录
         </VanButton>
@@ -90,9 +105,10 @@
     import type { FormInstance } from 'vant';
     import { LoginStateEnum, useFormRules, useLoginState } from '../../useLogin';
     import { useUserStore } from '@/store/modules/user';
-    import { PageEnum } from '@/enums/pageEnum';
     import { getCaptcha } from '@/api/captcha';
     import LoginSuccess from '../LoginSuccess/index.vue';
+
+    defineOptions({ name: 'LoginForm' });
 
     const { setLoginState, getLoginState } = useLoginState();
     const { getFormRules } = useFormRules();
@@ -102,16 +118,21 @@
 
     const formRef = ref<FormInstance>();
     const loading = ref(false);
-    const rememberMe = ref(false);
+    const rememberedAccount = localStorage.getItem('ROBOT-REMEMBERED-ACCOUNT') || '';
+    const rememberMe = ref(!!rememberedAccount);
+    const demoMode = String(import.meta.env.VITE_USE_MOCK) === 'true';
+    let redirectTimer: ReturnType<typeof setTimeout> | undefined;
+    onUnmounted(() => clearTimeout(redirectTimer));
     const switchPassType = ref(true);
     const showSuccess = ref(false);
     const nickname = ref('');
     const captchaImage = ref('');
     const captchaId = ref('');
     const captchaRefreshing = ref(false);
+    const captchaError = ref(false);
     const formData = reactive({
-        username: 'admin',
-        password: '123456',
+        username: rememberedAccount || (demoMode ? 'CHENY' : ''),
+        password: demoMode ? '123456' : '',
         captchaCode: '',
     });
 
@@ -119,19 +140,29 @@
 
     /** 获取验证码 */
     async function refreshCaptcha() {
+        if (captchaRefreshing.value) return;
+        captchaRefreshing.value = true;
+        captchaError.value = false;
+        captchaImage.value = '';
+        captchaId.value = '';
+        formData.captchaCode = '';
         try {
-            captchaRefreshing.value = true;
             const data = await getCaptcha();
+            if (!data.captchaId || !data.image) throw new Error('验证码响应不完整');
             captchaId.value = data.captchaId;
-            const img = data.image || '';
+            const img = data.image;
             captchaImage.value = img.startsWith('data:') ? img : `data:image/png;base64,${img}`;
         } catch {
-            console.warn('验证码加载失败');
+            handleCaptchaError();
         } finally {
-            setTimeout(() => {
-                captchaRefreshing.value = false;
-            }, 500);
+            captchaRefreshing.value = false;
         }
+    }
+
+    function handleCaptchaError() {
+        captchaError.value = true;
+        captchaImage.value = '';
+        captchaId.value = '';
     }
 
     // 初始化加载验证码
@@ -140,6 +171,7 @@
     });
 
     function handleSubmit() {
+        if (captchaRefreshing.value || captchaError.value || !captchaId.value || loading.value) return;
         formRef.value
             ?.validate()
             .then(async () => {
@@ -148,21 +180,23 @@
                     await userStore.Login({
                         username: formData.username,
                         password: formData.password,
+                        captchaId: captchaId.value,
+                        captchaCode: formData.captchaCode,
                     });
+
+                    if (rememberMe.value) localStorage.setItem('ROBOT-REMEMBERED-ACCOUNT', formData.username);
+                    else localStorage.removeItem('ROBOT-REMEMBERED-ACCOUNT');
 
                     // 显示登录成功过渡动画
                     nickname.value = userStore.getUserInfo?.nickname || formData.username;
                     showSuccess.value = true;
 
                     // 延迟跳转，让动画完整展示
-                    setTimeout(() => {
-                        const toPath = decodeURIComponent((route.query?.redirect || '/') as string);
-                        if (route.name === PageEnum.BASE_LOGIN_NAME) {
-                            router.replace('/');
-                        } else {
-                            router.replace(toPath);
-                        }
-                    }, 1800);
+                    redirectTimer = setTimeout(() => {
+                        const redirect = String(route.query.redirect || '/');
+                        const toPath = redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/';
+                        void router.replace(toPath);
+                    }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 350);
                 } catch {
                     // 登录失败刷新验证码
                     refreshCaptcha();

@@ -28,3 +28,8 @@ declare class OpenInstall {
     // 自动拉起或安装App
     wakeupOrInstall(params?: { data?: Recordable; channelCode?: string }): void;
 }
+
+declare module 'virtual:robot-icons' {
+    const collections: import('@iconify/vue').IconifyJSON[];
+    export default collections;
+}

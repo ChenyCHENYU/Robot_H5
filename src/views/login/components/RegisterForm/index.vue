@@ -4,7 +4,7 @@
         <VanField
             v-for="field in registerFields"
             :key="field.key"
-            v-model="(formData as Record<string, any>)[field.key]"
+            v-model="formData[field.key]"
             class="register-form__field"
             :name="field.key"
             :placeholder="field.placeholder"
@@ -21,8 +21,8 @@
                 <i :class="[passTypeMap[field.key] ? 'i-ph:eye-bold' : 'i-ph:eye-slash-bold', 'register-form__icon']" />
             </template>
             <template v-if="field.hasButton" #button>
-                <VanButton size="small" type="primary" style="border-radius: var(--ds-radius-sm)">
-                    {{ field.buttonText }}
+                <VanButton size="small" type="primary" :loading="smsSending" :disabled="!!smsRemaining" @click="sendSms" style="border-radius: var(--ds-radius-sm)">
+                    {{ smsLabel }}
                 </VanButton>
             </template>
         </VanField>
@@ -30,7 +30,7 @@
         <!-- policy 复选框结构特殊，单独渲染 -->
         <VanField name="policy" class="register-form__field" :rules="getFormRules.policy">
             <template #input>
-                <VanCheckbox v-model="formData.policy" icon-size="14px" shape="square">
+                <VanCheckbox v-model="formData.policy" class="register-form__policy" icon-size="14px" shape="square">
                     我已阅读并同意用户协议与隐私政策
                 </VanCheckbox>
             </template>
@@ -54,9 +54,13 @@
 
 <script setup lang="ts">
     import './index.scss';
-    import type { FormInstance } from 'vant';
+    import { showSuccessToast, type FormInstance } from 'vant';
+    import { addUser } from '@/api/user';
+    import { useSms } from '@/hooks/useSms';
     import { LoginStateEnum, useFormRules, useLoginState } from '../../useLogin';
     import { registerFields } from '../../data';
+
+    defineOptions({ name: 'RegisterForm' });
 
     const { handleBackLogin, getLoginState } = useLoginState();
     const getShow = computed(() => unref(getLoginState) === LoginStateEnum.REGISTER);
@@ -73,6 +77,7 @@
         policy: false,
     });
 
+    const { remaining: smsRemaining, sending: smsSending, label: smsLabel, send: sendSms } = useSms(() => formData.mobile, 'register');
     const { getFormRules } = useFormRules(formData);
 
     // 每个密码字段独立维护显隐状态：true = 隐藏（password），false = 明文
@@ -85,19 +90,15 @@
         passTypeMap[key] = !passTypeMap[key];
     }
 
-    function handleRegister() {
-        formRef.value
-            ?.validate()
-            .then(async () => {
-                try {
-                    loading.value = true;
-                    // do something
-                } finally {
-                    loading.value = false;
-                }
-            })
-            .catch(() => {
-                console.error('验证失败');
-            });
+    async function handleRegister() {
+        if (loading.value) return;
+        try {
+            await formRef.value?.validate();
+            loading.value = true;
+            await addUser(formData);
+            showSuccessToast('注册成功，请登录');
+            handleBackLogin();
+        } catch { /* 校验或请求失败保留输入 */ }
+        finally { loading.value = false; }
     }
 </script>

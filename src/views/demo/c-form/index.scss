@@ -75,10 +75,7 @@
         font-weight: 800;
         letter-spacing: -0.8px;
         margin: 0 0 6px;
-        background: linear-gradient(135deg, var(--ds-text-primary) 20%, var(--ds-accent) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        @include gradient-text(linear-gradient(135deg, var(--ds-text-primary) 20%, var(--ds-accent)));
     }
 
     &__hero-sub {
@@ -149,35 +146,35 @@
             border-bottom: none !important;
         }
 
-        :deep(.van-cell--required .van-field__label::before) {
+        .van-cell--required .van-field__label::before {
             display: none;
         }
 
-        :deep(.van-cell--required .van-field__label::after) {
+        .van-cell--required .van-field__label::after {
             content: ' *';
             color: var(--ds-danger);
             font-size: 10px;
             vertical-align: middle;
         }
 
-        :deep(.van-field__label) {
+        .van-field__label {
             font-size: 12px;
             color: var(--ds-text-secondary);
             font-weight: 500;
             width: 5em;
         }
 
-        :deep(.van-field__control) {
+        .van-field__control {
             font-size: 12px;
             color: var(--ds-text-primary);
         }
 
-        :deep(.van-field__error-message) {
+        .van-field__error-message {
             font-size: 10px;
             padding-top: 2px;
         }
 
-        :deep(.van-field__right-icon) {
+        .van-field__right-icon {
             color: var(--ds-text-tertiary);
         }
     }
@@ -225,7 +222,7 @@
         &.is-active {
             background: var(--pill-color);
             border-color: transparent;
-            color: #fff;
+            color: var(--ds-text-on-accent);
             font-weight: 600;
             box-shadow: var(--ds-shadow-1);
             transform: scale(1.04);
@@ -357,8 +354,8 @@
             flex: 0 0 148px;
             margin-left: auto;
             border: none;
-            color: #fff;
-            background: linear-gradient(135deg, var(--ds-accent) 0%, var(--ds-accent-dark, #0055c8) 100%);
+            color: var(--ds-text-on-accent);
+            background: var(--ds-accent);
             box-shadow: var(--ds-shadow-2);
 
             &.is-loading { opacity: 0.72; }

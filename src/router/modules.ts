@@ -196,6 +196,7 @@ const routeModuleList: Array<RouteRecordRaw> = [
     name: 'CustomerArchive',
     meta: {
       title: '客户档案',
+      keepAlive: true,
     },
     component: () => import('@/views/demo/customer/index.vue'),
   },

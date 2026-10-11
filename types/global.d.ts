@@ -93,3 +93,10 @@ declare module 'vue-router' {
         mbaseRoot?: boolean;
     }
 }
+
+declare global {
+declare const __BUILD_ID__: {
+    application: { id: string; version: string };
+    build: { commitSha: string; builtAt: string };
+};
+}

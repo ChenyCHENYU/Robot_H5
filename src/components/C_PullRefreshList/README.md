@@ -16,9 +16,9 @@
 </template>
 
 <script setup lang="ts">
-import type { PullRefreshListInstance } from '@/components/C_PullRefreshList/index.vue';
+import type { PullRefreshListInstance } from '#/PullRefreshList/type';
 
-const listRef = ref<PullRefreshListInstance<any>>();
+const listRef = ref<PullRefreshListInstance<{ id: number; name: string }>>();
 
 const fetchData = async (page: number, pageSize: number) => {
   try {
@@ -87,3 +87,7 @@ const fetchData = async (page: number, pageSize: number) => {
 | 定位 | 通用列表容器 | 配置驱动卡片列表 |
 | 内容渲染 | 完全自定义（slot） | 配置驱动（columns） |
 | 适用场景 | 自由布局列表 | 标准 CRUD 卡片列表 |
+
+## 分页与重试约定
+
+页码在 `updateList` 成功后才推进；`setError` 后重试仍请求原页。刷新失败保留旧内容，重试成功后替换列表。传入 `total` 时按总数判断完成；省略时按当前页条数判断。`list` 是实时只读访问，不是初始数组快照。

@@ -1,8 +1,8 @@
 <template>
     <div class="login-title">
-        <C_Logo class="login-title__logo" :size="84" />
-        <h1 class="login-title__heading">华新 · wl</h1>
-        <p class="login-title__sub">移动端 H5 模板</p>
+        <C_Logo class="login-title__logo" :size="64" />
+        <h1 class="login-title__heading">Robot H5</h1>
+        <p class="login-title__sub">企业级移动应用框架</p>
     </div>
 </template>
 

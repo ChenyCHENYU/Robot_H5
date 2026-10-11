@@ -8,7 +8,8 @@
 src/api/
 ├── README.md          ← 本文件
 ├── user.ts            ← 用户/鉴权（登录、登出、用户信息）
-└── {module}.ts        ← 后续业务模块按需新增（如 customer.ts / order.ts）
+├── customer.ts        ← 客户档案演示接口
+└── {module}.ts        ← 后续业务模块按需新增（如 order.ts）
 ```
 
 **规则**：每个业务模块对应一个文件，文件名使用 kebab-case（如 `customer-follow.ts`）。
@@ -29,31 +30,32 @@ src/api/
 ```ts
 // src/api/customer.ts
 import { get, post, put, del, toast } from '@/utils/http';
+import type { Customer } from '#/Customer/type';
 import { withMbaseCompanyContext } from '@/platform/mbase';
 
 /** 获取客户列表 */
 export const getCustomerList = (params?: object) =>
-    get('/customer/list', withMbaseCompanyContext(params || {}));
+    get<Customer[]>('/customer/list', withMbaseCompanyContext(params || {}));
 
 /** 获取客户详情 */
 export const getCustomerDetail = (id: string | number) =>
-    get(`/customer/detail/${id}`);
+    get<Customer>('/customer/detail', withMbaseCompanyContext({ id }));
 
 /** 新增客户 */
 export const addCustomer = (data: object) =>
-    post('/customer/add', data, toast('新增成功'));
+    post<Customer>('/customer', withMbaseCompanyContext(data), toast('新增成功'));
 
 /** 修改客户 */
 export const updateCustomer = (data: object) =>
-    put('/customer/update', data, toast('修改成功'));
+    put<Customer>('/customer', withMbaseCompanyContext(data), toast('修改成功'));
 
 /** 删除客户 */
 export const deleteCustomer = (id: string | number) =>
-    del(`/customer/delete/${id}`, {}, toast('删除成功'));
+    del<void>('/customer', withMbaseCompanyContext({ id }), toast('删除成功'));
 
 /** 客户转化 */
 export const convertCustomer = (id: string | number) =>
-    post(`/customer/${id}/convert`, {}, toast('转化成功'));
+    put<Customer>('/customer', withMbaseCompanyContext({ id, action: 'convert' }), toast('转化成功'));
 ```
 
 ## HTTP 工具
@@ -65,7 +67,7 @@ import { get, post, put, del, toast } from '@/utils/http';
 import { withMbaseCompanyContext } from '@/platform/mbase';
 
 // toast() 是第三个参数，用于操作成功提示
-post('/api/xxx', data, toast('操作成功'));
+post('/xxx', data, toast('操作成功'));
 ```
 
 ## 公司级数据
@@ -91,3 +93,16 @@ export const getInspectionList = (params: Record<string, unknown>) =>
 - 接口路径使用 kebab-case：`/customer-follow/list`
 - 分页参数统一：`{ pageNo, pageSize, ...filters }`
 - 响应格式统一：`{ code: number, data: T, message: string }`
+
+## 响应、重试和取消
+
+- `get<T>` / `post<T>` 默认返回业务响应的 `data`，无需再次 `.data`。
+- `200` / `2000` 成功；其他业务码抛 `ApiError`，失败不能触发成功 Toast。
+- `http.request<T>(config, { returnEnvelope: true })` 返回 `ApiRes<T>`；`isReturnNativeResponse: true` 返回原生响应。
+- 仅 GET/HEAD 对临时网络故障、429 和 5xx 等待重试，最多 3 次；写请求不自动重发。
+- 请求可传 `AbortSignal`，取消保持 rejected，重试期间也检查取消状态。
+- 401/4001 清理会话并统一处理退出；standalone 使用 Router 跳转，保留部署 base。
+
+## 演示端点
+
+用户模块对应 `mock/user/user.ts`，验证码对应 `mock/captcha.ts`，客户模块对应 `mock/customer.ts`。客户详情使用 `id` query，新增/编辑/删除使用 `/customer` 的 POST/PUT/DELETE。注册、短信、资料等端点是模板演示契约，真实账号服务应通过此目录的适配层接入。

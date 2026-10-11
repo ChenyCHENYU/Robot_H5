@@ -38,18 +38,18 @@
 
     &__cell {
 
-        :deep(.van-field__label), :deep(.van-cell__title) {
+        .van-field__label, .van-cell__title {
             font-size: 15px;
             font-weight: 600;
             color: var(--ds-text-primary);
         }
 
-        :deep(.van-cell__value), :deep(.van-field__control) {
+        .van-cell__value, .van-field__control {
             font-size: 14px;
         }
 
         &:not(:last-child) {
-            :deep(.van-cell__wrapper) {
+            .van-cell__wrapper {
                 border-bottom: 0.5px solid var(--ds-divider);
             }
         }

@@ -1,5 +1,5 @@
 <template>
-    <div class="customer-list">
+    <div ref="page" class="customer-list">
         <C_NavBar title="客户档案" />
 
         <!-- 搜索区 -->
@@ -27,6 +27,8 @@
                 v-for="item in filteredList"
                 :key="item.id"
                 class="customer-list__card"
+                role="button" tabindex="0"
+                @keydown.enter="onDetail(item)"
                 @click="onDetail(item)"
             >
                 <!-- 头部：编号 + 标签 -->
@@ -35,7 +37,7 @@
                         {{ item.code }}
                     </VanTag>
                     <div class="customer-list__card-tags">
-                        <VanTag :type="categoryInfo(item.category).type" round size="medium">
+                        <VanTag v-if="item.category" :type="categoryInfo(item.category).type" round size="medium">
                             {{ categoryInfo(item.category).text }}
                         </VanTag>
                         <VanTag :type="statusInfo(item.conversionStatus).type" round size="medium">
@@ -76,12 +78,14 @@
                     <div
                         v-if="item.conversionStatus === 'unconverted'"
                         class="customer-list__op"
+                        role="button" tabindex="0"
+                        @keydown.enter.stop="onConvert(item)"
                         @click.stop="onConvert(item)"
                     >
                         <i class="i-ph:arrows-clockwise-bold" />
                         <span>转化</span>
                     </div>
-                    <div class="customer-list__op customer-list__op--danger" @click.stop="onVoid(item)">
+                    <div class="customer-list__op customer-list__op--danger" role="button" tabindex="0" @keydown.enter.stop="onVoid(item)" @click.stop="onVoid(item)">
                         <i class="i-ph:x-square-bold" />
                         <span>作废</span>
                     </div>
@@ -89,7 +93,11 @@
             </div>
 
             <!-- 空状态 -->
-            <VanEmpty v-if="!filteredList.length" description="暂无客户数据" />
+            <VanLoading v-if="loading" class="customer-list__loading">加载中…</VanLoading>
+            <VanEmpty v-else-if="failed" description="客户加载失败">
+                <VanButton type="primary" size="small" @click="load">重新加载</VanButton>
+            </VanEmpty>
+            <VanEmpty v-else-if="!filteredList.length" description="暂无客户数据" />
         </div>
 
         <!-- 底部新增按钮 -->
@@ -103,9 +111,10 @@
 
 <script setup lang="ts">
     import './index.scss';
-    import { showToast } from 'vant';
+    import { useScrollCache } from '@/hooks/useScrollCache';
+    import { showToast, showConfirmDialog } from 'vant';
+    import { getCustomerList, updateCustomer, deleteCustomer } from '@/api/customer';
     import {
-        MOCK_CUSTOMERS,
         TAB_LIST,
         STATUS_MAP,
         CATEGORY_MAP,
@@ -115,13 +124,28 @@
     defineOptions({ name: 'CustomerArchive' });
 
     const router = useRouter();
+    const page = ref<HTMLElement | null>(null);
+    useScrollCache(page);
+    const customers = ref<Customer[]>([]);
+    const loading = ref(false);
+    const failed = ref(false);
+    const busy = ref(false);
+    async function load() {
+        if (loading.value) return;
+        loading.value = true; failed.value = false;
+        try { customers.value = await getCustomerList(); }
+        catch { failed.value = true; }
+        finally { loading.value = false; }
+    }
+    onMounted(load);
+    onActivated(load);
 
     // ── 搜索 + Tab ─────────────────────────────────────────
     const searchText = ref('');
     const activeTab = ref('all');
 
     const filteredList = computed(() => {
-        let list = MOCK_CUSTOMERS;
+        let list = customers.value;
         if (activeTab.value !== 'all') {
             list = list.filter((c) => c.customerType === activeTab.value);
         }
@@ -138,12 +162,21 @@
     });
 
     // ── 操作 ────────────────────────────────────────────────
-    const onConvert = (row: Customer) => {
-        showToast(`转化：${row.name}`);
+    const onConvert = async (row: Customer) => {
+        if (busy.value) return;
+        busy.value = true;
+        try { await updateCustomer(row.id, { action: 'convert' }); await load(); showToast('客户已转化'); }
+        catch { /* 请求层反馈 */ }
+        finally { busy.value = false; }
     };
-
-    const onVoid = (row: Customer) => {
-        showToast(`作废：${row.code}`);
+    const onVoid = async (row: Customer) => {
+        if (busy.value) return;
+        try { await showConfirmDialog({ title: '作废客户', message: `确定作废“${row.name}”？` }); }
+        catch { return; }
+        busy.value = true;
+        try { await deleteCustomer(row.id); await load(); showToast('客户已作废'); }
+        catch { /* 请求层反馈 */ }
+        finally { busy.value = false; }
     };
 
     const onDetail = (row: Customer) => {

@@ -83,25 +83,25 @@
                 content: '';
                 width: 3px;
                 height: 14px;
-                border-radius: 2px;
+                border-radius: var(--ds-radius-indicator);
                 background: var(--ds-accent);
             }
         }
     }
 
     &__cells {
-        :deep(.van-cell) {
+        .van-cell {
             font-size: 13px;
             padding: 10px 14px;
         }
 
-        :deep(.van-cell__title) {
+        .van-cell__title {
             color: var(--ds-text-tertiary);
             flex: none;
             width: 5em;
         }
 
-        :deep(.van-cell__value) {
+        .van-cell__value {
             color: var(--ds-text-primary);
         }
     }
@@ -112,3 +112,7 @@
         text-decoration: none;
     }
 }
+
+.customer-detail__loading { display: flex; justify-content: center; padding: 32px 16px; }
+
+.customer-detail__action-icon { margin-right: 4px; }

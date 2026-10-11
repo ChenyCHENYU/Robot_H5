@@ -2,7 +2,7 @@
     <div class="form-page">
         <C_NavBar>
             <template #right>
-                <span class="form-page__save" @click="handleSave">保存</span>
+                <VanButton size="small" type="primary" :loading="saving" @click="handleSave">保存</VanButton>
             </template>
         </C_NavBar>
         <div class="form-page__body">
@@ -12,6 +12,7 @@
                     <div class="form-page__group">
                         <VanField
                             v-model="formValue.nickname"
+                            name="nickname"
                             class="form-page__cell"
                             placeholder="请输入昵称（2-12字）"
                             clearable
@@ -21,7 +22,7 @@
                 </VanForm>
             </div>
             <p class="form-page__note">
-                支持 2-12 个中文字符或 3-24 个英文字符，符号仅支持 - _ . ·
+                支持 2-12 个字符，可使用中文、英文、数字及 - _ . ·
             </p>
         </div>
     </div>
@@ -34,6 +35,8 @@
 
     defineOptions({ name: 'EditNickname' });
 
+    const saving = ref(false);
+    const router = useRouter();
     const userStore = useUserStore();
     const { nickname } = userStore.getUserInfo;
     const formRef = ref<FormInstance>();
@@ -45,12 +48,15 @@
         return true;
     };
 
-    const handleSave = () => {
-        formRef.value?.validate().then(async () => {
-            try {
-                const vals = formRef.value?.getValues();
-                showToast({ message: `昵称已更新为：${vals?.nickname}` });
-            } finally {}
-        }).catch(() => {});
+    const handleSave = async () => {
+        if (saving.value) return;
+        try {
+            await formRef.value?.validate();
+            saving.value = true;
+            await userStore.UpdateProfile({ nickname: formValue.nickname });
+            showToast('昵称已保存');
+            await router.replace('/editInfo');
+        } catch { /* 失败保留表单 */ }
+        finally { saving.value = false; }
     };
 </script>

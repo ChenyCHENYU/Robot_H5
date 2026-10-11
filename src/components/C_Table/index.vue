@@ -2,11 +2,11 @@
     <VanPullRefresh
         v-model="isRefreshing"
         class="c-table"
-        :disabled="disablePullRefresh"
+        :disabled="disablePullRefresh || isLoading"
         @refresh="handleRefresh"
     >
         <VanList
-            v-model:loading="isLoading"
+            :loading="isLoading"
             v-model:error="isError"
             :finished="isFinished"
             :immediate-check="false"
@@ -127,6 +127,7 @@
      * C_Table — 移动端配置驱动列表/表格组件
      */
     import './index.scss';
+    import { usePagination } from '@/hooks/usePagination';
     import type { TagType, TableOperation, TableColumn, CTableInstance } from '#/Table/type';
 
     defineOptions({ name: 'C_Table' });
@@ -181,48 +182,26 @@
 
     // ── 内部状态 ─────────────────────────────────────────────
 
-    const isRefreshing = ref(false);
-    const isLoading = ref(false);
-    const isFinished = ref(false);
-    const isError = ref(false);
-    const pageNo = ref(0);
-
-    watch(() => props.loading, (v) => { isLoading.value = v; });
-    watch(() => props.error, (v) => { isError.value = v; if (v) { isRefreshing.value = false; isLoading.value = false; } });
-    watch(() => props.finished, (v) => { isFinished.value = v; });
-
-    // 每次外部数据变化时判断是否已全部加载
-    watch(
-        () => props.data.length,
-        (len) => {
-            if (props.total > 0 && len >= props.total) {
-                isFinished.value = true;
-            }
-        },
-    );
-
-    const handleRefresh = () => {
-        pageNo.value = 1;
-        isFinished.value = false;
-        isError.value = false;
-        isLoading.value = true;
-        isRefreshing.value = true;
-        emit('refresh');
-    };
-
+    const pagination = usePagination(props.data.length ? Math.ceil(props.data.length / props.pageSize) : 0);
+    const { refreshing: isRefreshing, loading: isLoading, error: isError } = pagination;
+    const isFinished = computed(() => props.finished || (props.total > 0 && props.data.length >= props.total));
+    watch(() => props.loading, value => {
+        if (value) isLoading.value = true;
+        else if (props.error) pagination.fail();
+        else pagination.succeed();
+    }, { immediate: true });
+    watch(() => props.error, value => { if (value) pagination.fail(); }, { immediate: true });
+    // 父组件首次加载第一屏后同步页码，避免上拉又加载第 1 页。
+    watch(() => props.data.length, length => {
+        if (!pagination.pending.value && !props.loading && length) pagination.page.value = Math.ceil(length / props.pageSize);
+    });
+    const handleRefresh = () => { if (pagination.start(true)) emit('refresh'); };
     const handleLoad = () => {
-        if (!isRefreshing.value) {
-            pageNo.value++;
-            isLoading.value = true;
-            isError.value = false;
-            emit('load', pageNo.value, props.pageSize);
-        }
+        if (isFinished.value) return;
+        const page = pagination.start();
+        if (page) emit('load', page, props.pageSize);
     };
-
-    /** 手动触发刷新 */
-    const refresh = () => handleRefresh();
-
-    defineExpose<CTableInstance>({ refresh });
+    defineExpose<CTableInstance>({ refresh: handleRefresh });
 
     // ── 辅助计算 ─────────────────────────────────────────────
 

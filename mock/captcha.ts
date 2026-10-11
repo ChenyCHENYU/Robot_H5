@@ -1,5 +1,15 @@
 import type { MockMethod } from 'vite-plugin-mock';
 import { resultSuccess } from './_util';
+import { demoRepository } from './_demo';
+
+const captchas = demoRepository<Record<string, { code: string; expires: number }>>('captchas', {});
+export function validateCaptcha(id: string, code: string): boolean {
+    const values = captchas.read();
+    const entry = values[id];
+    delete values[id];
+    captchas.write(values);
+    return !!entry && entry.expires > Date.now() && entry.code === code;
+}
 
 const CHAR_POOL = '123456789';
 
@@ -47,7 +57,8 @@ function generateCaptchaSvg(code: string): string {
 
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="${width}" height="${height}" fill="#f8f9fa" rx="6"/>${lines}${dots}${textElements}</svg>`;
 
-    return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
+    // Mock 同时运行在 Vite 服务端和演示站浏览器中，使用两端通用的编码。
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
 export default [
@@ -56,8 +67,13 @@ export default [
         method: 'get',
         response: () => {
             const code = randomCode(4);
+            const values = captchas.read();
+            for (const key of Object.keys(values)) if (values[key].expires <= Date.now()) delete values[key];
+            const captchaId = `mock_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+            values[captchaId] = { code, expires: Date.now() + 120000 };
+            captchas.write(values);
             return resultSuccess({
-                captchaId: `mock_${Date.now()}_${code}`,
+                captchaId,
                 image: generateCaptchaSvg(code),
             });
         },

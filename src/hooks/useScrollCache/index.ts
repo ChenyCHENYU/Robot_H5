@@ -1,73 +1,29 @@
-import scrollUtil from './scrollUtil';
+import { onActivated, onDeactivated, onMounted, onUnmounted, ref, unref, type Ref } from 'vue';
 
-/**
- * useScrollCache 页面缓存（支持水平和垂直滚动）
- * 1.确保页面有keepAlive属性
- * 2.确保页面文件名称和路由name字段名称一致
- * 3.如果不一致（可设置页面组件名称）如：	defineOptions({ name: 'ScrollCache' })
- * @param dom 滚动容器元素，传 null 时自动查找 layout 滚动容器 (.layout__content)
- * @param animeStatus
- * @returns
- */
-export function useScrollCache(dom?: HTMLElement | null, animeStatus = false) {
-    // 自动查找 layout 滚动容器
-    if (!dom) {
-        dom = document.querySelector('.layout__content') as HTMLElement;
-    }
-    if (!dom) {
-        console.warn('[useScrollCache] 未找到滚动容器');
-        return ref({ top: 0, left: 0 });
-    }
-    const scrollPosition = ref({ top: 0, left: 0 });
-    const duration = 200;
-
-    dom.onscroll = () => {
-        scrollUtil({ dom });
-        scrollPosition.value = {
-            top: dom.scrollTop,
-            left: dom.scrollLeft,
-        };
+/** 必须在 setup 调用，默认寻找页面最近的实际滚动容器。 */
+export function useScrollCache(target?: HTMLElement | Ref<HTMLElement | null> | null, animeStatus = false) {
+    const page = ref<HTMLElement | null>(null);
+    const position = ref({ top: 0, left: 0 });
+    let container: HTMLElement | null = null;
+    let active = false;
+    let frame = 0;
+    const save = () => {
+        if (active && container) position.value = { top: container.scrollTop, left: container.scrollLeft };
     };
-
-    const route = useRoute();
-
-    if (!route.meta.keepAlive) {
-        try {
-            throw new Error('当前页面没有keepAlive属性');
-        } catch (error) {
-            console.error(error);
+    const attach = () => {
+        const element = unref(target) || page.value;
+        const next = element?.closest<HTMLElement>('[data-page-scroll]') || document.querySelector<HTMLElement>('.layout__content') || document.querySelector<HTMLElement>('.app-page-scroll');
+        if (container !== next) {
+            container?.removeEventListener('scroll', save);
+            container = next;
+            container?.addEventListener('scroll', save, { passive: true });
         }
-    }
-
-    onActivated(() => {
-        const targetPosition = scrollPosition.value;
-        const animateScroll = () => {
-            const startTime = Date.now();
-            const startTop = dom.scrollTop;
-            const startLeft = dom.scrollLeft;
-
-            const animate = () => {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-
-                dom.scrollTop = startTop + (targetPosition.top - startTop) * progress;
-                dom.scrollLeft = startLeft + (targetPosition.left - startLeft) * progress;
-
-                if (progress < 1) {
-                    requestAnimationFrame(animate);
-                }
-            };
-
-            requestAnimationFrame(animate);
-        };
-
-        if (animeStatus) {
-            animateScroll();
-        } else {
-            dom.scrollTop = targetPosition.top;
-            dom.scrollLeft = targetPosition.left;
-        }
-    });
-
-    return scrollPosition;
+        active = true;
+        frame = requestAnimationFrame(() => container?.scrollTo({ ...position.value, behavior: animeStatus ? 'smooth' : 'auto' }));
+    };
+    onMounted(attach);
+    onActivated(attach);
+    onDeactivated(() => { save(); active = false; cancelAnimationFrame(frame); });
+    onUnmounted(() => { cancelAnimationFrame(frame); container?.removeEventListener('scroll', save); });
+    return { page, position };
 }

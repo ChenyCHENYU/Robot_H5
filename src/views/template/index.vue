@@ -6,7 +6,7 @@
             <div class="template-page__header-orb template-page__header-orb--2" />
             <div class="template-page__header-content">
                 <h1 class="template-page__title">模板中心</h1>
-                <p class="template-page__subtitle">业务领域 · 场景模板 · 开箱即用</p>
+                <p class="template-page__subtitle">业务领域规划 · 已完成示例持续补充</p>
             </div>
         </div>
 
@@ -21,10 +21,11 @@
                 >
                     <div class="template-page__card-shine" />
                     <div class="template-page__card-icon" :style="{ background: item.color }">
-                        <C_Icon :name="item.icon" :size="28" color="#fff" />
+                        <C_Icon :name="item.icon" :size="28" color="var(--ds-text-on-accent)" />
                     </div>
                     <div class="template-page__card-body">
                         <span class="template-page__card-code">{{ item.code }}</span>
+                        <VanTag type="warning" plain>规划中</VanTag>
                         <h3 class="template-page__card-name">{{ item.name }}</h3>
                         <p class="template-page__card-desc">{{ item.desc }}</p>
                     </div>

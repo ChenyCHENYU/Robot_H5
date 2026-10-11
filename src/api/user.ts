@@ -1,11 +1,11 @@
-import { get, post } from '@/utils/http';
+import { get, post, put } from '@/utils/http';
+import type { UserInfo, LoginParams, RegisterParams, UserProfile } from '#/User/type';
 
-/** 用户登录 */
-export const login = (data: { username: string; password: string }) =>
-    post('/login', data);
-
-/** 获取用户信息 */
-export const getUserInfo = () => get('/getUserInfo');
-
-/** 用户登出 */
-export const doLogout = () => post('/logout');
+export const login = (data: LoginParams) => post<{ token: string }>('/login', data, { withToken: false });
+export const getUserInfo = () => get<UserInfo>('/getUserInfo');
+export const doLogout = () => post<void>('/logout');
+export const addUser = (data: RegisterParams) => post<void>('/register', data, { withToken: false });
+export const sendUserSms = (mobile: string, purpose: 'register' | 'reset') => post<{ demoCode?: string }>('/user/sms', { mobile, purpose }, { withToken: false });
+export const resetUserPassword = (data: { username: string; mobile: string; sms: string; password: string }) => post<void>('/user/reset-password', data, { withToken: false });
+export const updateUserProfile = (data: UserProfile) => put<UserInfo>('/user/profile', data);
+export const updateUserPassword = (data: { oldPassword: string; newPassword: string }) => put<void>('/user/password', data);

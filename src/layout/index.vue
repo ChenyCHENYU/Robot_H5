@@ -1,6 +1,6 @@
 <template>
     <div class="layout">
-        <div class="layout__content">
+        <div class="layout__content" data-page-scroll>
             <RouterView v-slot="{ Component, route }">
                 <transition name="tab-fade" mode="out-in">
                     <KeepAlive :include="keepAliveComponents">
@@ -27,6 +27,7 @@
 
 <script setup lang="ts">
     import './index.scss';
+    defineOptions({ name: 'MainLayout' });
     import type { RouteRecordRaw } from 'vue-router';
     import { useRouteStore } from '@/store/modules/route';
     import { usePermissionStore } from '@/store/modules/permission';

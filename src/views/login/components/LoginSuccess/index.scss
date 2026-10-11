@@ -21,7 +21,7 @@
             height: 300px;
             top: -15%;
             right: -10%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, var(--ds-violet), var(--ds-accent));
             opacity: 0.35;
         }
 
@@ -30,7 +30,7 @@
             height: 240px;
             bottom: -10%;
             left: -15%;
-            background: linear-gradient(135deg, #0071e3, #5856d6);
+            background: linear-gradient(135deg, var(--ds-accent), var(--ds-violet));
             opacity: 0.28;
             animation-delay: -1.5s;
         }
@@ -40,7 +40,7 @@
             height: 160px;
             top: 40%;
             left: 60%;
-            background: linear-gradient(135deg, #34c759, #30d158);
+            background: var(--ds-success);
             opacity: 0.15;
             animation-delay: -3s;
         }
@@ -71,15 +71,15 @@
         border-radius: 50%;
         background: conic-gradient(
             from 0deg,
-            #667eea,
-            #764ba2,
-            #0071e3,
-            #5856d6,
-            #667eea
+            var(--ds-violet),
+            var(--ds-accent),
+            var(--ds-success),
+            var(--ds-accent),
+            var(--ds-violet)
         );
         padding: 3px;
-        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(var(--ds-text-on-accent) 0 0) content-box, linear-gradient(var(--ds-text-on-accent) 0 0);
+        -webkit-mask: linear-gradient(var(--ds-text-on-accent) 0 0) content-box, linear-gradient(var(--ds-text-on-accent) 0 0);
         mask-composite: exclude;
         -webkit-mask-composite: xor;
         animation: lsRingSpin 3s linear infinite;
@@ -101,8 +101,7 @@
     }
 
     &__check-path {
-        stroke: url(#lsGradient);
-        stroke: #667eea;
+        stroke: var(--ds-accent);
         stroke-width: 3.5;
         stroke-linecap: round;
         stroke-linejoin: round;
@@ -123,10 +122,7 @@
         font-size: 22px;
         font-weight: 700;
         letter-spacing: 0.5px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #0071e3 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        @include gradient-text(linear-gradient(135deg, var(--ds-violet), var(--ds-accent)), var(--ds-accent));
         animation: lsTitleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
     }
 
@@ -141,7 +137,7 @@
     &__beam {
         width: 120px;
         height: 3px;
-        border-radius: 2px;
+        border-radius: var(--ds-radius-full);
         background: var(--ds-bg-secondary);
         overflow: hidden;
         opacity: 0;
@@ -150,8 +146,8 @@
 
     &__beam-fill {
         height: 100%;
-        border-radius: 2px;
-        background: linear-gradient(90deg, #667eea, #764ba2, #0071e3);
+        border-radius: var(--ds-radius-full);
+        background: linear-gradient(90deg, var(--ds-violet), var(--ds-accent));
         background-size: 200% 100%;
         animation: lsBeamFill 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.9s both,
                    lsBeamShimmer 1.5s ease infinite;

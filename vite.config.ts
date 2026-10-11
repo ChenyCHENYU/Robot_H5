@@ -1,3 +1,5 @@
+import { fontScalePlugin } from './build/vite/plugin/fontScale';
+import { localIconsPlugin } from './build/vite/plugin/localIcons';
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { defineConfig, type UserConfig, type ConfigEnv, type Plugin } from 'vite';
@@ -231,7 +233,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
     return {
         base: VITE_PUBLIC_PATH,
         root,
-        plugins: [...createVitePlugins(viteEnv, isBuild), createBuildIdentityPlugin(buildIdentity)],
+        plugins: [localIconsPlugin(), ...createVitePlugins(viteEnv, isBuild), createBuildIdentityPlugin(buildIdentity)],
         resolve: {
             alias: [
                 {
@@ -253,13 +255,14 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
                         if (id.includes('/src/styles/')) {
                             return content;
                         }
-                        const use = '@use "@/styles/index.scss" as *;\n';
+                        const use = '@use "@/styles/tools.scss" as *;\n';
                         return `${use}${content}`;
                     },
                 },
             },
             postcss: {
                 plugins: [
+                    fontScalePlugin(),
                     postcssLegacyFallbacks(),
                     autoprefixer({
                         overrideBrowserslist: ['Chrome >= 69', 'Android >= 7', 'Safari >= 12', 'Edge >= 79'],
@@ -291,6 +294,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
         },
         define: {
             __APP_INFO__: JSON.stringify(__APP_INFO__),
+            __BUILD_ID__: JSON.stringify(buildIdentity),
             ...importMetaEnvDefines,
         },
         // 预优化依赖，避免首次访问时 Vite 发现新依赖触发 "reloading"
@@ -309,8 +313,6 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
                 '@vant/touch-emulator',
                 // ── Iconify 运行时 + 实际使用的图标集 ──
                 '@iconify/vue',
-                '@iconify-json/ph/icons.json',
-                '@iconify-json/ic/icons.json',
                 // ── ECharts（避免首次访问 chart 页 reload）──
                 'echarts/core',
                 'echarts/charts',

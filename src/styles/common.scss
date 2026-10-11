@@ -1,4 +1,4 @@
-@use './mixin.scss' as *;
+@use './index.scss' as *;
 
 // 全局隐藏滚动条（保留触摸/鼠标滚动）
 ::-webkit-scrollbar {
@@ -15,10 +15,6 @@ body,
 html {
     height: 100%;
     width: 100%;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
     box-sizing: border-box;
 }
 
@@ -44,6 +40,11 @@ body {
     width: 100%;
 }
 
+.app-provider,
+.app-viewport {
+    height: 100%;
+}
+
 // Design system utility classes
 .ds-card {
     background: var(--ds-surface);
@@ -62,9 +63,8 @@ body {
     border-color: var(--ds-divider);
 }
 
-// Desktop preview frame — 模拟手机外框
-// transform: scale() 会创建新的包含块，让 body 内所有 position:fixed
-// 元素（TabBar、NavBar）都被约束在手机框内
+// 390×844、5px 边框、0.9 缩放与 wl-mbase 对齐。
+// transform 将 fixed 导航、TabBar 和弹层约束在机身内。
 @media screen and (min-width: 576px) {
     :root {
         --vbar-h: 30px;
@@ -75,21 +75,82 @@ body {
         display: block;
     }
 
-    body {
-        max-width: 500px;
-        margin: 24px auto 0;
+    html {
+        background: var(--ds-preview-bg);
+        overflow: hidden;
+    }
+
+    html:not(.mbase-hosted) body {
+        /* mobile-ignore-next */
+        width: var(--ds-preview-width);
+        max-width: var(--ds-preview-width);
+        /* mobile-ignore-next */
+        height: min(var(--ds-preview-height), calc((100vh - 32px) / 0.9));
+        /* mobile-ignore-next */
+        margin: 16px auto 0;
+        position: relative;
+        /* mobile-ignore-next */
+        top: max(0px, calc((100vh - (var(--ds-preview-height) + 10px) * 0.9) / 2 - 16px));
         box-sizing: content-box;
-        // padding-top 已移除：状态栏改为 flex 布局流子节点，由 App.vue 的 flex-col 自然保留空间
         overflow: hidden !important;
+        /* mobile-ignore-next */
         border: 5px solid var(--ds-text-primary);
-        border-radius: 30px;
-        transform: scale(0.86);
+        border-radius: var(--ds-radius-frame);
+        clip-path: inset(0 round var(--ds-radius-frame));
+        box-shadow: var(--ds-shadow-3);
+        transform: scale(0.9);
         transform-origin: top center;
 
         @include scrollbar;
     }
 
+    // 基座内由宿主提供容器与状态栏，子应用铺满可用区域。
+    html.mbase-hosted {
+        --vbar-h: 0px;
+        background: var(--ds-bg);
+    }
+
+    html.mbase-hosted body {
+        width: 100%;
+        max-width: none !important;
+        height: 100%;
+        margin: 0;
+        top: 0;
+        border: 0;
+        border-radius: 0;
+        clip-path: none;
+        box-shadow: none;
+        transform: none;
+    }
+
+    html.mbase-hosted .virtual-status-bar {
+        display: none;
+    }
+
     .van-nav-bar--fixed {
         top: var(--vbar-h) !important;
+    }
+}
+
+@supports (bottom: constant(safe-area-inset-bottom)) or (bottom: env(safe-area-inset-bottom)) {
+    .fix-iphone {
+        padding-bottom: constant(safe-area-inset-bottom);
+        /*兼容 IOS<11.2*/
+        padding-bottom: env(safe-area-inset-bottom);
+        /*兼容 IOS>11.2*/
+    }
+}
+
+
+// 业务内容以清晰、可复制的文字为优先；触控控件维持稳定的反馈。
+button, .van-button, .van-tabbar, .van-nav-bar { user-select: none; }
+input, textarea, .customer-list__phone, .customer-detail__phone { user-select: text; }
+:focus-visible { outline: 2px solid var(--ds-accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }

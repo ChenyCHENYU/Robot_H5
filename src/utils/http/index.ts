@@ -1,323 +1,145 @@
-// axios配置  可自行根据项目进行更改，只需更改该文件即可，其他文件可以不动
 import { showDialog, showFailToast, showSuccessToast } from 'vant';
-import {
-    MAxios,
-    axios,
-    formatRequestDate,
-    joinTimestamp,
-    setObjToUrlParams,
-    deepMerge,
-    urlReg,
-    isString,
-    BrowserType,
-    type AxiosResponse,
-    type InternalAxiosRequestConfig,
-    type AxiosTransform,
-    type CreateAxiosOptions,
-    type RequestOptions,
-    type Result,
-} from '@miracle-web/utils';
+import { axios, BrowserType, type AxiosRequestConfig, type AxiosResponse, type RequestOptions } from '@miracle-web/utils';
 import { isIntegratedMode, isFromPortal, notifyPortalLogout } from '@/utils/auth';
-import { ContentTypeEnum, RequestEnum, ResultEnum } from '@/utils/http/httpEnum';
-import { PageEnum } from '@/enums/pageEnum';
-
+import { ResultEnum } from './httpEnum';
 import { useEnv } from '@/hooks/useEnv';
-
 import { useUserStoreWidthOut } from '@/store/modules/user';
 
-const { getEnvConfig } = useEnv();
-
-const urlPrefix = getEnvConfig().urlPrefix || '';
-
-const transform: AxiosTransform = {
-    /**
-     * @description: 请求之前处理config
-     */
-    beforeRequestHook: (config, options) => {
-        const { apiUrl, joinPrefix, joinParamsToUrl, formatDate, joinTime = true, urlPrefix } = options;
-
-        const isUrlStr = urlReg(config.url as string);
-
-        if (!isUrlStr && joinPrefix) {
-            config.url = `${urlPrefix}${config.url}`;
-        }
-
-        if (!isUrlStr && apiUrl && isString(apiUrl)) {
-            config.url = `${apiUrl}${config.url}`;
-        }
-        const params = config.params || {};
-        const data = config.data || false;
-        if (config.method?.toUpperCase() === RequestEnum.GET) {
-            if (!isString(params)) {
-                // 给 get 请求加上时间戳参数，避免从缓存中拿数据。
-                config.params = Object.assign(params || {}, joinTimestamp(joinTime, false));
-            } else {
-                // 兼容restful风格
-                config.url = `${config.url + params}${joinTimestamp(joinTime, true)}`;
-                config.params = undefined;
-            }
-        } else {
-            if (!isString(params)) {
-                formatDate && formatRequestDate(params);
-                if (
-                    Reflect.has(config, 'data') &&
-                    config.data &&
-                    (Object.keys(config.data).length > 0 || config.data instanceof FormData)
-                ) {
-                    config.data = data;
-                    config.params = params;
-                } else {
-                    // params 是添加到 url 的请求字符串中的，用于 get 请求
-                    // 非GET请求如果没有提供 data，则将 params 视为 data
-                    config.data = params;
-                    config.params = undefined;
-                }
-                if (joinParamsToUrl) {
-                    config.url = setObjToUrlParams(config.url as string, {
-                        ...config.params,
-                        ...config.data,
-                    });
-                }
-            } else {
-                // 兼容restful风格
-                config.url = config.url + params;
-                config.params = undefined;
-            }
-        }
-        return config;
-    },
-
-    /**
-     * @description: 请求成功数据处理
-     */
-    requestSuccessResult: (response: AxiosResponse<Result>, options: RequestOptions) => {
-        if (!response.data) {
-            throw new Error(' Request has no return value');
-        }
-
-        const {
-            isShowMessage = true,
-            isShowErrorMessage,
-            isShowSuccessMessage,
-            successMessageText,
-            errorMessageText,
-            isTransformResponse,
-            isReturnNativeResponse,
-        } = options;
-
-        const { code, data, message } = response.data;
-
-        const hasSuccess =
-            Reflect.has(response.data, 'code') &&
-            (code === ResultEnum.SUCCESS || code === ResultEnum.PLATFORM_SUCCESS);
-        // 消息处理
-        if (isShowMessage) {
-            // 自定义成功消息
-            if (hasSuccess && (successMessageText || isShowSuccessMessage)) {
-                showSuccessToast(successMessageText || message || '操作成功！');
-            }
-
-            // 自定义错误消息
-            if (!hasSuccess && (errorMessageText || isShowErrorMessage)) {
-                showFailToast(message || errorMessageText || '操作失败！');
-            }
-        }
-
-        // 是否返回原生响应头
-        if (isReturnNativeResponse) {
-            return response;
-        }
-
-        //  返回处理过后的数据
-        if (isTransformResponse) {
-            return response.data;
-        }
-
-        // 直接返回结果
-        if (hasSuccess) {
-            return data;
-        } else {
-            showFailToast(message);
-            throw new Error(message);
-        }
-    },
-
-    /**
-     * @description: 请求拦截器处理
-     */
-    requestInterceptors: (config: InternalAxiosRequestConfig, options: CreateAxiosOptions) => {
-        const userStore = useUserStoreWidthOut();
-        const token = userStore.getToken;
-        // jwt token
-        if (token && config.requestOptions?.withToken) {
-            // mbase 透传的是裸 access token，平台接口统一使用 Bearer 认证；
-            // standalone 保持模板原有 authenticationScheme 行为不变。
-            const authenticationScheme = isIntegratedMode() ? 'Bearer' : options.authenticationScheme;
-            config.headers.Authorization = authenticationScheme
-                ? `${authenticationScheme} ${token}`
-                : token;
-        }
-
-        // platform
-        const { platform, system } = BrowserType();
-        config.headers['mi-platform'] = platform;
-        config.headers['mi-system'] = system;
-
-        return config;
-    },
-
-    /**
-     * @description: 请求拦截器错误处理
-     */
-    requestInterceptorsCatch: error => {
-        return Promise.reject(error);
-    },
-
-    /**
-     * @description: 响应拦截器处理
-     */
-    responseInterceptors: (response: AxiosResponse) => {
-        const { code, message } = response.data;
-
-        if (code === ResultEnum.ERROR) {
-            showFailToast(message);
-        }
-
-        if (code === ResultEnum.TOKEN_EXPIRED || code === ResultEnum.PLATFORM_TOKEN_EXPIRED) {
-            // 集成模式（mbase 子应用）：token 由基座签发，失效时通知基座重新登录，
-            // 不在 iframe 内跳自身登录页（避免与基座会话脱节）。
-            if (isIntegratedMode() && isFromPortal()) {
-                // 被动失效只通知宿主；通信失败已记录诊断信息，不产生未处理 Promise。
-                void notifyPortalLogout().catch(() => undefined);
-                return response;
-            }
-            showDialog({
-                title: '提示',
-                message: '登录身份已失效，请重新登录!',
-            })
-                .then(() => {
-                    window.location.href = PageEnum.BASE_LOGIN;
-                })
-                .catch(() => {
-                    // on cancel
-                });
-        }
-
-        return response;
-    },
-
-    /**
-     * @description: 响应错误处理
-     */
-    responseInterceptorsCatch: error => {
-        const err: string = error.toString();
-        console.log('%c [ err ]-184', 'font-size:13px; background:pink; color:#bf2c9f;', err);
-
-        if (err && err.includes('Network Error')) {
-            showDialog({
-                title: '网络异常',
-                message: '请检查您的网络连接是否正常',
-            })
-                .then(() => {})
-                .catch(() => {});
-            return Promise.reject(error);
-        }
-
-        // 请求是否被取消
-        if (axios.isCancel(error)) {
-            // 自定义返回内容
-            return Promise.resolve({ data: error, code: -1, message: '取消重复请求' });
-        }
-
-        return Promise.reject(error);
-    },
-};
-
-function createAxios(opt?: Partial<CreateAxiosOptions>) {
-    return new MAxios(
-        deepMerge(
-            {
-                timeout: 10 * 1000,
-                // token 前缀 Bearer
-                authenticationScheme: '',
-                // 接口前缀
-                prefixUrl: urlPrefix,
-
-                // 如果是json格式
-                headers: { 'Content-Type': ContentTypeEnum.JSON },
-
-                // 数据处理方式
-                transform,
-                // 配置项，下面的选项都可以在独立的接口请求中覆盖
-                requestOptions: {
-                    // 默认将prefix 添加到url
-                    joinPrefix: true,
-                    // 是否返回原生响应头 比如：需要获取响应头时使用该属性
-                    isReturnNativeResponse: false,
-                    // 需要对返回数据进行处理
-                    isTransformResponse: true,
-                    // post请求的时候添加参数到url
-                    joinParamsToUrl: false,
-                    // 格式化提交参数时间
-                    formatDate: true,
-                    // 接口地址
-                    apiUrl: getEnvConfig().apiUrl,
-                    // 接口拼接地址
-                    urlPrefix,
-                    //  是否加入时间戳
-                    joinTime: true,
-                    // 忽略重复请求
-                    ignoreCancelToken: true,
-                    // 是否携带token
-                    withToken: true,
-                    retryOptions: {
-                        isRetry: true,
-                        retryCount: 2,
-                        __retryCount: 0,
-                        retryWaitTime: 1000,
-                    },
-                },
-            },
-            opt || {}
-        )
-    );
-}
-
-export const http = createAxios();
-
-// ======================== 类型 & 工具 ========================
-
-/** 通用 API 响应体（统一放这里，API 文件无需重复定义） */
-export interface ApiRes<T = any> {
+export interface ApiRes<T = unknown> {
     code: number;
     message: string;
     data: T;
 }
 
-/** 快捷构造"成功 Toast"选项 */
-export const toast = (msg: string): Partial<RequestOptions> => ({
-    isShowSuccessMessage: true,
-    successMessageText: msg,
-});
-
-// ======================== 快捷方法 ========================
-
-/** GET 请求 */
-export function get<T = any>(url: string, params?: object, options?: Partial<RequestOptions>) {
-    return http.request<T>({ url, method: 'GET', params }, options);
+export class ApiError extends Error {
+    constructor(message: string, readonly code: number) {
+        super(message);
+        this.name = 'ApiError';
+    }
 }
 
-/** POST 请求 */
-export function post<T = any>(url: string, data?: object, options?: Partial<RequestOptions>) {
-    return http.request<T>({ url, method: 'POST', data }, options);
+export type HttpOptions = Partial<RequestOptions> & {
+    /** 默认返回 data；需要完整业务响应时显式开启。 */
+    returnEnvelope?: boolean;
+};
+
+const client = axios.create({ timeout: 10000 });
+let expiryTask: Promise<void> | undefined;
+
+async function handleSessionExpired() {
+    if (expiryTask) return expiryTask;
+    expiryTask = (async () => {
+        const userStore = useUserStoreWidthOut();
+        const fromPortal = isIntegratedMode() && isFromPortal();
+        userStore.clearLocalSession();
+        if (fromPortal) {
+            await notifyPortalLogout().catch(() => undefined);
+            return;
+        }
+        await showDialog({ title: '提示', message: '登录身份已失效，请重新登录!' });
+        const { default: router } = await import('@/router');
+        await router.replace('/login');
+    })().finally(() => { expiryTask = undefined; });
+    return expiryTask;
 }
 
-/** PUT 请求 */
-export function put<T = any>(url: string, data?: object, options?: Partial<RequestOptions>) {
-    return http.request<T>({ url, method: 'PUT', data }, options);
+function resolveUrl(url: string, options: HttpOptions) {
+    if (/^https?:\/\//i.test(url)) return url;
+    const { getEnvConfig } = useEnv();
+    const env = getEnvConfig();
+    const prefix = options.joinPrefix === false ? '' : (options.urlPrefix ?? env.urlPrefix ?? '');
+    return `${options.apiUrl ?? env.apiUrl ?? ''}${prefix}${url}`;
 }
 
-/** DELETE 请求 */
-export function del<T = any>(url: string, params?: object, options?: Partial<RequestOptions>) {
-    return http.request<T>({ url, method: 'DELETE', params }, options);
+function requestHeaders(config: AxiosRequestConfig, options: HttpOptions) {
+    const headers = { ...config.headers } as Record<string, string>;
+    const token = useUserStoreWidthOut().getToken;
+    if (token && options.withToken !== false) {
+        const scheme = isIntegratedMode() ? 'Bearer' : '';
+        headers.Authorization = scheme ? `${scheme} ${token}` : token;
+    }
+    const { platform, system } = BrowserType();
+    headers['mi-platform'] = platform;
+    headers['mi-system'] = system;
+    return headers;
 }
+
+function prepareRequest(config: AxiosRequestConfig, options: HttpOptions): AxiosRequestConfig {
+    const params = { ...config.params };
+    if ((config.method || 'GET').toUpperCase() === 'GET' && options.joinTime !== false) params._t = Date.now();
+    return { ...config, url: resolveUrl(config.url || '', options), headers: requestHeaders(config, options), params };
+}
+
+function isTransientError(error: unknown) {
+    if (!axios.isAxiosError(error) || axios.isCancel(error)) return false;
+    const status = error.response?.status;
+    return !status || status === 429 || status >= 500;
+}
+
+async function sendAttempt(config: AxiosRequestConfig, remaining: number, delay: number): Promise<AxiosResponse> {
+    try { return await client.request(config); }
+    catch (error) {
+        if (!remaining || config.signal?.aborted || !isTransientError(error)) throw error;
+        await new Promise(resolve => setTimeout(resolve, delay));
+        if (config.signal?.aborted) throw error;
+        return sendAttempt(config, remaining - 1, delay);
+    }
+}
+
+function sendRequest(config: AxiosRequestConfig, options: HttpOptions) {
+    const method = (config.method || 'GET').toUpperCase();
+    // 写操作不自动重试；调用方应在业务层通过幂等契约处理。
+    const safe = ['GET', 'HEAD'].includes(method) && options.retryOptions?.isRetry !== false;
+    const count = safe ? Math.min(3, Math.max(0, options.retryOptions?.retryCount ?? 2)) : 0;
+    return sendAttempt(config, count, options.retryOptions?.retryWaitTime ?? 1000);
+}
+
+function isExpired(code: number) {
+    return code === ResultEnum.TOKEN_EXPIRED || code === ResultEnum.PLATFORM_TOKEN_EXPIRED;
+}
+
+function validateResponse<T>(body: ApiRes<T>) {
+    const code = Number(body?.code);
+    if (isExpired(code)) void handleSessionExpired().catch(() => undefined);
+    if (code !== ResultEnum.SUCCESS && code !== ResultEnum.PLATFORM_SUCCESS) {
+        throw new ApiError(body?.message || '请求失败，请稍后重试', code);
+    }
+}
+
+function decodeResponse<T>(response: AxiosResponse<ApiRes<T>>, options: HttpOptions): T | ApiRes<T> | AxiosResponse<ApiRes<T>> {
+    const body = response.data;
+    validateResponse(body);
+    if (options.isShowSuccessMessage) showSuccessToast(options.successMessageText || body.message);
+    if (options.isReturnNativeResponse) return response;
+    if (options.returnEnvelope || options.isTransformResponse === true) return body;
+    return body.data;
+}
+
+function reportError(error: unknown, options: HttpOptions) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) void handleSessionExpired().catch(() => undefined);
+    if (axios.isCancel(error) || options.isShowMessage === false) return;
+    const message = error instanceof Error ? error.message : '请求失败';
+    showFailToast(options.errorMessageText || (message === 'Network Error' ? '网络连接失败，请稍后重试' : message));
+}
+
+async function request<T = unknown>(config: AxiosRequestConfig, options: HttpOptions & { isReturnNativeResponse: true }): Promise<AxiosResponse<ApiRes<T>>>;
+async function request<T = unknown>(config: AxiosRequestConfig, options: HttpOptions & { returnEnvelope: true }): Promise<ApiRes<T>>;
+async function request<T = unknown>(config: AxiosRequestConfig, options: HttpOptions & { isTransformResponse: true }): Promise<ApiRes<T>>;
+async function request<T = unknown>(config: AxiosRequestConfig, options?: HttpOptions): Promise<T>;
+async function request<T = unknown>(config: AxiosRequestConfig, options: HttpOptions = {}) {
+    try {
+        const response = await sendRequest(prepareRequest(config, options), options);
+        return decodeResponse<T>(response, options);
+    } catch (error) {
+        reportError(error, options);
+        throw error;
+    }
+}
+
+export const http = { request };
+export const toast = (msg: string): HttpOptions => ({ isShowSuccessMessage: true, successMessageText: msg });
+type DataOptions = Omit<HttpOptions, 'returnEnvelope' | 'isReturnNativeResponse' | 'isTransformResponse'>;
+export const get = <T = unknown>(url: string, params?: object, options?: DataOptions) => request<T>({ url, method: 'GET', params }, options);
+export const post = <T = unknown>(url: string, data?: object, options?: DataOptions) => request<T>({ url, method: 'POST', data }, options);
+export const put = <T = unknown>(url: string, data?: object, options?: DataOptions) => request<T>({ url, method: 'PUT', data }, options);
+export const del = <T = unknown>(url: string, params?: object, options?: DataOptions) => request<T>({ url, method: 'DELETE', params }, options);

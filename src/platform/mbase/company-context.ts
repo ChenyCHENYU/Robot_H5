@@ -78,7 +78,7 @@ async function syncServerCompanyContext(companyId: string): Promise<void> {
     userStore.setCompanyContextStatus('syncing');
     try {
         // 与 wl-ui-public 保持一致：companyId 作为 query 传递，body 为空。
-        const response: any = await http.request(
+        const response = await http.request<unknown>(
             {
                 url: buildChangeCompanyUrl(endpoint, companyId),
                 method: 'POST',

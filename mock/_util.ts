@@ -52,7 +52,7 @@ export function doCustomTimes(times: number, callback: any) {
 }
 
 export interface requestParams {
-    method: string;
+    method?: string;
     body: any;
     headers?: { authorization?: string };
     query: any;

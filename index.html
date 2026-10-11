@@ -2,7 +2,7 @@
 <html lang="zh-CN">
     <head>
         <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+        <link rel="icon" type="image/svg+xml" href="%BASE_URL%logo.svg" />
         <meta
             name="viewport"
             content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover"
@@ -12,7 +12,7 @@
         <meta name="HandheldFriendly" content="true" />
         <meta name="MobileOptimized" content="320" />
         <meta name="msapplication-tap-highlight" content="no" />
-        <meta name="apple-mobile-web-app-title" content="CHENY" />
+        <meta name="apple-mobile-web-app-title" content="Robot H5" />
         <meta name="format-detection" content="telephone=yes" />
         <meta http-equiv="Expires" content="0" />
         <meta http-equiv="Pragma" content="no-cache" />
@@ -27,8 +27,9 @@
                     var s = localStorage.getItem('THEME-SETTING');
                     if (s) {
                         var t = JSON.parse(s);
-                        if (t.themeMode === 'dark') document.documentElement.classList.add('dark');
-                        if (t.themeColor) document.documentElement.style.setProperty('--app-theme-color', t.themeColor);
+                        if (t.followSystem ? window.matchMedia('(prefers-color-scheme: dark)').matches : t.themeMode === 'dark') document.documentElement.classList.add('dark');
+                        if (t.themeColor) document.documentElement.style.setProperty('--ds-accent', t.themeColor);
+                        if (t.fontScale) document.documentElement.style.setProperty('--ds-font-scale', t.fontScale);
                     }
                 } catch(e) {}
             })();
@@ -247,6 +248,9 @@
                 color: #aeaeb2;
             }
             html.dark .shell-footer-text { color: #636366; }
+            @media (prefers-reduced-motion: reduce) {
+                #app-shell, #app-shell * { animation: none !important; transition-duration: .01ms !important; }
+            }
         </style>
     </head>
 
@@ -262,7 +266,7 @@
             <!-- 主内容 -->
             <div class="shell-center">
                 <div class="shell-logo-wrap">
-                    <img src="/logo.svg" alt="" />
+                    <img src="%BASE_URL%logo.svg" alt="Robot H5" />
                 </div>
                 <div class="shell-brand">Robot H5</div>
                 <div class="shell-dots">

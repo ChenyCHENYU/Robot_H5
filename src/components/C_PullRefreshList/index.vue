@@ -1,5 +1,5 @@
 <template>
-    <VanPullRefresh class="w-full h-full" v-model="isRefreshing" :disabled="disabled" @refresh="handleRefresh">
+    <VanPullRefresh class="w-full h-full" v-model="isRefreshing" :disabled="disabled || isLoading" @refresh="handleRefresh">
         <!-- 自定义下拉刷新插槽 -->
         <template #pulling="props">
             <slot name="pulling" v-bind="props">
@@ -30,9 +30,9 @@
         </template>
 
         <VanList
-            v-model:loading="isLoading"
+            :loading="isLoading"
             :finished="finished"
-            :error="error"
+            v-model:error="error"
             :immediate-check="immediateCheck"
             :offset="offset"
             @load="handleLoad"
@@ -82,49 +82,8 @@
 <script setup lang="ts" generic="T extends ListItem">
     import './index.scss';
 
-    // 基础列表项接口（可被扩展）
-    export interface ListItem {
-        [key: string]: any;
-    }
-
-    // 定义组件实例类型
-    export type PullRefreshListInstance<T extends ListItem> = {
-        updateList: (data: T[], totalCount?: number) => void;
-        setError: () => void;
-        reset: () => void;
-        refresh: () => void;
-        list: T[];
-    };
-
-    // 定义 Props 类型（使用类型别名）
-    export type PullRefreshListProps = {
-        // 是否禁用下拉刷新
-        disabled?: boolean;
-        // 滚动条与底部距离小于 offset 时触发load事件
-        offset?: number;
-        // 是否在初始化时立即执行滚动位置检查
-        immediateCheck?: boolean;
-        // 每页数据条数
-        pageSize?: number;
-        // 数据超过多少条显示加载完成的文案
-        showFinishedTextNumber?: number;
-        // 下拉刷新过程提示文案
-        pullDownPullingText?: string;
-        // 下拉刷新释放过程提示文案
-        pullDownLoosingText?: string;
-        // 下拉刷新加载过程提示文案
-        pullDownLoadingText?: string;
-        // 下拉刷新成功提示文案
-        pullDownSuccessText?: string;
-        // 上拉加载过程中的提示文案
-        pullUpLoadingText?: string;
-        // 上拉加载完成后的提示文案
-        pullUpFinishedText?: string;
-        // 上拉加载失败的提示文案
-        pullUpErrorText?: string;
-        // 列表数据为空的文案
-        emptyDataText?: string;
-    };
+    import type { ListItem, PullRefreshListProps, PullRefreshListInstance } from '#/PullRefreshList/type';
+    import { usePagination } from '@/hooks/usePagination';
 
     defineOptions({
         name: 'PullRefreshList',
@@ -146,13 +105,10 @@
         emptyDataText: '暂无数据',
     });
 
-    const isLoading = ref(false);
-    const isRefreshing = ref(false);
+    const pagination = usePagination();
+    const { loading: isLoading, refreshing: isRefreshing, error } = pagination;
     const finished = ref(false);
-    const error = ref(false);
-    const pageNo = ref(0);
-    const total = ref(0);
-    const list = ref<T[]>([]);
+    const list = shallowRef<T[]>([]);
 
     const emit = defineEmits<{
         // 数据加载事件，返回数据和是否是刷新操作
@@ -163,85 +119,25 @@
         (e: 'onLoadError'): void;
     }>();
 
-    // 处理刷新操作
-    const handleRefresh = () => {
-        pageNo.value = 1;
-        finished.value = false;
-        isRefreshing.value = true;
-        isLoading.value = true;
-        error.value = false;
-        emit('onLoad', pageNo.value, props.pageSize);
-    };
+    function load(refresh = false) {
+        const page = pagination.start(refresh);
+        if (!page) return;
+        if (refresh) finished.value = false;
+        emit('onLoad', page, props.pageSize);
+    }
+    const handleRefresh = () => load(true);
+    const handleLoad = () => load();
+    const handleErrorClick = () => load();
 
-    // 处理加载操作
-    const handleLoad = () => {
-        if (!isRefreshing.value) {
-            pageNo.value++;
-            isLoading.value = true;
-            error.value = false;
-            emit('onLoad', pageNo.value, props.pageSize);
-        }
-    };
-
-    // 处理错误点击
-    const handleErrorClick = () => {
-        if (isRefreshing.value) {
-            handleRefresh();
-        } else {
-            handleLoad();
-        }
-    };
-
-    const updateList = (data: T[], totalCount: number = 0) => {
-        if (isRefreshing.value) {
-            list.value = [...data];
-            isRefreshing.value = false;
-        } else {
-            list.value = [...(list.value as T[]), ...data] as T[];
-        }
-
-        isLoading.value = false;
-
-        total.value = totalCount;
-
-        if (list.value.length == totalCount || data.length < props.pageSize) {
-            finished.value = true;
-        }
-
-        emit('onLoadSuccess', data, totalCount);
-    };
-
-    const setError = () => {
-        if (isRefreshing.value) {
-            isRefreshing.value = false;
-        }
-        isLoading.value = false;
-        error.value = true;
-        emit('onLoadError');
-    };
-
-    // 外部调用方法：重置列表
-    const reset = () => {
-        list.value = [];
-        pageNo.value = 1;
-        total.value = 0;
-        finished.value = false;
-        isLoading.value = false;
-        isRefreshing.value = false;
-        error.value = false;
-    };
-
-    // 外部调用方法：手动触发刷新
-    const refresh = () => {
-        handleRefresh();
-    };
-
-    // 暴露方法给父组件使用
-    defineExpose<PullRefreshListInstance<T>>({
-        updateList,
-        setError,
-        reset,
-        refresh,
-        list: list.value as T[],
-    });
+    function updateList(data: T[], totalCount?: number) {
+        if (!pagination.loading.value) return;
+        list.value = pagination.refreshing.value ? [...data] : [...list.value, ...data];
+        finished.value = totalCount === undefined ? data.length < props.pageSize : list.value.length >= totalCount;
+        pagination.succeed();
+        emit('onLoadSuccess', data, totalCount ?? list.value.length);
+    }
+    function setError() { pagination.fail(); emit('onLoadError'); }
+    function reset() { list.value = []; finished.value = false; pagination.reset(); }
+    const refresh = () => load(true);
+    defineExpose<PullRefreshListInstance<T>>({ updateList, setError, reset, refresh, get list() { return list.value; } });
 </script>

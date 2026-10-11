@@ -5,9 +5,9 @@
         </template>
 
         <template #left>
-            <span class="c-navbar__back">
+            <button type="button" class="c-navbar__back" aria-label="返回">
                 <i class="i-ph:caret-left-bold c-navbar__back-icon" />
-            </span>
+            </button>
         </template>
 
         <template #right>
@@ -34,5 +34,8 @@
     const getTitle = computed(() => props.title || (route.meta.title as string));
 
     const router = useRouter();
-    const onBack = () => router.back();
+    const onBack = () => {
+        if (window.history.state?.back) router.back();
+        else void router.replace('/dashboard');
+    };
 </script>

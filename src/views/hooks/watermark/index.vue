@@ -106,6 +106,7 @@
     const position = ref<NonNullable<UseWatermarkOptions['position']>>('bottomRight');
     const mode = ref<NonNullable<UseWatermarkOptions['mode']>>('tiled');
     const resultUrl = ref('');
+    onUnmounted(() => { if (resultUrl.value) URL.revokeObjectURL(resultUrl.value); });
 
     const modeOptions: { value: NonNullable<UseWatermarkOptions['mode']>; label: string }[] = [
         { value: 'single', label: '单点水印' },

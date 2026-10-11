@@ -22,6 +22,10 @@ $shadow-3: 0 8px 24px rgba(0, 0, 0, 0.12);
 
 // CSS custom properties (injected on :root)
 :root {
+    --ds-radius-xs: 4px;
+    --ds-radius-indicator: 2px;
+    --ds-surface-soft: rgba(255, 255, 255, 0.6);
+    --ds-nav-bg: rgba(255, 255, 255, 0.72);
     // Virtual status bar height (desktop only)
     --vbar-h: 0px;
 
@@ -40,6 +44,9 @@ $shadow-3: 0 8px 24px rgba(0, 0, 0, 0.12);
     --ds-accent: #{$primaryColor};
     --ds-accent-hover: #0077ed;
     --ds-accent-light: rgba(0, 113, 227, 0.08);
+    --ds-violet: #5856d6;
+    --ds-violet-light: rgba(88, 86, 214, 0.08);
+    --ds-text-on-accent: #ffffff;
 
     // Semantic
     --ds-success: #34c759;
@@ -56,6 +63,15 @@ $shadow-3: 0 8px 24px rgba(0, 0, 0, 0.12);
     --ds-radius-lg: #{$radius-lg};
     --ds-radius-xl: #{$radius-xl};
     --ds-radius-full: 9999px;
+    /* mobile-ignore-next */
+    --ds-radius-frame: 30px;
+
+    // 桌面预览：与 wl-mbase 使用同一手机尺寸及缩放。
+    /* mobile-ignore-next */
+    --ds-preview-width: 390px;
+    /* mobile-ignore-next */
+    --ds-preview-height: 844px;
+    --ds-preview-bg: #f6f8fc;
 
     // Shadow
     --ds-shadow-1: #{$shadow-1};
@@ -78,6 +94,9 @@ $shadow-3: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 html.dark {
+    --ds-surface-soft: rgba(30, 30, 35, 0.6);
+    --ds-nav-bg: rgba(28, 28, 30, 0.72);
+    --ds-preview-bg: #111113;
     --ds-bg: #000000;
     --ds-bg-secondary: #1c1c1e;
     --ds-bg-tertiary: #2c2c2e;
@@ -90,6 +109,8 @@ html.dark {
     --ds-accent: #0a84ff;
     --ds-accent-hover: #409cff;
     --ds-accent-light: rgba(10, 132, 255, 0.12);
+    --ds-violet: #a29bff;
+    --ds-violet-light: rgba(162, 155, 255, 0.12);
 
     --ds-border: rgba(255, 255, 255, 0.1);
     --ds-divider: rgba(255, 255, 255, 0.06);

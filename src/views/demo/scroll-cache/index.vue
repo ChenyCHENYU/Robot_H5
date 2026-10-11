@@ -1,5 +1,5 @@
 <template>
-    <div class="sc-page">
+    <div ref="page" class="sc-page">
         <C_NavBar>
             <template #right>
                 <VanButton size="small" type="primary" to="/about">子页面</VanButton>
@@ -51,5 +51,6 @@
 
     const onRefresh = () => { finished.value = false; loading.value = true; onLoad(); };
 
-    onMounted(() => useScrollCache());
+    const page = ref<HTMLElement | null>(null);
+    useScrollCache(page);
 </script>

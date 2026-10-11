@@ -62,11 +62,8 @@ export function useTheme() {
     // 切换主题
     const toggleTheme = computed({
         get: () => getThemeMode.value === 'dark',
-        set: () => {
-            const htmlRoot = document.documentElement;
-            htmlRoot.classList.toggle('light');
-            htmlRoot.classList.toggle('dark');
-            themeStore.setThemeMode(getThemeMode.value === 'light' ? 'dark' : 'light');
+        set: (dark: boolean) => {
+            themeStore.setThemeMode(dark ? 'dark' : 'light');
         },
     });
 

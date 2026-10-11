@@ -29,7 +29,7 @@
                 content: '';
                 width: 3px;
                 height: 14px;
-                border-radius: 2px;
+                border-radius: var(--ds-radius-indicator);
                 background: var(--ds-accent);
             }
         }
@@ -44,21 +44,21 @@
     }
 
     &__cells {
-        :deep(.van-field) {
+        .van-field {
             font-size: 13px;
             padding: 10px 14px;
         }
 
-        :deep(.van-field__label) {
+        .van-field__label {
             width: 5em;
             color: var(--ds-text-secondary);
         }
 
-        :deep(.van-field__control) {
+        .van-field__control {
             color: var(--ds-text-primary);
         }
 
-        :deep(.van-field__error-message) {
+        .van-field__error-message {
             font-size: 11px;
         }
     }
@@ -86,3 +86,5 @@
         }
     }
 }
+
+.customer-form__loading { display: flex; justify-content: center; padding: 32px 16px; }

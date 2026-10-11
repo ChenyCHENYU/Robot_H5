@@ -47,13 +47,15 @@
 
 <script setup lang="ts">
     import './index.scss';
+    import { useObjectUrl } from '@vueuse/core';
     import { useVideoRecorder } from '@robot-h5/core';
 
     defineOptions({ name: 'HookVideoRecorder' });
 
     const { isRecording, duration, stream, error, start, stop } = useVideoRecorder();
     const previewEl = ref<HTMLVideoElement>();
-    const playbackUrl = ref('');
+    const videoBlob = shallowRef<Blob>();
+    const playbackUrl = useObjectUrl(videoBlob);
 
     watch(stream, (s) => {
         if (previewEl.value && s) {
@@ -64,7 +66,7 @@
     async function handleStop() {
         const blob = await stop();
         if (blob) {
-            playbackUrl.value = URL.createObjectURL(blob);
+            videoBlob.value = blob;
         }
         if (previewEl.value) {
             previewEl.value.srcObject = null;

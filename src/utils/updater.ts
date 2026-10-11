@@ -1,79 +1,39 @@
-interface Options {
-    timer?: number;
+interface BuildIdentity {
+    application: { id: string; version: string };
+    build: { commitSha: string; builtAt: string };
 }
+const fingerprint = (value: BuildIdentity) => `${value.application.version}:${value.build.commitSha}:${value.build.builtAt}`;
 
+/** 使用独立版本文件检测部署变化，兼容子目录部署，更新只提示一次。 */
 export class Updater {
-    oldScript: string[]; // 存储第一次值也就是script 的hash 信息
-
-    newScript: string[]; // 获取新的值 也就是新的script 的hash信息
-
-    dispatch: Record<string, Array<() => void>>; // 小型发布订阅通知用户更新了
-
-    timer: NodeJS.Timeout | null = null;
-
-    constructor(options: Options) {
-        this.oldScript = [];
-        this.newScript = [];
-        this.dispatch = {};
-        this.init(); // 初始化
-        this.timing(options?.timer); // 轮询
+    private timer: ReturnType<typeof setInterval> | undefined;
+    private callbacks: Partial<Record<'no-update' | 'update', (() => void)[]>> = {};
+    private notified = false;
+    private checking = false;
+    constructor(options: { timer?: number } = {}) {
+        this.timer = setInterval(() => { void this.check(); }, options.timer ?? 30000);
     }
-
-    async init(): Promise<void> {
-        try {
-            const html: string = await this.getHtml();
-            this.oldScript = this.parseScript(html);
-        } catch (error) {
-            console.error('Error initializing Updater:', error);
-        }
-    }
-
-    async getHtml(): Promise<string> {
-        const html = await fetch('/').then(res => res.text()); // 读取index html
-        return html;
-    }
-
-    parseScript(html: string): string[] {
-        const reg = new RegExp(/<script(?:\s+[^>]*)?>(.*?)<\/script\s*>/gi); // script正则
-        return html.match(reg) as string[]; // 匹配script标签
-    }
-
-    // 发布订阅通知
-    on(key: 'no-update' | 'update', fn: () => void): this {
-        (this.dispatch[key] || (this.dispatch[key] = [])).push(fn);
+    on(key: 'no-update' | 'update', callback: () => void): this {
+        (this.callbacks[key] ||= []).push(callback);
         return this;
     }
-
-    compare(oldArr: string[], newArr: string[]): void {
-        const base = oldArr.length;
-        const arr = Array.from(new Set(oldArr.concat(newArr)));
-        // 如果新旧length一样无更新
-        if (arr.length === base) {
-            this.dispatch['no-update']?.forEach(fn => fn());
-        } else {
-            // 否则通知更新
-            this.dispatch.update?.forEach(fn => fn());
-        }
+    async check() {
+        if (this.checking || this.notified || document.visibilityState === 'hidden') return;
+        this.checking = true;
+        try {
+            const identity = await this.getIdentity();
+            if (!identity) return;
+            const changed = fingerprint(identity) !== fingerprint(__BUILD_ID__);
+            if (changed) this.notified = true;
+            this.callbacks[changed ? 'update' : 'no-update']?.forEach(callback => callback());
+        } catch { /* 离线或代理返回非 JSON 时保留当前可用版本 */ }
+        finally { this.checking = false; }
     }
-
-    timing(time = 10000): void {
-        // 轮询
-        this.timer = setInterval(async () => {
-            try {
-                const newHtml = await this.getHtml();
-                this.newScript = this.parseScript(newHtml);
-                this.compare(this.oldScript, this.newScript);
-            } catch (error) {
-                console.error('Error during polling:', error);
-            }
-        }, time);
+    private async getIdentity(): Promise<BuildIdentity | undefined> {
+        const response = await fetch(`${import.meta.env.BASE_URL}env.json`, { cache: 'no-store' });
+        if (!response.ok) return;
+        const identity = await response.json() as BuildIdentity;
+        if (identity.application?.id === __BUILD_ID__.application.id && identity.build?.builtAt) return identity;
     }
-
-    // 取消轮询
-    stopTiming(): void {
-        if (this.timer) {
-            clearInterval(this.timer);
-            this.timer = null;
-        }
-    }
+    stopTiming() { clearInterval(this.timer); this.timer = undefined; }
 }

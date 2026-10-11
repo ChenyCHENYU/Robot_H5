@@ -21,7 +21,7 @@ export default defineH5Config({
 
     // 文件上传配置
     upload: {
-        action: '/api/file/upload',
+        action: String(import.meta.env.VITE_GLOB_UPLOAD_URL || `${import.meta.env.VITE_GLOB_API_URL || ''}${import.meta.env.VITE_GLOB_API_URL_PREFIX || '/api'}/file/upload`),
         headers: (): Record<string, string> => {
             const userStore = useUserStoreWidthOut();
             const token = userStore.getToken;

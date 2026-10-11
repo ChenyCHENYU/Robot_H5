@@ -7,6 +7,8 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue').EffectScope
+  const addCustomer: typeof import('../src/api/customer').addCustomer
+  const addUser: typeof import('../src/api/user').addUser
   const asyncComputed: typeof import('@vueuse/core').asyncComputed
   const autoResetRef: typeof import('@vueuse/core').autoResetRef
   const computed: typeof import('vue').computed
@@ -31,6 +33,7 @@ declare global {
   const debouncedWatch: typeof import('@vueuse/core').debouncedWatch
   const defineAsyncComponent: typeof import('vue').defineAsyncComponent
   const defineComponent: typeof import('vue').defineComponent
+  const deleteCustomer: typeof import('../src/api/customer').deleteCustomer
   const doLogout: typeof import('../src/api/user').doLogout
   const eagerComputed: typeof import('@vueuse/core').eagerComputed
   const effectScope: typeof import('vue').effectScope
@@ -40,6 +43,8 @@ declare global {
   const getCurrentInstance: typeof import('vue').getCurrentInstance
   const getCurrentScope: typeof import('vue').getCurrentScope
   const getCurrentWatcher: typeof import('vue').getCurrentWatcher
+  const getCustomerDetail: typeof import('../src/api/customer').getCustomerDetail
+  const getCustomerList: typeof import('../src/api/customer').getCustomerList
   const getUserInfo: typeof import('../src/api/user').getUserInfo
   const getUserPermissions: typeof import('../src/api/permission').getUserPermissions
   const h: typeof import('vue').h
@@ -93,9 +98,11 @@ declare global {
   const refDefault: typeof import('@vueuse/core').refDefault
   const refThrottled: typeof import('@vueuse/core').refThrottled
   const refWithControl: typeof import('@vueuse/core').refWithControl
+  const resetUserPassword: typeof import('../src/api/user').resetUserPassword
   const resolveComponent: typeof import('vue').resolveComponent
   const resolveRef: typeof import('@vueuse/core').resolveRef
   const resolveUnref: typeof import('@vueuse/core').resolveUnref
+  const sendUserSms: typeof import('../src/api/user').sendUserSms
   const shallowReactive: typeof import('vue').shallowReactive
   const shallowReadonly: typeof import('vue').shallowReadonly
   const shallowRef: typeof import('vue').shallowRef
@@ -118,6 +125,9 @@ declare global {
   const unref: typeof import('vue').unref
   const unrefElement: typeof import('@vueuse/core').unrefElement
   const until: typeof import('@vueuse/core').until
+  const updateCustomer: typeof import('../src/api/customer').updateCustomer
+  const updateUserPassword: typeof import('../src/api/user').updateUserPassword
+  const updateUserProfile: typeof import('../src/api/user').updateUserProfile
   const useActiveElement: typeof import('@vueuse/core').useActiveElement
   const useAnimate: typeof import('@vueuse/core').useAnimate
   const useArrayDifference: typeof import('@vueuse/core').useArrayDifference

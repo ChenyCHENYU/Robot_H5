@@ -1,6 +1,11 @@
 <template>
-    <div v-if="customer" class="customer-detail">
+    <div class="customer-detail">
         <C_NavBar title="客户档案详情" />
+        <VanLoading v-if="loading" class="customer-detail__loading">加载中…</VanLoading>
+        <VanEmpty v-else-if="!customer" description="客户不存在或加载失败">
+            <VanButton size="small" type="primary" @click="load">重试</VanButton>
+        </VanEmpty>
+        <template v-else>
 
         <!-- 顶部信息卡 -->
         <div class="customer-detail__header">
@@ -36,17 +41,18 @@
                     size="small"
                     type="primary"
                     round
+                    :loading="saving"
                     @click="onConvert"
                 >
-                    <i class="i-ph:arrows-clockwise-bold" style="margin-right: 2px" />
+                    <i class="i-ph:arrows-clockwise-bold customer-detail__action-icon" />
                     转化
                 </VanButton>
-                <VanButton size="small" round @click="onTransferPublic">
-                    <i class="i-ph:globe-bold" style="margin-right: 2px" />
+                <VanButton v-if="customer.customerType !== 'public'" size="small" round :loading="saving" @click="onTransferPublic">
+                    <i class="i-ph:globe-bold customer-detail__action-icon" />
                     转公海
                 </VanButton>
                 <VanButton size="small" round @click="onEdit">
-                    <i class="i-ph:pencil-simple-bold" style="margin-right: 2px" />
+                    <i class="i-ph:pencil-simple-bold customer-detail__action-icon" />
                     编辑
                 </VanButton>
             </div>
@@ -59,7 +65,7 @@
                 <VanCell title="客户名称" :value="customer.name" />
                 <VanCell title="客户编号" :value="customer.code" />
                 <VanCell title="客户分类" :value="customer.customerClass" />
-                <VanCell title="客户类型">
+                <VanCell title="产品类别">
                     <template #value>
                         <VanTag :type="categoryInfo(customer.category).type" round>
                             {{ categoryInfo(customer.category).text }}
@@ -105,14 +111,15 @@
                 </VanCell>
             </VanCellGroup>
         </div>
+        </template>
     </div>
 </template>
 
 <script setup lang="ts">
     import './detail.scss';
     import { showToast } from 'vant';
+    import { getCustomerDetail, updateCustomer } from '@/api/customer';
     import {
-        MOCK_CUSTOMERS,
         STATUS_MAP,
         CATEGORY_MAP,
         type Customer,
@@ -123,17 +130,29 @@
     const route = useRoute();
     const router = useRouter();
 
-    // 按 query.id 取数据
-    const customer = computed<Customer | undefined>(() => {
-        const id = Number(route.query.id);
-        return MOCK_CUSTOMERS.find((c) => c.id === id) ?? MOCK_CUSTOMERS[0];
-    });
+    const customer = ref<Customer>();
+    const loading = ref(false);
+    const saving = ref(false);
+    async function load() {
+        loading.value = true;
+        try { customer.value = await getCustomerDetail(Number(route.query.id)); }
+        catch { customer.value = undefined; }
+        finally { loading.value = false; }
+    }
+    watch(() => route.query.id, load, { immediate: true });
 
     const statusInfo = (val: string) => STATUS_MAP[val as keyof typeof STATUS_MAP] ?? { text: val, type: 'default' as const };
     const categoryInfo = (val: string) => CATEGORY_MAP[val] ?? { text: val, type: 'primary' as const };
 
-    const onConvert = () => showToast('转化');
-    const onTransferPublic = () => showToast('转公海');
+    async function update(action: 'convert' | 'public') {
+        if (!customer.value || saving.value) return;
+        saving.value = true;
+        try { customer.value = await updateCustomer(customer.value.id, { action }); showToast('客户状态已更新'); }
+        catch { /* 请求层反馈 */ }
+        finally { saving.value = false; }
+    }
+    const onConvert = () => update('convert');
+    const onTransferPublic = () => update('public');
     const onEdit = () => {
         if (customer.value) {
             router.push({ path: '/customerForm', query: { id: String(customer.value.id) } });

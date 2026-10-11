@@ -22,14 +22,14 @@ export function useLoginState() {
     return { setLoginState, getLoginState, handleBackLogin };
 }
 
-export function useFormRules(formData?: Recordable) {
+export function useFormRules(formData?: Record<string, unknown>) {
     const getUsernameFormRule = computed(() => createRule('请输入用户名'));
     const getPasswordFormRule = computed(() => createRule('请输入密码'));
     const getSmsFormRule = computed(() => createRule('请输入短信验证码'));
     const getMobileFormRule = computed(() => createRule('请输入手机号码'));
 
-    const validatePolicy = async (value: any) => {
-        return !value ? Promise.resolve('勾选后才能注册') : Promise.resolve(true);
+    const validatePolicy = async () => {
+        return !formData?.policy ? Promise.resolve('勾选后才能注册') : Promise.resolve(true);
     };
 
     const validateConfirmPassword = (password: string) => {
@@ -59,10 +59,10 @@ export function useFormRules(formData?: Recordable) {
             case LoginStateEnum.REGISTER:
                 return {
                     username: usernameFormRule,
-                    password: passwordFormRule,
+                    password: [...passwordFormRule, { validator: (value: string) => value.length >= 6 || '密码至少 6 位' }],
                     confirmPassword: [
                         {
-                            validator: validateConfirmPassword(formData?.password),
+                            validator: validateConfirmPassword(String(formData?.password || '')),
                             trigger: 'onChange',
                         },
                     ],
@@ -74,6 +74,8 @@ export function useFormRules(formData?: Recordable) {
             case LoginStateEnum.RESET_PASSWORD:
                 return {
                     username: usernameFormRule,
+                    password: [...passwordFormRule, { validator: (value: string) => value.length >= 6 || '密码至少 6 位' }],
+                    confirmPassword: [{ validator: validateConfirmPassword(String(formData?.password || '')) }],
                     ...mobileRule,
                 };
 

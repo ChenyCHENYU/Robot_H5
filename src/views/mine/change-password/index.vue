@@ -2,7 +2,7 @@
     <div class="form-page">
         <C_NavBar>
             <template #right>
-                <span class="form-page__save" @click="onSubmit">保存</span>
+                <VanButton size="small" type="primary" :loading="saving" @click="onSubmit">保存</VanButton>
             </template>
         </C_NavBar>
         <div class="form-page__body">
@@ -17,8 +17,8 @@
                         />
                         <VanField
                             v-model="form.newPwd" class="form-page__cell"
-                            label="新密码" type="password" placeholder="请输入新密码（8位以上）"
-                            :rules="[{ required: true, message: '请输入新密码' }]"
+                            label="新密码" type="password" placeholder="请输入新密码（至少6位）"
+                            :rules="[{ required: true, message: '请输入新密码' }, { validator: (value: string) => value.length >= 6 || '密码至少6位' }]"
                         />
                         <VanField
                             v-model="form.confirmPwd" class="form-page__cell"
@@ -36,6 +36,10 @@
     import './index.scss';
     import { showToast, type FormInstance } from 'vant';
 
+    import { updateUserPassword } from '@/api/user';
+    defineOptions({ name: 'ChangePassword' });
+    const saving = ref(false);
+    const router = useRouter();
     const formRef = ref<FormInstance>();
     const form = reactive({ oldPwd: '', newPwd: '', confirmPwd: '' });
 
@@ -44,9 +48,15 @@
         return true;
     };
 
-    const onSubmit = () => {
-        formRef.value?.validate().then(() => {
+    const onSubmit = async () => {
+        if (saving.value) return;
+        try {
+            await formRef.value?.validate();
+            saving.value = true;
+            await updateUserPassword({ oldPassword: form.oldPwd, newPassword: form.newPwd });
             showToast('密码修改成功');
-        }).catch(() => {});
+            await router.replace('/accountSetting');
+        } catch { /* 失败保留输入 */ }
+        finally { saving.value = false; }
     };
 </script>

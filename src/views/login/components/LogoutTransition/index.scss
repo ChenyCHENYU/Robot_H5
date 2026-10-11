@@ -21,7 +21,7 @@
             height: 280px;
             top: -12%;
             left: -10%;
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            background: linear-gradient(135deg, var(--ds-warning), var(--ds-danger));
             opacity: 0.25;
         }
 
@@ -30,7 +30,7 @@
             height: 220px;
             bottom: -8%;
             right: -12%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, var(--ds-accent), var(--ds-violet));
             opacity: 0.2;
             animation-delay: -2s;
         }
@@ -61,15 +61,15 @@
         border-radius: 50%;
         background: conic-gradient(
             from 0deg,
-            #f59e0b,
-            #ef4444,
-            #ec4899,
-            #8b5cf6,
-            #f59e0b
+            var(--ds-warning),
+            var(--ds-danger),
+            var(--ds-violet),
+            var(--ds-accent),
+            var(--ds-warning)
         );
         padding: 3px;
-        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(var(--ds-text-on-accent) 0 0) content-box, linear-gradient(var(--ds-text-on-accent) 0 0);
+        -webkit-mask: linear-gradient(var(--ds-text-on-accent) 0 0) content-box, linear-gradient(var(--ds-text-on-accent) 0 0);
         mask-composite: exclude;
         -webkit-mask-composite: xor;
         animation: ltRingSpin 4s linear infinite;
@@ -84,7 +84,7 @@
     }
 
     &__wave {
-        font-size: 32px;
+        font-size: 34px;
         position: relative;
         z-index: 1;
         animation: ltWave 1s ease-in-out 0.3s both;
@@ -103,10 +103,7 @@
         font-size: 22px;
         font-weight: 700;
         letter-spacing: 0.5px;
-        background: linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #ec4899 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        @include gradient-text(linear-gradient(135deg, var(--ds-warning), var(--ds-danger)), var(--ds-danger));
         animation: ltTitleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
     }
 
@@ -121,7 +118,7 @@
     &__beam {
         width: 120px;
         height: 3px;
-        border-radius: 2px;
+        border-radius: var(--ds-radius-full);
         background: var(--ds-bg-secondary);
         overflow: hidden;
         opacity: 0;
@@ -130,8 +127,8 @@
 
     &__beam-fill {
         height: 100%;
-        border-radius: 2px;
-        background: linear-gradient(90deg, #f59e0b, #ef4444, #ec4899);
+        border-radius: var(--ds-radius-full);
+        background: linear-gradient(90deg, var(--ds-warning), var(--ds-danger));
         background-size: 200% 100%;
         animation: ltBeamFill 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.9s both,
                    ltBeamShimmer 1.5s ease infinite;

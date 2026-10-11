@@ -45,8 +45,8 @@ export const usePermissionStore = defineStore('app-permission-store', {
                     getAppMenus(appId),
                     getUserPermissions(appId),
                 ]);
-                this.menuList = (menuRes as any)?.data ?? menuRes ?? [];
-                this.buttonPermissions = (permRes as any)?.data ?? permRes ?? [];
+                this.menuList = menuRes;
+                this.buttonPermissions = permRes;
                 this.isLoaded = true;
             } catch (error) {
                 console.error('加载权限数据失败', error);

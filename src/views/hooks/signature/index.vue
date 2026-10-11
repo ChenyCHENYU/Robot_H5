@@ -33,6 +33,7 @@
 
 <script setup lang="ts">
     import './index.scss';
+    import { useObjectUrl } from '@vueuse/core';
     import { useSignature } from '@robot-h5/core';
 
     defineOptions({ name: 'HookSignature' });
@@ -43,7 +44,8 @@
     });
 
     const canvasEl = ref<HTMLCanvasElement>();
-    const savedUrl = ref('');
+    const signatureBlob = shallowRef<Blob>();
+    const savedUrl = useObjectUrl(signatureBlob);
 
     onMounted(() => {
         if (canvasEl.value) {
@@ -54,7 +56,7 @@
     async function handleSave() {
         const file = await save();
         if (file) {
-            savedUrl.value = URL.createObjectURL(file);
+            signatureBlob.value = file;
         }
     }
 </script>

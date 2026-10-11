@@ -46,7 +46,7 @@
         position: relative;
         z-index: 1;
 
-        :deep(.van-cell__title) {
+        .van-cell__title {
             font-size: 15px;
             font-weight: 600;
             color: var(--ds-text-primary);
@@ -56,14 +56,14 @@
     &__cell-icon {
         width: 30px;
         height: 30px;
-        border-radius: 8px;
+        border-radius: var(--ds-radius-sm);
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
         margin-right: 12px;
 
-        i { font-size: 16px; color: #fff; }
+        i { font-size: 16px; color: var(--ds-text-on-accent); }
     }
 
     &__colors {
@@ -133,7 +133,7 @@
         height: 10px;
         border-radius: 50%;
         background: var(--preview-color);
-        box-shadow: 0 0 6px var(--preview-color);
+        box-shadow: var(--ds-shadow-1);
     }
 
     &__preview-title {
@@ -178,3 +178,5 @@
         z-index: 1;
     }
 }
+
+.theme-page__color-dot { padding: 0; border: 0; cursor: pointer; }

@@ -3,6 +3,8 @@ import presetIcons from '@unocss/preset-icons';
 import presetRemToPx from '@unocss/preset-rem-to-px';
 import transformerVariantGroup from '@unocss/transformer-variant-group';
 import transformerDirectives from '@unocss/transformer-directives';
+import { icons as phIcons } from '@iconify-json/ph';
+import { icons as icIcons } from '@iconify-json/ic';
 
 /**
  * UnoCSS 配置
@@ -36,6 +38,11 @@ export default defineConfig({
      * @see https://icon-sets.iconify.design/
      */
     presetIcons({
+      // 显式提供已安装的图标集，避免依赖自动查找在 pnpm 隔离依赖下失效。
+      collections: {
+        ph: () => phIcons,
+        ic: () => icIcons,
+      },
       extraProperties: {
         display: 'inline-block',
         'vertical-align': 'middle',

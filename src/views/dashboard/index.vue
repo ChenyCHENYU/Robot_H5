@@ -32,14 +32,15 @@
 
         <!-- Quick Actions -->
         <div class="dashboard__actions">
-            <div
+            <button
                 v-for="item in quickActions"
                 :key="item.route"
+                type="button"
                 class="dashboard__action"
                 @click="router.push(item.route)"
             >
                 <div class="dashboard__action-tint" :style="{ background: item.color }" />
-                <div class="dashboard__action-icon" :style="{ background: item.color + '1a' }">
+                <div class="dashboard__action-icon" :style="{ background: item.tint }">
                     <C_Icon :name="item.icon" :size="20" :color="item.color" />
                 </div>
                 <div class="dashboard__action-body">
@@ -47,7 +48,7 @@
                     <p class="dashboard__action-desc">{{ item.desc }}</p>
                 </div>
                 <i class="i-ph:caret-right-bold dashboard__action-arrow" />
-            </div>
+            </button>
         </div>
 
         <!-- Quote Card (每日金句) -->
@@ -67,7 +68,7 @@
                 <div v-for="(f, i) in features" :key="f.title" class="dashboard__feature" :style="{ '--i': i }">
                     <div class="dashboard__feature-shine" />
                     <div class="dashboard__feature-icon" :style="{ background: f.color }">
-                        <C_Icon :name="f.icon" :size="20" color="#fff" />
+                        <C_Icon :name="f.icon" :size="20" color="var(--ds-text-on-accent)" />
                     </div>
                     <div class="dashboard__feature-text">
                         <span class="dashboard__feature-title">{{ f.title }}</span>
@@ -89,7 +90,8 @@
 
     const router = useRouter();
     const userStore = useUserStore();
-    const cacheBox = ref(null);
+    const cacheBox = ref<HTMLElement | null>(null);
+    useScrollCache(cacheBox);
 
     const greeting = computed(() => {
         const h = new Date().getHours();
@@ -101,7 +103,4 @@
 
     const currentQuote = computed(() => quotes[new Date().getDate() % quotes.length]);
 
-    onMounted(() => {
-        useScrollCache(cacheBox.value);
-    });
 </script>

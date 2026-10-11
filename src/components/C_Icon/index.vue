@@ -1,7 +1,7 @@
 <template>
     <Icon
         v-if="type === 'iconify'"
-        :icon="name"
+        :icon="resolvedIcon"
         :width="normalizedSize"
         :height="normalizedSize"
         :color="color"
@@ -29,12 +29,12 @@
 </template>
 
 <script setup lang="ts">
-    import { Icon } from '@iconify/vue';
+    import './index.scss';
+    import { Icon, getIcon } from '@iconify/vue';
+    import type { IconType, FlipType } from '#/Icon/type';
 
     defineOptions({ name: 'CIcon' });
 
-    export type IconType = 'iconify' | 'unocss' | 'svg';
-    export type FlipType = 'horizontal' | 'vertical' | 'both';
 
     const props = withDefaults(
         defineProps<{
@@ -65,6 +65,8 @@
         },
     );
 
+    const resolvedIcon = computed(() => getIcon(props.name) || getIcon('ph:question-bold')!);
+
     const emit = defineEmits<{
         click: [e: MouseEvent];
     }>();
@@ -91,23 +93,3 @@
         }
     }
 </script>
-
-<style lang="scss">
-    .c-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--icon-color, currentColor);
-        vertical-align: middle;
-        flex-shrink: 0;
-
-        &--clickable {
-            cursor: pointer;
-            transition: opacity 0.2s ease;
-
-            &:active {
-                opacity: 0.6;
-            }
-        }
-    }
-</style>

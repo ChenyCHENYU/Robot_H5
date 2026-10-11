@@ -6,4 +6,5 @@ export interface CaptchaResult {
 }
 
 /** 获取图形验证码 */
-export const getCaptcha = () => get<CaptchaResult>('/captcha');
+export const getCaptcha = () =>
+    get<CaptchaResult>('/captcha', undefined, { withToken: false });

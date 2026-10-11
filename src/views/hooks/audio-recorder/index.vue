@@ -57,17 +57,19 @@
 
 <script setup lang="ts">
     import './index.scss';
+    import { useObjectUrl } from '@vueuse/core';
     import { useAudioRecorder } from '@robot-h5/core';
 
     defineOptions({ name: 'HookAudioRecorder' });
 
     const { isRecording, isPaused, duration, error, start, stop, pause, resume } = useAudioRecorder();
-    const audioUrl = ref('');
+    const audioBlob = shallowRef<Blob>();
+    const audioUrl = useObjectUrl(audioBlob);
 
     async function handleStop() {
         const blob = await stop();
         if (blob) {
-            audioUrl.value = URL.createObjectURL(blob);
+            audioBlob.value = blob;
         }
     }
 

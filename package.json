@@ -48,7 +48,10 @@
     "deps:check": "pnpm outdated",
     "deps:update": "pnpm update --latest",
     "preinstall": "npx only-allow pnpm",
-    "release": "echo 'Use release-please PR workflow instead'"
+    "release": "echo 'Use release-please PR workflow instead'",
+    "lint:check": "eslint .",
+    "test:e2e": "playwright test",
+    "test:assets": "node scripts/verify-assets.mjs"
   },
   "dependencies": {
     "@iconify/vue": "5.0.0",
@@ -72,6 +75,7 @@
     "@commitlint/config-conventional": "20.5.0",
     "@iconify-json/ic": "*",
     "@iconify-json/ph": "*",
+    "@playwright/test": "1.63.0",
     "@robot-admin/git-standards": "1.0.3",
     "@types/mockjs": "^1.0.10",
     "@types/node": "^24.4.0",

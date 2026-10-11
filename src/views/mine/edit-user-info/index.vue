@@ -6,7 +6,7 @@
         <div class="edit-info-page__avatar-hero">
             <UploaderImage @uploaded="onAvatarUploaded">
                 <div class="edit-info-page__avatar-wrap">
-                    <VanImage class="edit-info-page__avatar" round fit="cover" :src="avatarSrc" />
+                    <C_Avatar class="edit-info-page__avatar" :src="userStore.getUserInfo.avatar" />
                     <div class="edit-info-page__avatar-badge">
                         <i class="i-ph:camera-bold" />
                     </div>
@@ -115,16 +115,14 @@
     import { showToast } from 'vant';
     import UploaderImage from '../components/UploaderImage.vue';
     import { genderColumns, industryColumns, type FormColumns } from '../pickColumns';
-    import { DEFAULT_AVATAR } from '../data';
+    import { defaultAvatar } from '@/components/C_Avatar/data';
     import { useUserStore } from '@/store/modules/user';
 
     defineOptions({ name: 'EditUserInfo' });
 
     const userStore = useUserStore();
-    const { gender, industry } = userStore.getUserInfo;
 
-    const avatarSrc = computed(() => userStore.getUserInfo.avatar || DEFAULT_AVATAR);
-    const coverSrc = computed(() => userStore.getUserInfo.cover || avatarSrc.value);
+    const coverSrc = computed(() => userStore.getUserInfo.cover || defaultAvatar);
 
     const showGenderPicker = ref(false);
     const showIndustryPicker = ref(false);
@@ -138,23 +136,20 @@
         genderValues: [0],
     });
 
-    function onAvatarUploaded(url: string) {
-        userStore.setUserInfo({ ...userStore.getUserInfo, avatar: url });
+    async function saveProfile(profile: Parameters<typeof userStore.UpdateProfile>[0]) {
+        try { await userStore.UpdateProfile(profile); showToast('资料已保存'); }
+        catch { /* HTTP 层已反馈 */ }
     }
-
-    function onCoverUploaded(url: string) {
-        userStore.setUserInfo({ ...userStore.getUserInfo, cover: url });
-    }
-
-    function handleGender({ selectedOptions }: { selectedOptions: { text: string; value: number }[] }) {
-        state.genderText = selectedOptions[0].text;
-        showToast(JSON.stringify(selectedOptions));
+    const onAvatarUploaded = (url: string) => saveProfile({ avatar: url });
+    const onCoverUploaded = (url: string) => saveProfile({ cover: url });
+    async function handleGender({ selectedOptions }: { selectedOptions: { text: string; value: number }[] }) {
+        if (!selectedOptions[0]) return;
+        await saveProfile({ gender: selectedOptions[0].value });
         showGenderPicker.value = false;
     }
-
-    function handleIndustry({ selectedOptions }: { selectedOptions: { text: string; value: number }[] }) {
-        state.industryText = selectedOptions[0].text;
-        showToast(JSON.stringify(selectedOptions));
+    async function handleIndustry({ selectedOptions }: { selectedOptions: { text: string; value: number }[] }) {
+        if (!selectedOptions[0]) return;
+        await saveProfile({ industry: selectedOptions[0].value });
         showIndustryPicker.value = false;
     }
 
@@ -162,18 +157,12 @@
         return columns.find(item => item.value === value)?.text;
     }
 
-    function initState() {
-        Object.keys(state).forEach(key => {
-            (state as Record<string, unknown>)[key] = (userStore.getUserInfo as Record<string, unknown>)[key];
-        });
-        state.genderText = getFromText(genderColumns, gender) ?? '';
-        state.industryText = getFromText(industryColumns, industry) ?? '';
-        state.industryValues = [industry ?? 0];
-        state.genderValues = [gender];
-    }
-
-    onMounted(() => {
-        initState();
-    });
+    watch(() => userStore.getUserInfo, info => {
+        state.nickname = info.nickname;
+        state.sign = info.sign || '';
+        state.genderText = getFromText(genderColumns, info.gender) || '';
+        state.industryText = getFromText(industryColumns, info.industry) || '';
+        state.genderValues = [info.gender];
+        state.industryValues = [info.industry || 0];
+    }, { immediate: true });
 </script>
-

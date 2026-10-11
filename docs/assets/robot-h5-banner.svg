@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" role="img" aria-labelledby="title description">
+<title id="title">Robot H5</title><desc id="description">企业移动应用，从浏览器到 App 与 PDA。Vue 3 · Vant 4 · TypeScript。</desc>
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1200" y2="340" gradientUnits="userSpaceOnUse"><stop stop-color="#0D1932"/><stop offset="1" stop-color="#17234B"/></linearGradient><radialGradient id="halo"><stop stop-color="#4E71FF" stop-opacity=".24"/><stop offset="1" stop-color="#4E71FF" stop-opacity="0"/></radialGradient><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#CDD8FF" stroke-opacity=".045"/></pattern></defs>
+<rect width="1200" height="340" rx="24" fill="url(#bg)"/><rect width="1200" height="340" rx="24" fill="url(#grid)"/>
+<ellipse cx="1040" cy="150" rx="310" ry="220" fill="url(#halo)"/>
+<svg x="70" y="98" width="144" height="144" viewBox="0 0 128 128"><defs>
+    <linearGradient id="robot-blue" x1="8" y1="8" x2="120" y2="124" gradientUnits="userSpaceOnUse"><stop stop-color="#409CFF"/><stop offset=".48" stop-color="#2163EF"/><stop offset="1" stop-color="#6948DC"/></linearGradient>
+    <linearGradient id="robot-light" x1="20" y1="0" x2="100" y2="110" gradientUnits="userSpaceOnUse"><stop stop-color="#FFF" stop-opacity=".28"/><stop offset="1" stop-color="#FFF" stop-opacity="0"/></linearGradient>
+</defs>
+<rect x="2" y="2" width="124" height="124" rx="30" fill="url(#robot-blue)"/>
+<rect x="2.5" y="2.5" width="123" height="123" rx="29.5" fill="url(#robot-light)" stroke="#FFF" stroke-opacity=".25"/>
+<path d="M35 99V35H69C86 35 96 44 96 60C96 72 90 80 81 83L99 99H78L61 85H51V99H35ZM51 51V69H68C75 69 79 66 79 60C79 54 75 51 68 51H51Z" fill="#FFF"/>
+<path d="M66 34V28" stroke="#FFF" stroke-width="4" stroke-linecap="round"/>
+<circle cx="66" cy="23" r="4" fill="#B4F6FF"/>
+<rect x="55" y="56" width="5" height="7" rx="2.5" fill="#B4F6FF"/>
+<rect x="67" y="56" width="5" height="7" rx="2.5" fill="#B4F6FF"/>
+</svg>
+<text x="254" y="144" fill="#FFFFFF" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="58" font-weight="750" letter-spacing="-2">Robot H5<tspan fill="#8FB6FF" font-size="22" letter-spacing="2" dx="24">MOBILE FIRST</tspan></text>
+<text x="257" y="185" fill="#BAC9E7" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="20">企业移动应用，从浏览器到 App 与 PDA</text>
+<g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14" fill="#DCE8FF">
+<rect x="256" y="214" width="218" height="34" rx="17" fill="#213452" stroke="#365174"/><text x="275" y="236">Vue 3 · Vant 4 · TypeScript</text>
+<rect x="486" y="214" width="184" height="34" rx="17" fill="#213452" stroke="#365174"/><text x="504" y="236">Browser · App · PDA</text>
+<rect x="682" y="214" width="170" height="34" rx="17" fill="#213452" stroke="#365174"/><text x="701" y="236">One mobile foundation</text>
+</g>
+<g transform="translate(1000 74) rotate(12)" fill="none" stroke="#7595DB" stroke-opacity=".26"><rect width="100" height="190" rx="24" stroke-width="2"/><rect x="8" y="9" width="84" height="172" rx="18"/><path d="M34 20H66M38 169H62" stroke-width="3" stroke-linecap="round"/><rect x="20" y="53" width="60" height="32" rx="9"/><rect x="20" y="97" width="26" height="26" rx="7"/><rect x="54" y="97" width="26" height="26" rx="7"/></g>
+</svg>

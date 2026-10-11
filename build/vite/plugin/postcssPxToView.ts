@@ -15,7 +15,7 @@ export function postcssPxToViewProtConfig(): Plugin {
         appSelector: '#app', // 根元素选择器，用于设置桌面端和横屏时的居中样式
         // 媒体查询模式不依赖 CSS min()/max()，兼容工业 PDA 的旧 WebView。
         enableMediaQuery: true,
-        desktopWidth: 500,
+        desktopWidth: 390,
         minDesktopDisplayWidth: 576,
         viewportWidth: DEFAULT_VIEWPORT_WIDTH, // UI设计稿的宽度
         unitPrecision: 5, // 转换后的精度，即小数点位数
@@ -25,7 +25,7 @@ export function postcssPxToViewProtConfig(): Plugin {
         valueBlackList: ['1px solid'], // 表示属性值包含 '1px solid' 的内容不会转换
         exclude: [/node_modules/], // 忽略某些文件夹下的文件或特定文件，例如 'node_modules' 下的文件
         // include: [/src/], // 如果设置了include，那将只有匹配到的文件才会被转换
-        landscapeWidth: 500,
+        landscapeWidth: 390,
         // 指定包含块是根包含块的选择器，这种选择器的定位通常是 `fixed`，但是选择器内没有 `position: fixed`
         rootContainingBlockSelectorList: ['.mi-popup--bottom'],
         border: true,

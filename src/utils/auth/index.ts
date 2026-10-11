@@ -113,7 +113,7 @@ export function cleanPortalParamsFromUrl(): void {
         url.hash = `${hashPath}${cleanHashQuery ? `?${cleanHashQuery}` : ''}`;
     }
     const search = url.searchParams.toString();
-    window.history.replaceState(null, '', url.pathname + (search ? `?${search}` : '') + url.hash);
+    window.history.replaceState(window.history.state, '', url.pathname + (search ? `?${search}` : '') + url.hash);
 }
 
 // ─── 子应用 → 基座 通信 ───────────────────────────────────────────────
