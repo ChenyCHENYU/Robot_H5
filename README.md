@@ -19,7 +19,7 @@ Robot H5 是企业移动端 Vue 应用模板，面向独立浏览器、App/PDA W
 
 品牌标识将字母 **R** 与机器人的双眼、天线结合，使用蓝紫渐变。应用图标、登录页与加载屏复用 [logo.svg](./public/logo.svg)；README 使用由[封面 SVG](./docs/assets/robot-h5-banner.svg) 导出的高清 PNG。图片均保存在本仓库，使用原生 Markdown 相对路径引用。
 
-> 企业 GitLab 若无法显示普通 `raw` 图片，可尝试[内网 API 图片预览](docs/README.gitlab.md)。该入口使用同一内网 GitLab 的文件接口，须在已登录浏览器中验证；图片不依赖外网图床。
+> 企业 GitLab 图片访问异常的已验证结果与排查步骤见 [GitLab 图片访问排查](docs/README.gitlab.md)。本实例的 API 替代入口也已反馈 404，暂不作为可用的图片来源。
 
 ## 快速开始
 
