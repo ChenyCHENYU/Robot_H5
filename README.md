@@ -1,5 +1,6 @@
 <div align="center">
-  <img src="./docs/assets/robot-h5-banner.svg" width="100%" alt="Robot H5 — 企业移动应用，从浏览器到 App 与 PDA" />
+  <!-- 封面由 SVG 原图导出：node scripts/render-readme-banner.mjs -->
+  <img src="./docs/assets/robot-h5-banner.png" width="100%" alt="Robot H5 — 企业移动应用，从浏览器到 App 与 PDA" />
   <p><strong>一套移动应用底座，连接页面、业务与设备能力。</strong></p>
   <p>Vue 3 · TypeScript · Vite · Vant · UnoCSS · Pinia</p>
   <p>
@@ -15,7 +16,7 @@
 
 Robot H5 是企业移动端 Vue 应用模板，面向独立浏览器、App/PDA WebView 和 wl-mbase 子应用。页面使用同一套组件与设计令牌，拍照、扫码、定位等能力由 `@robot-h5/core` 适配运行平台。
 
-品牌标识将字母 **R** 与机器人的双眼、天线结合，使用蓝紫渐变。应用图标、登录页、加载屏与本文使用同一套 SVG 资产，见 [logo.svg](./public/logo.svg)。
+品牌标识将字母 **R** 与机器人的双眼、天线结合，使用蓝紫渐变。应用图标、登录页与加载屏复用 [logo.svg](./public/logo.svg)；README 使用由[封面 SVG](./docs/assets/robot-h5-banner.svg) 导出的高清 PNG，兼容 GitHub 与 GitLab 的图片预览。
 
 ## 快速开始
 
