@@ -1,6 +1,7 @@
+<!-- 封面由 SVG 原图导出：node scripts/render-readme-banner.mjs -->
+![Robot H5 — 企业移动应用，从浏览器到 App 与 PDA](docs/assets/robot-h5-banner.png)
+
 <div align="center">
-  <!-- 封面由 SVG 原图导出：node scripts/render-readme-banner.mjs -->
-  <img src="./docs/assets/robot-h5-banner.png" width="100%" alt="Robot H5 — 企业移动应用，从浏览器到 App 与 PDA" />
   <p><strong>一套移动应用底座，连接页面、业务与设备能力。</strong></p>
   <p>Vue 3 · TypeScript · Vite · Vant · UnoCSS · Pinia</p>
   <p>
@@ -16,7 +17,9 @@
 
 Robot H5 是企业移动端 Vue 应用模板，面向独立浏览器、App/PDA WebView 和 wl-mbase 子应用。页面使用同一套组件与设计令牌，拍照、扫码、定位等能力由 `@robot-h5/core` 适配运行平台。
 
-品牌标识将字母 **R** 与机器人的双眼、天线结合，使用蓝紫渐变。应用图标、登录页与加载屏复用 [logo.svg](./public/logo.svg)；README 使用由[封面 SVG](./docs/assets/robot-h5-banner.svg) 导出的高清 PNG，兼容 GitHub 与 GitLab 的图片预览。
+品牌标识将字母 **R** 与机器人的双眼、天线结合，使用蓝紫渐变。应用图标、登录页与加载屏复用 [logo.svg](./public/logo.svg)；README 使用由[封面 SVG](./docs/assets/robot-h5-banner.svg) 导出的高清 PNG。图片均保存在本仓库，使用原生 Markdown 相对路径引用。
+
+> 企业 GitLab 若无法显示普通 `raw` 图片，可尝试[内网 API 图片预览](docs/README.gitlab.md)。该入口使用同一内网 GitLab 的文件接口，须在已登录浏览器中验证；图片不依赖外网图床。
 
 ## 快速开始
 
@@ -60,7 +63,7 @@ pnpm dev
 
 | 登录 | 首页 | 客户档案 |
 | :---: | :---: | :---: |
-| <img src="./docs/assets/login.png" width="240" alt="Robot H5 登录页面" /> | <img src="./docs/assets/dashboard.png" width="240" alt="Robot H5 首页" /> | <img src="./docs/assets/customer.png" width="240" alt="客户档案页面" /> |
+| [![Robot H5 登录页面](docs/assets/login.png)](docs/assets/login.png) | [![Robot H5 首页](docs/assets/dashboard.png)](docs/assets/dashboard.png) | [![客户档案页面](docs/assets/customer.png)](docs/assets/customer.png) |
 
 ## 项目结构
 
