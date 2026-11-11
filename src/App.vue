@@ -24,6 +24,7 @@
     import { useRouteStore } from '@/store/modules/route';
     import { useUserStore } from '@/store/modules/user';
     import { useThemeRuntime } from '@/hooks/useTheme/runtime';
+    import { PageEnum } from '@/enums/pageEnum';
 
     defineOptions({ name: 'App' });
 
@@ -31,10 +32,19 @@
     const themeStore = useThemeStore();
 
     useThemeRuntime();
+    const route = useRoute();
     const routeStore = useRouteStore();
     const userStore = useUserStore();
     const keepAliveComponents = computed(() => ['MainLayout', ...routeStore.keepAliveComponents]);
-    const sessionKey = computed(() => `${userStore.getToken}:${userStore.getCompanyId}`);
+    const sessionKey = computed(() => {
+        // 免登录页（登录/门户异常页）冻结会话 key：登录成功写入 token 的瞬间
+        // 不把当前页面整棵重挂载（登录页闪烁根因）；换号清 KeepAlive 缓存的语义
+        // 保留——离开免登录页进入业务路由时 key 即随身份切换。
+        if (route.path === PageEnum.BASE_LOGIN || route.path === PageEnum.PORTAL_CONTEXT_ERROR) {
+            return 'pre-auth';
+        }
+        return `${userStore.getToken}:${userStore.getCompanyId}`;
+    });
 
     // 缓存 themeVars 避免每次渲染都重新计算
     const themeVarsCache = computed(() => getThemeVars());
