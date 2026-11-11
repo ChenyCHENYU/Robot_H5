@@ -7,7 +7,10 @@
                  overflow-y-auto 让非 Layout 的子页面（demo 等）可滚动 -->
             <div class="app-page-scroll w-full flex-1 min-h-0 overflow-x-hidden overflow-y-auto" data-page-scroll>
                 <RouterView v-slot="{ Component, route }">
-                    <transition :name="transitionName" mode="out-in">
+                    <!-- 免登录页不参与业务缓存/过渡，身份写入不会重建登录表单；
+                         导航确认后与目标页在同一轮渲染中交接。 -->
+                    <component v-if="isPreAuthRoute" :is="Component" :key="route.matched[0]?.path" />
+                    <transition v-else :name="transitionName" mode="out-in">
                         <KeepAlive :include="keepAliveComponents" :key="sessionKey" :max="20">
                             <component :is="Component" :key="route.matched[0]?.path" />
                         </KeepAlive>
@@ -36,29 +39,17 @@
     const routeStore = useRouteStore();
     const userStore = useUserStore();
     const keepAliveComponents = computed(() => ['MainLayout', ...routeStore.keepAliveComponents]);
-    const sessionKey = computed(() => {
-        // 免登录页（登录/门户异常页）冻结会话 key：登录成功写入 token 的瞬间
-        // 不把当前页面整棵重挂载（登录页闪烁根因）；换号清 KeepAlive 缓存的语义
-        // 保留——离开免登录页进入业务路由时 key 即随身份切换。
-        if (route.path === PageEnum.BASE_LOGIN || route.path === PageEnum.PORTAL_CONTEXT_ERROR) {
-            return 'pre-auth';
-        }
-        return `${userStore.getToken}:${userStore.getCompanyId}`;
-    });
+    const isPreAuthRoute = computed(() =>
+        route.path === PageEnum.BASE_LOGIN || route.path === PageEnum.PORTAL_CONTEXT_ERROR,
+    );
+    // 仅业务页面按身份隔离缓存，退出/换号/切公司后不复用旧会话组件。
+    const sessionKey = computed(() => `${userStore.getToken}:${userStore.getCompanyId}`);
 
     // 缓存 themeVars 避免每次渲染都重新计算
     const themeVarsCache = computed(() => getThemeVars());
 
     // 页面过渡动画名称：关闭动画时返回空字符串（无过渡）
-    // 离开登录页的导航（登录成功跳转）由 LoginSuccess 全屏遮罩承担过渡：
-    // 遮罩随登录页组件卸载而立即移除，若此刻仍走路由离场动画，旧登录页会在
-    // 遮罩消失后以淡出帧形式短暂回闪（约 150ms）。此类导航禁用路由动画，
-    // 新页面与遮罩同帧切换；其余导航动画行为不变。
-    const leavingLogin = ref(false);
-    useRouter().beforeEach((to, from) => {
-        leavingLogin.value = from.path === PageEnum.BASE_LOGIN && to.path !== PageEnum.BASE_LOGIN;
-    });
     const transitionName = computed(() =>
-        themeStore.isPageAnimate && !leavingLogin.value ? themeStore.pageAnimateType : '',
+        themeStore.isPageAnimate ? themeStore.pageAnimateType : '',
     );
 </script>
