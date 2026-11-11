@@ -50,7 +50,15 @@
     const themeVarsCache = computed(() => getThemeVars());
 
     // 页面过渡动画名称：关闭动画时返回空字符串（无过渡）
+    // 离开登录页的导航（登录成功跳转）由 LoginSuccess 全屏遮罩承担过渡：
+    // 遮罩随登录页组件卸载而立即移除，若此刻仍走路由离场动画，旧登录页会在
+    // 遮罩消失后以淡出帧形式短暂回闪（约 150ms）。此类导航禁用路由动画，
+    // 新页面与遮罩同帧切换；其余导航动画行为不变。
+    const leavingLogin = ref(false);
+    useRouter().beforeEach((to, from) => {
+        leavingLogin.value = from.path === PageEnum.BASE_LOGIN && to.path !== PageEnum.BASE_LOGIN;
+    });
     const transitionName = computed(() =>
-        themeStore.isPageAnimate ? themeStore.pageAnimateType : '',
+        themeStore.isPageAnimate && !leavingLogin.value ? themeStore.pageAnimateType : '',
     );
 </script>
